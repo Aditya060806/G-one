@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.infinity.ai.ai.engine.LlamaEngine
 import com.infinity.ai.ai.engine.LocalAIEngine
+import com.infinity.ai.ai.prompts.PromptFormatter
 import com.infinity.ai.ai.state.AIInferenceState
 import com.infinity.ai.ai.storage.ModelStorageManager
 import com.infinity.ai.ai.streaming.TokenStreamBuffer
@@ -114,18 +115,47 @@ class AIRepository(context: Context) {
      * Returns a Flow<String> that emits tokens as they're generated.
      * Collect this flow in the ViewModel to build the response incrementally.
      */
-    fun generate(history: List<ChatMessage>, userInput: String): Flow<String> =
-        TokenStreamBuffer.clean(engine.generate(history, userInput))
+    fun generate(
+        history: List<ChatMessage>,
+        userInput: String,
+        systemPrompt: String = PromptFormatter.DEFAULT_SYSTEM_PROMPT
+    ): Flow<String> =
+        TokenStreamBuffer.clean(engine.generate(history, userInput, systemPrompt))
 
     /** Stop the current generation */
     fun stop() = engine.stop()
 
-    /** Free model memory — call from ViewModel.onCleared() */
-    fun unload() {
+    /**
+     * Free the model from memory and reset initialization state.
+     *
+     * ⚠️ OWNERSHIP CONTRACT — read before calling.
+     *
+     * This repository is a process-wide singleton shared by every screen AND by
+     * the background health-monitoring service. Unloading the model is therefore
+     * a *process-level* teardown, not a screen-level cleanup.
+     *
+     * ONLY the component that owns the process-wide model lifecycle may call
+     * this — in G-one that is [com.infinity.ai.health.service.HealthMonitoringService].
+     *
+     * Screen-level ViewModels must NEVER call this. A screen being destroyed
+     * (navigating away, rotation, back press) must not tear down health
+     * monitoring. Use [stop] to cancel an in-flight generation instead.
+     *
+     * Regression history: `ChatViewModel.onCleared()` used to call the old
+     * `unload()`, and `SettingsScreen` created its own NavBackStackEntry-scoped
+     * `ChatViewModel`. Closing the Settings screen therefore freed the model out
+     * from under active monitoring. Both are fixed; this contract exists so the
+     * class of bug cannot silently return.
+     */
+    fun shutdown() {
+        Log.i(TAG, "shutdown() — releasing model (process-level teardown)")
         engine.unload()
         initialized = false
         initializationError = null
     }
+
+    /** True once the model is loaded and [initialize] has succeeded. */
+    fun isInitialized(): Boolean = initialized
 
     /** True if model is loaded and ready */
     fun isReady(): Boolean = engine.isReady()

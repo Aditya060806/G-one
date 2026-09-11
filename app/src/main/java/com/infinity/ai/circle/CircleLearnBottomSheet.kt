@@ -162,7 +162,11 @@ private fun ProcessingPanel() {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text("∞", fontSize = 28.sp, color = Color.White, fontWeight = FontWeight.Light)
+            Icon(
+                Icons.Default.MonitorHeart, null,
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
         }
         Text("Reading your selection…", style = MaterialTheme.typography.titleMedium,
             color = Color.White, textAlign = TextAlign.Center)

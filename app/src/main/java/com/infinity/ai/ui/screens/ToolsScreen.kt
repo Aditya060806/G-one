@@ -32,7 +32,8 @@ fun ToolsScreen(
     onNavigateToOcr        : () -> Unit = {},
     onNavigateToScreenshot : () -> Unit = {},
     onNavigateToQuiz       : () -> Unit = {},
-    onNavigateToCircle     : () -> Unit = {}
+    onNavigateToCircle     : () -> Unit = {},
+    onNavigateToLibrary    : () -> Unit = {}
 ) {
     val dark = isDarkTheme
 
@@ -118,7 +119,7 @@ fun ToolsScreen(
             Spacer(Modifier.height(12.dp))
 
             // ════════════════════════════════════════════════════════════════
-            // ROW 3 — Quiz Generator | Smart Notes (equal halves)
+            // ROW 3 — Quiz Generator | Knowledge Vault (equal halves)
             // ════════════════════════════════════════════════════════════════
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -132,12 +133,15 @@ fun ToolsScreen(
                     onClick     = onNavigateToQuiz,
                     modifier    = Modifier.weight(1f).height(144.dp)
                 )
+                // Was a dead "Smart Notes" card with an empty onClick. Repointed at the
+                // Library, which is a real working feature that lost its bottom-bar tab
+                // when the bar became health-first. Same slot, now it goes somewhere.
                 ToolMediumCard(
-                    icon        = Icons.Default.EditNote,
-                    title       = "Smart Notes",
-                    description = "AI-powered note taking",
+                    icon        = Icons.Default.Book,
+                    title       = "Knowledge Vault",
+                    description = "Saved summaries, OCR & quizzes",
                     dark        = dark,
-                    onClick     = {},
+                    onClick     = onNavigateToLibrary,
                     modifier    = Modifier.weight(1f).height(144.dp)
                 )
             }

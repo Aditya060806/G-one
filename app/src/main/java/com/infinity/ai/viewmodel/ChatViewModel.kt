@@ -107,7 +107,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun startFromSuggestion(prompt: String) {
         _showSuggestions.value = false
-        val welcome = ChatMessage(nextId(), "Hello! I'm Infinity. How can I help you today?", isUser = false)
+        val welcome = ChatMessage(nextId(), "Hi, I'm G-one. What would you like to understand?", isUser = false)
         val userMsg = ChatMessage(nextId(), prompt, isUser = true)
         _messages.value = listOf(welcome, userMsg)
         if (aiState.value is AIInferenceState.Loading ||
@@ -155,8 +155,21 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         generationJob?.cancel()
 
         generationJob = viewModelScope.launch(Dispatchers.IO) {
+            // Bug fix: drop TWO trailing entries, not one.
+            //
+            // At this point _messages is [...prior, userMsg, placeholder].
+            // PromptFormatter renders every history entry as its own turn AND then
+            // appends `userInput` as a fresh user turn. Dropping only the
+            // placeholder left userMsg in history, so every prompt contained two
+            // identical consecutive <|im_start|>user blocks — wasted context and
+            // a confused model.
+            //
+            // dropLast(2) removes the placeholder and the user message that
+            // `userInput` already represents. Correct for both entry points:
+            //   sendMessage()        [...prior, userMsg, placeholder] -> [...prior]
+            //   startFromSuggestion() [welcome, userMsg, placeholder] -> [welcome]
             val historyForPrompt = _messages.value
-                .dropLast(1)
+                .dropLast(2)
                 .takeLast(20)
 
             try {
@@ -206,7 +219,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     override fun onCleared() {
         super.onCleared()
+        // Cancel only OUR generation. Do NOT unload the model.
+        //
+        // AIRepository is a process-wide singleton shared with the health
+        // monitoring service. Unloading here would free the model out from under
+        // active monitoring the moment this screen was destroyed. Model lifecycle
+        // is owned by HealthMonitoringService — see AIRepository.shutdown().
         stopGeneration()
-        repository.unload()
     }
 }

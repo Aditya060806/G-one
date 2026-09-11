@@ -39,8 +39,14 @@ private val Light = lightColorScheme(
     onError          = LightSurface
 )
 
+/**
+ * Default is light, matching [com.infinity.ai.data.ThemePreference]. Every real call site
+ * passes the stored preference explicitly; the default only matters for previews and for
+ * the Circle Learn overlay, which passes `true` deliberately because it draws over other
+ * apps on a translucent black scrim.
+ */
 @Composable
-fun InfinityTheme(darkTheme: Boolean = true, content: @Composable () -> Unit) {
+fun GoneTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = if (darkTheme) Dark else Light,
         typography = Typography,

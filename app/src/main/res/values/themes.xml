@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Infinity" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">#0D0A08</item>
-        <item name="android:statusBarColor">#0D0A08</item>
-        <item name="android:navigationBarColor">#0D0A08</item>
-        <item name="android:windowLightStatusBar">false</item>
+    <!--
+        These colours are what the system paints BEFORE Compose draws its first frame,
+        so they must match the app's real background or launch shows a coloured flash.
+
+        History: this was #0D0A08, a dark brown left over from an earlier palette, which
+        flashed brown on every cold start. It then briefly matched the dark navy
+        background. It is now the light gradient's top stop, because the app defaults to
+        the light theme (see ThemePreference).
+
+        Kept in sync by hand with ui/theme/Color.kt GradStart — there is no way to
+        reference a Compose Color from XML.
+
+        Note the tradeoff: a user who switches to dark will get a brief light flash on
+        cold start. values-night/ cannot fix that, because the theme is an in-app
+        DataStore preference rather than the system setting, so the resource qualifier
+        would track the wrong signal. Matching the default is the best available option.
+    -->
+    <style name="Theme.Gone" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">#FFFFFF</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

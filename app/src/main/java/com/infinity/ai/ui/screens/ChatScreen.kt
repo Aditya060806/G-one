@@ -100,7 +100,7 @@ fun ChatScreen(
                 type       = EntryType.NOTE,
                 content    = if (prompt.isNotBlank()) "Q: $prompt\n\nA: $response" else response,
                 title      = prompt.take(60).ifBlank { "Chat Response" },
-                sourceInfo = "Infinity Chat"
+                sourceInfo = "G-one Chat"
             )
             scope.launch { snackbarHostState.showSnackbar("Saved to Knowledge Vault") }
         }
@@ -233,7 +233,7 @@ private fun ChatHeader(isDarkTheme: Boolean, aiState: AIInferenceState, onClearC
         ) {
             Box(modifier = Modifier.size(6.dp).background(dotColor, CircleShape))
             Text(
-                "Infinity AI",
+                "G-one",
                 style = MaterialTheme.typography.labelLarge,
                 color = if (isDarkTheme) TextPrimary else TextPrimaryLight
             )
@@ -347,12 +347,32 @@ private fun EmptyState(
             letterSpacing = 1.2.sp
         )
         Spacer(Modifier.height(10.dp))
+        // Health-first suggestions. These are phrased as requests for EXPLANATION, never
+        // for advice — "what does resting heart rate mean", not "is my heart rate bad".
+        // The card title is what gets sent verbatim as the prompt, so the wording here is
+        // the actual guardrail, not just a label.
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf(
-                Triple(Icons.Default.Chat,     "Ask me anything",    "Start a conversation"),
-                Triple(Icons.Default.Code,     "Help me write code", "Generate or review code"),
-                Triple(Icons.Default.EditNote, "Summarize my notes", "AI-powered summaries"),
-                Triple(Icons.Default.Language, "Translate text",     "Any language supported")
+                Triple(
+                    Icons.Default.Favorite,
+                    "What does my resting heart rate mean?",
+                    "Understand a vital sign"
+                ),
+                Triple(
+                    Icons.Default.Science,
+                    "Explain a lab report value in plain words",
+                    "Decode medical jargon"
+                ),
+                Triple(
+                    Icons.Default.Thermostat,
+                    "How does heat affect the body?",
+                    "Heat stress and hydration"
+                ),
+                Triple(
+                    Icons.Default.Chat,
+                    "Ask me anything",
+                    "Start a conversation"
+                )
             ).forEach { (icon, title, sub) ->
                 AITaskCard(
                     icon     = icon,
@@ -517,10 +537,14 @@ private fun ChatBubble(
                         .background(Blue50, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("∞", style = MaterialTheme.typography.labelSmall, color = Blue500, fontSize = 10.sp)
+                    Icon(
+                        Icons.Default.MonitorHeart, null,
+                        tint = Blue500,
+                        modifier = Modifier.size(10.dp)
+                    )
                 }
                 Text(
-                    "Infinity",
+                    "G-one",
                     style = MaterialTheme.typography.labelSmall,
                     color = Blue500,
                     fontWeight = FontWeight.SemiBold

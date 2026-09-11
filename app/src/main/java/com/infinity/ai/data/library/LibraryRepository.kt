@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
  */
 class LibraryRepository private constructor(context: Context) {
 
-    private val dao = LibraryDatabase.getInstance(context).libraryDao()
+    private val dao = GoneDatabase.getInstance(context).libraryDao()
 
     companion object {
         private const val TAG = "LibraryRepository"

@@ -18,7 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import com.infinity.ai.MainActivity
-import com.infinity.ai.ui.theme.InfinityTheme
+import com.infinity.ai.ui.theme.GoneTheme
 import kotlinx.coroutines.*
 
 /**
@@ -261,7 +261,7 @@ class InfinityOverlayService : Service() {
         )
 
         val host = OverlayComposeHost(this) {
-            InfinityTheme(darkTheme = true) {
+            GoneTheme(darkTheme = true) {
                 CircleLearnBottomSheetHost(
                     vm          = vm,
                     onDismiss   = {
@@ -427,7 +427,7 @@ class InfinityOverlayService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val ch = NotificationChannel(
-                CHANNEL_ID, "Infinity Circle Learn", NotificationManager.IMPORTANCE_LOW
+                CHANNEL_ID, "G-one Circle Learn", NotificationManager.IMPORTANCE_LOW
             ).apply { description = "Circle Learn overlay service" }
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
                 .createNotificationChannel(ch)
@@ -446,8 +446,8 @@ class InfinityOverlayService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Infinity Circle Learn")
-            .setContentText("Tap the ∞ bubble to circle anything and learn instantly")
+            .setContentTitle("G-one Circle Learn")
+            .setContentText("Tap the bubble to circle anything on screen")
             .setSmallIcon(android.R.drawable.ic_menu_camera)
             .setOngoing(true)
             .setContentIntent(openPi)
@@ -455,3 +455,4 @@ class InfinityOverlayService : Service() {
             .build()
     }
 }
+

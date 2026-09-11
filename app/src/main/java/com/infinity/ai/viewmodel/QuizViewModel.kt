@@ -58,22 +58,24 @@ class QuizViewModel(app: Application) : AndroidViewModel(app) {
     /** Generate a quiz from manually pasted or pre-extracted text. */
     fun generateFromText(text: String) {
         if (text.isBlank()) return
-        startGeneration(text)
+        if (_uiState.value is QuizUiState.Extracting ||
+            _uiState.value is QuizUiState.Generating) return
+        resetForNewRun()
+        job = viewModelScope.launch(Dispatchers.IO) { runGeneration(text) }
     }
 
     /** Generate a quiz from an image via OCR. */
     fun generateFromImage(uri: Uri) {
         if (_uiState.value is QuizUiState.Extracting ||
             _uiState.value is QuizUiState.Generating) return
-        job?.cancel()
-        _quizText.value  = ""
-        _sourceText.value = ""
-        userStopped       = false
+        resetForNewRun()
 
+        // OCR *and* generation run inside this one coroutine, so the single tracked
+        // [job] covers the whole sequence and stop() can actually cancel it.
         job = viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = QuizUiState.Extracting
             extractor.extract(getApplication(), uri).fold(
-                onSuccess = { (text, _) -> startGeneration(text) },
+                onSuccess = { (text, _) -> runGeneration(text) },
                 onFailure = { e ->
                     Log.e(TAG, "OCR failed", e)
                     _uiState.value = QuizUiState.Error(e.message ?: "Failed to read image")
@@ -82,38 +84,43 @@ class QuizViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun startGeneration(text: String) {
+    private fun resetForNewRun() {
+        job?.cancel()
+        _quizText.value   = ""
+        _sourceText.value = ""
+        userStopped       = false
+    }
+
+    /**
+     * Suspends in the CALLER's coroutine on purpose.
+     *
+     * Bug fix: this used to inspect `job?.isActive` and, when called from the OCR
+     * path, launch an untracked coroutine without reassigning [job]. stop() then
+     * cancelled the already-completing OCR job while the generation kept running —
+     * the generation was uncancellable. Running inline keeps exactly one job.
+     */
+    private suspend fun runGeneration(text: String) {
         val safe = if (text.length > AiTextProcessor.MAX_INPUT_CHARS)
             text.take(AiTextProcessor.MAX_INPUT_CHARS) else text
         _sourceText.value = safe
         _quizText.value   = ""
-        userStopped       = false
+        _uiState.value    = QuizUiState.Generating
 
-        // If called from generateFromImage the job is already running — launch nested
-        val launch: suspend () -> Unit = {
-            _uiState.value = QuizUiState.Generating
-            val prompt = "$QUIZ_PROMPT\n$safe"
-            Log.i(TAG, "Quiz prompt: ${prompt.length} chars, est ~${prompt.length / 4 + 134} tokens")
-            AiTextProcessor.stream(
-                repository  = repository,
-                prompt      = prompt,
-                outputFlow  = _quizText as MutableStateFlow<String>,
-                userStopped = { userStopped },
-                scope       = viewModelScope,
-                onDone      = {
-                    _uiState.value = QuizUiState.Done
-                    viewModelScope.launch(Dispatchers.IO) { autoSave() }
-                },
-                onError     = { msg -> _uiState.value = QuizUiState.Error(msg) }
-            )
-        }
+        val prompt = "$QUIZ_PROMPT\n$safe"
+        Log.i(TAG, "Quiz prompt: ${prompt.length} chars, est ~${prompt.length / 4 + 134} tokens")
 
-        if (job?.isActive == true) {
-            // Already inside a coroutine (called from generateFromImage's launch block)
-            viewModelScope.launch(Dispatchers.IO) { launch() }
-        } else {
-            job = viewModelScope.launch(Dispatchers.IO) { launch() }
-        }
+        AiTextProcessor.stream(
+            repository  = repository,
+            prompt      = prompt,
+            outputFlow  = _quizText,
+            userStopped = { userStopped },
+            scope       = viewModelScope,
+            onDone      = {
+                _uiState.value = QuizUiState.Done
+                viewModelScope.launch(Dispatchers.IO) { autoSave() }
+            },
+            onError     = { msg -> _uiState.value = QuizUiState.Error(msg) }
+        )
     }
 
     private suspend fun autoSave() {
@@ -145,7 +152,8 @@ class QuizViewModel(app: Application) : AndroidViewModel(app) {
         super.onCleared()
         extractor.close()
         repository.stop()
-        // Do not call repository.unload() — shared instance
+        // Never shut down the shared model here — HealthMonitoringService owns
+        // the process-wide model lifecycle. See AIRepository.shutdown().
     }
 }
 

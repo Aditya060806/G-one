@@ -18,11 +18,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Actions offered for a captured screenshot.
+ *
+ * `FIX_ERROR` ("identify the error and provide a fix") was a developer-tool action and
+ * has been replaced by `DECODE_TERMS`. The realistic G-one use case is a photo of a
+ * report, a pharmacy label or a hospital portal screen — not a stack trace.
+ */
 enum class ScreenshotAction(val label: String, val prompt: String) {
-    EXPLAIN   ("Explain",                   "Explain clearly what this text/error means and why it happens."),
-    SIMPLIFY  ("Simplify",                  "Rewrite the following in simple plain English anyone can understand."),
-    FIX_ERROR ("Fix Error",                 "Identify the error in the following and provide a clear fix with explanation."),
-    EXTRACT   ("Extract Key Info",          "Extract and list all the important information from the following text.")
+    EXPLAIN      ("Explain",          "Explain clearly what the following says and what it means."),
+    SIMPLIFY     ("Simplify",         "Rewrite the following in simple plain English anyone can understand."),
+    DECODE_TERMS ("Decode Terms",     "List each medical or technical term and abbreviation that appears " +
+        "below and define it in one plain sentence. Definitions only — do not diagnose or advise."),
+    EXTRACT      ("Extract Key Info", "Extract and list all the important information from the following text.")
 }
 
 class ScreenshotExplainerViewModel(app: Application) : AndroidViewModel(app) {
@@ -129,7 +137,8 @@ class ScreenshotExplainerViewModel(app: Application) : AndroidViewModel(app) {
         super.onCleared()
         extractor.close()
         repository.stop()
-        // Do not call repository.unload() — shared instance
+        // Never shut down the shared model here — HealthMonitoringService owns
+        // the process-wide model lifecycle. See AIRepository.shutdown().
     }
 }
 

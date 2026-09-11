@@ -1,4 +1,4 @@
-package com.infinity.ai
+﻿package com.infinity.ai
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import com.infinity.ai.ui.navigation.AppNavigation
-import com.infinity.ai.ui.theme.InfinityTheme
+import com.infinity.ai.ui.theme.GoneTheme
 import com.infinity.ai.viewmodel.ThemeViewModel
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
-            InfinityTheme(darkTheme = isDarkTheme) {
+            GoneTheme(darkTheme = isDarkTheme) {
                 AppNavigation(
                     isDarkTheme = isDarkTheme,
                     onToggleTheme = themeViewModel::toggleTheme
@@ -31,3 +31,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

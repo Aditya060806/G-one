@@ -7,13 +7,20 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,29 +31,93 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.*
+import com.infinity.ai.ui.theme.GoneMotion
+import com.infinity.ai.health.ui.AlertsScreen
+import com.infinity.ai.health.ui.HealthDashboardScreen
+import com.infinity.ai.health.ui.HealthHistoryScreen
+import com.infinity.ai.health.ui.LiveMonitorScreen
 import com.infinity.ai.ui.components.toOrbState
 import com.infinity.ai.ui.screens.*
 import com.infinity.ai.viewmodel.ChatViewModel
 import com.infinity.ai.viewmodel.LibraryViewModel
 
+/**
+ * Bottom-navigation destinations.
+ *
+ * Health-first ordering: the four monitoring surfaces come before the assistant, because
+ * G-one is a health companion that happens to contain an assistant, not the reverse.
+ *
+ * Tools, Library and Settings are intentionally NOT in the bottom bar — five tabs is the
+ * practical ceiling before labels truncate. They are reachable in one tap from the
+ * Dashboard header instead, which keeps the bar focused on real-time health status.
+ */
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-    object Dashboard : Screen("dashboard", "Home",     Icons.Default.Home)
-    object Chat      : Screen("chat",      "Chat",     Icons.Default.Chat)
-    object Tools     : Screen("tools",     "Tools",    Icons.Default.Apps)
-    object Library   : Screen("library",   "Library",  Icons.Default.AutoStories)
-    object Settings  : Screen("settings",  "Settings", Icons.Default.Settings)
+    object Health    : Screen("health",  "Health",  Icons.Default.Favorite)
+    object Monitor   : Screen("monitor", "Monitor", Icons.Default.MonitorHeart)
+    object History   : Screen("history", "History", Icons.AutoMirrored.Filled.ShowChart)
+    object Alerts    : Screen("alerts",  "Alerts",  Icons.Default.NotificationsActive)
+    object Assistant : Screen("chat",    "Assist",  Icons.AutoMirrored.Filled.Chat)
 }
 
-private val navItems = listOf(Screen.Dashboard, Screen.Chat, Screen.Tools, Screen.Library, Screen.Settings)
+private val navItems =
+    listOf(Screen.Health, Screen.Monitor, Screen.History, Screen.Alerts, Screen.Assistant)
+
+/** Routes that keep the bottom bar visible. Everything else is a pushed detail screen. */
+private val navRoutes = navItems.map { it.route }
+
+/**
+ * Two different transitions, because the two navigation gestures mean different things.
+ *
+ * Switching bottom-nav tabs is lateral movement between peers, so it gets a fade-through
+ * (fade plus a slight scale) with no directional slide — sliding implies an ordering the
+ * tabs do not have, and picking a direction would be arbitrary. Opening a detail screen
+ * is a push deeper, so it slides in from the right and back out to the right, which is
+ * what makes the back gesture feel like reversal rather than another forward step.
+ */
+private fun fadeThroughIn() =
+    fadeIn(tween(GoneMotion.Medium, delayMillis = 50, easing = GoneMotion.EaseOutSoft)) +
+        scaleIn(
+            initialScale = 0.97f,
+            animationSpec = tween(GoneMotion.Medium, delayMillis = 50, easing = GoneMotion.EaseOutSoft)
+        )
+
+private fun fadeThroughOut() = fadeOut(tween(GoneMotion.Quick, easing = LinearEasing))
+
+private fun pushIn() = slideInHorizontally(
+    animationSpec = tween(GoneMotion.Medium, easing = GoneMotion.EaseOutSoft)
+) { full -> full / 4 } + fadeIn(tween(GoneMotion.Medium))
+
+private fun pushOutBack() = slideOutHorizontally(
+    animationSpec = tween(GoneMotion.Medium, easing = GoneMotion.EaseInOutSoft)
+) { full -> full / 4 } + fadeOut(tween(GoneMotion.Quick))
+
+/**
+ * A pushed detail destination: slides in from the right, and on back slides back out the
+ * same way. Going *deeper* from here only fades, so a three-level push does not turn into
+ * a conveyor belt of sliding panels.
+ */
+private fun NavGraphBuilder.detailScreen(
+    route: String,
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+) = composable(
+    route = route,
+    enterTransition    = { pushIn() },
+    exitTransition     = { fadeThroughOut() },
+    popEnterTransition = { fadeThroughIn() },
+    popExitTransition  = { pushOutBack() },
+    content            = content
+)
 
 @Composable
 fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
     val navController = rememberNavController()
     val backStack     by navController.currentBackStackEntryAsState()
     val currentRoute  = backStack?.destination?.route
-    val showNav       = currentRoute in navItems.map { it.route }
+    val showNav       = currentRoute in navRoutes
 
     val context = LocalContext.current
     val chatViewModel: ChatViewModel = viewModel()
@@ -141,32 +212,53 @@ fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
         NavHost(
             navController    = navController,
             startDestination = "splash",
-            enterTransition  = { fadeIn(tween(220)) },
-            exitTransition   = { fadeOut(tween(220)) }
+            // Tab-level default. Detail routes override these below with a push.
+            enterTransition     = { fadeThroughIn() },
+            exitTransition      = { fadeThroughOut() },
+            popEnterTransition  = { fadeThroughIn() },
+            popExitTransition   = { fadeThroughOut() }
         ) {
             composable("splash") {
-                SplashScreen {
-                    navController.navigate(Screen.Dashboard.route) {
+                SplashScreen(isDarkTheme = isDarkTheme) {
+                    navController.navigate(Screen.Health.route) {
                         popUpTo("splash") { inclusive = true }
                     }
                 }
             }
-            composable(Screen.Dashboard.route) {
-                DashboardScreen(
-                    isDarkTheme            = isDarkTheme,
-                    orbState               = orbState,
-                    bottomPadding          = innerPadding.calculateBottomPadding(),
-                    onNavigateToChat       = { navController.navigate(Screen.Chat.route) },
-                    onNavigateToVoice      = { navController.navigate("voice") },
-                    onOrbTap               = { navController.navigate(Screen.Chat.route) },
-                    onNavigateToCircle     = { navController.navigate("circle_learn") },
-                    onNavigateToOcr        = { navController.navigate("ocr") },
-                    onNavigateToPdf        = { navController.navigate("pdf_summary") },
-                    onNavigateToQuiz       = { navController.navigate("quiz") },
-                    onNavigateToScreenshot = { navController.navigate("screenshot") }
+
+            // ── Health surfaces ───────────────────────────────────────────────
+            composable(Screen.Health.route) {
+                HealthDashboardScreen(
+                    isDarkTheme    = isDarkTheme,
+                    bottomPadding  = innerPadding.calculateBottomPadding(),
+                    onOpenAlerts   = { navController.navigate(Screen.Alerts.route) },
+                    onOpenMonitor  = { navController.navigate(Screen.Monitor.route) },
+                    onOpenHistory  = { navController.navigate(Screen.History.route) },
+                    onOpenTools    = { navController.navigate("tools") },
+                    onOpenSettings = { navController.navigate("settings") }
                 )
             }
-            composable(Screen.Chat.route) {
+            composable(Screen.Monitor.route) {
+                LiveMonitorScreen(
+                    isDarkTheme   = isDarkTheme,
+                    bottomPadding = innerPadding.calculateBottomPadding()
+                )
+            }
+            composable(Screen.History.route) {
+                HealthHistoryScreen(
+                    isDarkTheme   = isDarkTheme,
+                    bottomPadding = innerPadding.calculateBottomPadding()
+                )
+            }
+            composable(Screen.Alerts.route) {
+                AlertsScreen(
+                    isDarkTheme   = isDarkTheme,
+                    bottomPadding = innerPadding.calculateBottomPadding()
+                )
+            }
+
+            // ── Inherited assistant surfaces ──────────────────────────────────
+            composable(Screen.Assistant.route) {
                 ChatScreen(
                     isDarkTheme       = isDarkTheme,
                     bottomPadding     = innerPadding.calculateBottomPadding(),
@@ -174,7 +266,7 @@ fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
                     chatViewModel     = chatViewModel
                 )
             }
-            composable(Screen.Tools.route) {
+            detailScreen("tools") {
                 ToolsScreen(
                     isDarkTheme            = isDarkTheme,
                     bottomPadding          = innerPadding.calculateBottomPadding(),
@@ -182,59 +274,54 @@ fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
                     onNavigateToOcr        = { navController.navigate("ocr") },
                     onNavigateToScreenshot = { navController.navigate("screenshot") },
                     onNavigateToQuiz       = { navController.navigate("quiz") },
-                    onNavigateToCircle     = { navController.navigate("circle_learn") }
+                    onNavigateToCircle     = { navController.navigate("circle_learn") },
+                    onNavigateToLibrary    = { navController.navigate("library") }
                 )
             }
-            composable("pdf_summary") {
+            detailScreen("pdf_summary") {
                 PdfSummaryScreen(
                     isDarkTheme    = isDarkTheme,
                     bottomPadding  = innerPadding.calculateBottomPadding(),
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable("ocr") {
+            detailScreen("ocr") {
                 OcrScreen(
                     isDarkTheme    = isDarkTheme,
                     bottomPadding  = innerPadding.calculateBottomPadding(),
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable("screenshot") {
+            detailScreen("screenshot") {
                 ScreenshotExplainerScreen(
                     isDarkTheme    = isDarkTheme,
                     bottomPadding  = innerPadding.calculateBottomPadding(),
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable("quiz") {
+            detailScreen("quiz") {
                 QuizScreen(
                     isDarkTheme    = isDarkTheme,
                     bottomPadding  = innerPadding.calculateBottomPadding(),
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable("circle_learn") {
+            detailScreen("circle_learn") {
                 CircleLearnEntryScreen(
                     isDarkTheme    = isDarkTheme,
                     bottomPadding  = innerPadding.calculateBottomPadding(),
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable("circle_learn") {
-                CircleLearnEntryScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            composable(Screen.Settings.route) {
+            detailScreen("settings") {
                 SettingsScreen(
                     isDarkTheme   = isDarkTheme,
                     bottomPadding = innerPadding.calculateBottomPadding(),
+                    aiState       = aiState,
                     onToggleTheme = onToggleTheme
                 )
             }
-            composable(Screen.Library.route) {
+            detailScreen("library") {
                 LibraryScreen(
                     isDarkTheme   = isDarkTheme,
                     bottomPadding = innerPadding.calculateBottomPadding(),
@@ -242,7 +329,7 @@ fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
                     vm            = libraryViewModel
                 )
             }
-            composable("voice") {
+            detailScreen("voice") {
                 VoiceScreen(
                     isDarkTheme    = isDarkTheme,
                     orbState       = orbState,

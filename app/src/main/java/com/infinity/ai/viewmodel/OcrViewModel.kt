@@ -19,10 +19,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 enum class OcrAction(val label: String, val prompt: String) {
-    SUMMARIZE  ("Summarize",       "Summarize the following text in 5 concise bullet points:"),
-    KEY_POINTS ("Key Points",      "List the 5 most important key points from the following text."),
-    EXPLAIN    ("Explain",         "Explain the following text in simple, clear language."),
-    TO_NOTES   ("Convert to Notes","Convert the following text into organized study notes with headings.")
+    EXPLAIN     ("Explain",       "Explain the following text in simple, clear language."),
+    // The scanned page is most often a lab report or prescription, so reading the
+    // numbers against their own printed ranges is the highest-value action here.
+    CHECK_RANGES("Check Ranges",  "For each measurement below, state its value and whether it falls " +
+        "inside or outside the reference range printed alongside it. If no range is printed, say " +
+        "\"no range given\" rather than supplying one from memory. Do not diagnose."),
+    SUMMARIZE   ("Summarize",     "Summarize the following text in 5 concise bullet points:"),
+    KEY_POINTS  ("Key Points",    "List the 5 most important key points from the following text."),
+    TO_NOTES    ("Convert to Notes","Convert the following text into organized notes with headings.")
 }
 
 class OcrViewModel(app: Application) : AndroidViewModel(app) {
@@ -148,7 +153,8 @@ class OcrViewModel(app: Application) : AndroidViewModel(app) {
         super.onCleared()
         extractor.close()
         repository.stop()
-        // Do not call repository.unload() — shared instance, ChatViewModel owns lifecycle
+        // Never shut down the shared model here — HealthMonitoringService owns
+        // the process-wide model lifecycle. See AIRepository.shutdown().
     }
 }
 

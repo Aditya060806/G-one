@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.infinity.ai.ui.theme.InfinityTheme
+import com.infinity.ai.ui.theme.GoneTheme
 
 /**
  * CircleLearnActivity — FALLBACK ONLY.
@@ -54,7 +54,7 @@ class CircleLearnActivity : ComponentActivity() {
 
     private fun showBottomSheet() {
         setContent {
-            InfinityTheme(darkTheme = true) {
+            GoneTheme(darkTheme = true) {
                 CircleLearnBottomSheetHost(
                     vm          = vm,
                     onDismiss   = { finish() },
@@ -66,7 +66,7 @@ class CircleLearnActivity : ComponentActivity() {
 
     private fun showErrorAndFinish(msg: String) {
         setContent {
-            InfinityTheme(darkTheme = true) {
+            GoneTheme(darkTheme = true) {
                 CircleErrorScreen(message = msg, onDismiss = { finish() })
             }
         }
@@ -79,3 +79,4 @@ class CircleLearnActivity : ComponentActivity() {
         InfinityOverlayService.pendingScreenshot = null
     }
 }
+

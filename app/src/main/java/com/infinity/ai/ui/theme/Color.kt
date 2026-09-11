@@ -10,11 +10,24 @@ val DarkBorder          = Color(0xFF1E2D45)
 val DarkGlass           = Color(0x18FFFFFF)
 
 // ── Light backgrounds ──────────────────────────────────────────────────────────
-val LightBg              = Color(0xFFF8FAFC)
+// Carries a faint cool tint rather than being pure grey. Cards are pure white, so the
+// tint is what separates a card from the page — on a flat #FFFFFF background a white
+// card is invisible without a heavy border, which is what made the old light theme
+// look like a wireframe.
+val LightBg              = Color(0xFFF4F7FC)
 val LightSurface         = Color(0xFFFFFFFF)
-val LightSurfaceElevated = Color(0xFFF1F5F9)
-val LightBorder          = Color(0xFFE5EAF3)
+val LightSurfaceElevated = Color(0xFFFAFCFF)
+val LightBorder          = Color(0xFFE3E9F4)
+/** For emphasis and selected states, where [LightBorder] is too faint to register. */
+val LightBorderStrong    = Color(0xFFC9D6EA)
 val LightGlass           = Color(0xFAFFFFFF)
+/**
+ * Blue-tinted rather than neutral black.
+ *
+ * A pure-black shadow over a cool background reads as grey sludge. Tinting the shadow
+ * toward the background hue is what makes soft elevation look intentional on light UI.
+ */
+val LightShadow          = Color(0x141B3A6B)
 
 // ── Brand — professional blue ──────────────────────────────────────────────────
 val Blue500      = Color(0xFF4F8CFF)   // primary
@@ -24,10 +37,14 @@ val Blue50       = Color(0xFFEEF4FF)   // tint background
 val Blue100      = Color(0xFFDBEAFF)   // softer tint
 val BlueAlpha12  = Color(0x1F4F8CFF)
 
-// ── Neutral grays ─────────────────────────────────────────────────────────────
-val GradStart = Color(0xFFF8FAFC)
-val GradMid   = Color(0xFFF1F5F9)
-val GradEnd   = Color(0xFFE5EAF3)
+// ── Light page gradient ───────────────────────────────────────────────────────
+// Top-down, near-white to a slightly deeper tint. Subtle on purpose: enough to give the
+// page depth and to stop long scrolls feeling like flat paper, not enough to compete
+// with the content. The dark theme already had a three-stop gradient; light was a single
+// flat fill, which is most of why the two themes felt unequal in quality.
+val GradStart = Color(0xFFFFFFFF)
+val GradMid   = Color(0xFFF4F7FC)
+val GradEnd   = Color(0xFFE8EFFA)
 val OrbColor1 = Color(0xFF93C5FD)
 val OrbColor2 = Color(0xFF60A5FA)
 val OrbColor3 = Color(0xFFBFDBFE)

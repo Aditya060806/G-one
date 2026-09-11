@@ -134,7 +134,7 @@ fun CircleLearnEntryScreen(
                 Spacer(Modifier.height(20.dp))
 
                 Text(
-                    if (serviceRunning) "Circle Learn is Active" else "Infinity Circle Learn",
+                    if (serviceRunning) "Circle Learn is Active" else "G-one Circle Learn",
                     style = MaterialTheme.typography.headlineSmall,
                     color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
                     fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
@@ -203,7 +203,7 @@ fun CircleLearnEntryScreen(
                         letterSpacing = 1.5.sp)
                     Spacer(Modifier.height(12.dp))
                     listOf(
-                        Triple(Icons.Default.TouchApp,   "1. Tap the floating ∞ bubble",    "Appears on top of any app"),
+                        Triple(Icons.Default.TouchApp,   "1. Tap the floating bubble",      "Appears on top of any app"),
                         Triple(Icons.Default.CropFree,   "2. Drag to select a region",       "Rectangle selection on your screen"),
                         Triple(Icons.Default.DocumentScanner, "3. OCR extracts the text",    "Powered by ML Kit — works offline"),
                         Triple(Icons.Default.AutoAwesome, "4. Choose an AI action",          "Explain, Notes, Quiz, Flashcards…"),
@@ -255,7 +255,11 @@ private fun CircleLearnOrb(isActive: Boolean) {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text("∞", fontSize = 32.sp, color = Color.White, fontWeight = FontWeight.Light)
+            Icon(
+                Icons.Default.MonitorHeart, null,
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
         }
     }
 }

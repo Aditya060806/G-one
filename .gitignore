@@ -33,3 +33,8 @@ app/build/
 
 # Kotlin incremental build sessions
 .kotlin/
+
+# Release signing — keys and passwords must never be committed
+/keystore.properties
+*.jks
+*.keystore

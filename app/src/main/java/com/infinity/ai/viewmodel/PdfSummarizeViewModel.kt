@@ -239,7 +239,8 @@ class PdfSummarizeViewModel(app: Application) : AndroidViewModel(app) {
     override fun onCleared() {
         super.onCleared()
         repository.stop()
-        // Do not call repository.unload() — shared instance
+        // Never shut down the shared model here — HealthMonitoringService owns
+        // the process-wide model lifecycle. See AIRepository.shutdown().
     }
 
     // ── Prompt construction ───────────────────────────────────────────────────

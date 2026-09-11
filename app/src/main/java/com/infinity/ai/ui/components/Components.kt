@@ -30,7 +30,7 @@ fun GradientBackground(
     val bgModifier = if (darkTheme)
         modifier.background(Brush.verticalGradient(listOf(Color(0xFF0A0E1A), DarkBg, Color(0xFF0C1120))))
     else
-        modifier.background(Color(0xFFF8FAFC))
+        modifier.background(Brush.verticalGradient(listOf(GradStart, GradMid, GradEnd)))
     Box(
         modifier = bgModifier,
         content  = content

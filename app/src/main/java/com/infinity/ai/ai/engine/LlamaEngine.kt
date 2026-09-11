@@ -44,6 +44,31 @@ class LlamaEngine : LocalAIEngine {
         }
     }
 
+    /**
+     * Publish accumulated partial output as [AIInferenceState.Responding].
+     *
+     * Only advances from Thinking or Responding. If a terminal state was already
+     * set concurrently — stop() → Idle, or onError() → Error — the CAS fails, we
+     * observe the terminal state on retry, and bail out without clobbering it.
+     *
+     * This is why a plain check-then-setState would be wrong: stop() can land
+     * between the check and the write, and the late token would resurrect a
+     * Responding state after the engine had already gone Idle.
+     */
+    private fun publishPartial(partial: String) {
+        while (true) {
+            val current = _stateRef.get()
+            if (current !is AIInferenceState.Thinking &&
+                current !is AIInferenceState.Responding) return   // terminal — stop here
+            val next = AIInferenceState.Responding(partial)
+            if (_stateRef.compareAndSet(current, next)) {
+                _state.value = next
+                return
+            }
+            // CAS lost a race; loop re-reads and re-evaluates.
+        }
+    }
+
     override suspend fun loadModel(modelPath: String) {
         setState(AIInferenceState.Loading)
         Log.i(TAG, "Loading model: $modelPath")
@@ -57,21 +82,31 @@ class LlamaEngine : LocalAIEngine {
         })
     }
 
-    override fun generate(history: List<ChatMessage>, userInput: String): Flow<String> =
+    override fun generate(
+        history: List<ChatMessage>,
+        userInput: String,
+        systemPrompt: String
+    ): Flow<String> =
         callbackFlow {
             setState(AIInferenceState.Thinking)
-            val prompt = PromptFormatter.buildPrompt(history, userInput)
+            val prompt = PromptFormatter.buildPrompt(history, userInput, systemPrompt)
             Log.d(TAG, "Prompt length: ${prompt.length} chars")
+
+            // Accumulates the response so AIInferenceState.Responding.partialText
+            // actually carries the live text. Only ever touched by the single C++
+            // generation thread (serialized by g_gen_mutex), so no lock needed here.
+            val partial = StringBuilder()
 
             LlamaJniBridge.generate(
                 prompt    = prompt,
                 maxTokens = MAX_TOKENS,
                 callback  = object : LlamaCallback {
                     override fun onToken(token: String) {
-                        // Atomic CAS: only transitions Thinking→Responding once.
-                        // Safe from C++ JNI threads. If stop() already set Idle,
-                        // the CAS fails and state stays Idle — correct behaviour.
-                        casState(AIInferenceState.Thinking, AIInferenceState.Responding())
+                        partial.append(token)
+                        // Advances Thinking→Responding on the first token, then keeps
+                        // partialText current on every subsequent token. Bails out
+                        // safely if a terminal state was set concurrently.
+                        publishPartial(partial.toString())
                         trySend(token)
                     }
                     override fun onComplete() {

@@ -141,7 +141,7 @@ class CircleLearnViewModel(app: Application) : AndroidViewModel(app) {
         val type = when (action) {
             CircleAction.NOTES, CircleAction.FLASHCARDS -> EntryType.NOTE
             CircleAction.QUIZ, CircleAction.PRACTICE_QUESTIONS,
-            CircleAction.INTERVIEW_QUESTIONS            -> EntryType.QUIZ
+            CircleAction.VIVA                           -> EntryType.QUIZ
             else                                        -> EntryType.OCR
         }
         libraryRepo.save(type, text,

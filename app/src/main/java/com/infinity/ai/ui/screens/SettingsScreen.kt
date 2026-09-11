@@ -22,17 +22,27 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infinity.ai.ai.state.AIInferenceState
 import com.infinity.ai.ui.components.GradientBackground
 import com.infinity.ai.ui.components.GlassCard
 import com.infinity.ai.ui.theme.*
-import com.infinity.ai.viewmodel.ChatViewModel
 
+/**
+ * @param aiState hoisted in from [com.infinity.ai.ui.navigation.AppNavigation].
+ *
+ * Deliberately NOT obtained via `viewModel()` here. Inside a `composable {}` block
+ * the LocalViewModelStoreOwner is the NavBackStackEntry, so calling `viewModel()`
+ * created a *second*, route-scoped ChatViewModel. Popping Settings then ran that
+ * instance's onCleared(), which used to unload the shared model. Hoisting the
+ * state removes the duplicate ViewModel entirely.
+ */
 @Composable
-fun SettingsScreen(isDarkTheme: Boolean, bottomPadding: Dp, onToggleTheme: () -> Unit) {
-    val chatViewModel: ChatViewModel = viewModel()
-    val aiState by chatViewModel.aiState.collectAsState()
+fun SettingsScreen(
+    isDarkTheme: Boolean,
+    bottomPadding: Dp,
+    aiState: AIInferenceState,
+    onToggleTheme: () -> Unit
+) {
     val scroll = rememberScrollState()
     val context = LocalContext.current
 
@@ -80,13 +90,17 @@ fun SettingsScreen(isDarkTheme: Boolean, bottomPadding: Dp, onToggleTheme: () ->
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("∞", fontSize = 21.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                        Icon(
+                            Icons.Default.MonitorHeart, null,
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                     Column {
-                        Text("Infinity User", style = MaterialTheme.typography.titleMedium,
+                        Text("G-one", style = MaterialTheme.typography.titleMedium,
                             color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
                             fontWeight = FontWeight.SemiBold)
-                        Text("AI Command Center", style = MaterialTheme.typography.bodySmall,
+                        Text("Personal health companion", style = MaterialTheme.typography.bodySmall,
                             color = if (isDarkTheme) TextSecondary else TextSecondaryLight)
                     }
                     Spacer(Modifier.weight(1f))
@@ -137,10 +151,16 @@ fun SettingsScreen(isDarkTheme: Boolean, bottomPadding: Dp, onToggleTheme: () ->
                 SettingsRow(Icons.Default.Info, "Version", "1.0.0",
                     if (isDarkTheme) TextSecondary else TextSecondaryLight, isDarkTheme)
                 SettingsDivider(isDarkTheme)
-                SettingsRow(Icons.Default.Code, "Build", "Production Foundation",
+                // These used to read "Production Foundation" and "Infinity-X1", neither of
+                // which named anything real. Reporting the actual engine and model is more
+                // useful to anyone diagnosing behaviour on their device.
+                SettingsRow(Icons.Default.Memory, "Engine", "llama.cpp · arm64-v8a",
                     if (isDarkTheme) TextSecondary else TextSecondaryLight, isDarkTheme)
                 SettingsDivider(isDarkTheme)
-                SettingsRow(Icons.Default.Memory, "Engine", "Infinity-X1",
+                SettingsRow(Icons.Default.Psychology, "Model", "Qwen2.5-1.5B · Q4_K_M",
+                    if (isDarkTheme) TextSecondary else TextSecondaryLight, isDarkTheme)
+                SettingsDivider(isDarkTheme)
+                SettingsRow(Icons.Default.CloudOff, "Network", "Fully offline",
                     if (isDarkTheme) TextSecondary else TextSecondaryLight, isDarkTheme)
             }
 
@@ -148,10 +168,13 @@ fun SettingsScreen(isDarkTheme: Boolean, bottomPadding: Dp, onToggleTheme: () ->
 
             Column(modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("∞", fontSize = 24.sp,
-                    color = if (isDarkTheme) TextDisabled else TextSecondaryLight.copy(0.4f))
+                Icon(
+                    Icons.Default.MonitorHeart, null,
+                    tint = if (isDarkTheme) TextDisabled else TextSecondaryLight.copy(0.4f),
+                    modifier = Modifier.size(22.dp)
+                )
                 Spacer(Modifier.height(4.dp))
-                Text("Infinity AI · v1.0.0", style = MaterialTheme.typography.labelSmall,
+                Text("G-one · v1.0.0", style = MaterialTheme.typography.labelSmall,
                     color = if (isDarkTheme) TextDisabled else TextSecondaryLight.copy(0.4f))
             }
 

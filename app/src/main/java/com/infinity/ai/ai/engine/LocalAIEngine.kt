@@ -1,5 +1,6 @@
 package com.infinity.ai.ai.engine
 
+import com.infinity.ai.ai.prompts.PromptFormatter
 import com.infinity.ai.ai.state.AIInferenceState
 import com.infinity.ai.model.ChatMessage
 import kotlinx.coroutines.flow.Flow
@@ -34,8 +35,16 @@ interface LocalAIEngine {
      *
      * @param history  previous chat messages for context
      * @param userInput the new user message
+     * @param systemPrompt model framing; defaults to
+     *   [com.infinity.ai.ai.prompts.PromptFormatter.DEFAULT_SYSTEM_PROMPT] so
+     *   existing callers are unaffected. The health-explanation path overrides it to
+     *   install medical guardrails at the system level.
      */
-    fun generate(history: List<ChatMessage>, userInput: String): Flow<String>
+    fun generate(
+        history: List<ChatMessage>,
+        userInput: String,
+        systemPrompt: String = PromptFormatter.DEFAULT_SYSTEM_PROMPT
+    ): Flow<String>
 
     /**
      * Stop the current generation immediately.

@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!--
+      Required to declare foregroundServiceType="connectedDevice" on API 34+.
+      Without this exact permission the system throws SecurityException the moment
+      startForeground() runs, so it must stay paired with the service declaration below.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -18,13 +24,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Infinity"
+        android:theme="@style/Theme.Gone"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Infinity">
+            android:theme="@style/Theme.Gone">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -45,6 +51,20 @@
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
 
+        <!--
+          Continuous health monitoring.
+
+          foregroundServiceType="connectedDevice" describes what this actually does —
+          stream vitals from a wearable — and is the type that keeps running with the
+          screen off, which BLE needs because Android power-manages GATT links hard.
+
+          Paired with FOREGROUND_SERVICE_CONNECTED_DEVICE above; both are required.
+        -->
+        <service
+            android:name=".health.service.HealthMonitoringService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -57,3 +77,4 @@
     </application>
 
 </manifest>
+

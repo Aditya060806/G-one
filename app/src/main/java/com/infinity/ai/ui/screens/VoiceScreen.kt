@@ -62,7 +62,11 @@ fun VoiceScreen(
                         modifier = Modifier.size(16.dp))
                 }
 
-                Text("∞", fontSize = 22.sp, color = Blue500, fontWeight = FontWeight.Light)
+                Icon(
+                    Icons.Default.MonitorHeart, null,
+                    tint = Blue500,
+                    modifier = Modifier.size(22.dp)
+                )
 
                 AnimatedVisibility(visible = aiState is AIInferenceState.Responding) {
                     Row(verticalAlignment = Alignment.CenterVertically,
@@ -92,7 +96,7 @@ fun VoiceScreen(
                         is AIInferenceState.Idle      -> "Tap mic to speak"
                         is AIInferenceState.Loading   -> "Loading model..."
                         is AIInferenceState.Thinking  -> "Processing..."
-                        is AIInferenceState.Responding -> "Infinity is responding"
+                        is AIInferenceState.Responding -> "G-one is responding"
                         is AIInferenceState.Error     -> "Something went wrong"
                     },
                     style = MaterialTheme.typography.titleMedium,
