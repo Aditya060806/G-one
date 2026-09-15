@@ -25,10 +25,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -62,16 +63,21 @@ import androidx.compose.ui.unit.sp
 import com.infinity.ai.health.data.AnomalyEventEntity
 import com.infinity.ai.health.data.anomalyType
 import com.infinity.ai.health.domain.Severity
-import com.infinity.ai.ui.theme.GoneMotion
-import com.infinity.ai.ui.theme.GoneRadius
-import com.infinity.ai.ui.theme.goneSurface
-import com.infinity.ai.ui.theme.pressScale
 import com.infinity.ai.ui.theme.DarkBorder
 import com.infinity.ai.ui.theme.DarkSurface
+import com.infinity.ai.ui.theme.GoneMotion
+import com.infinity.ai.ui.theme.GoneRadius
 import com.infinity.ai.ui.theme.LightBorder
+import com.infinity.ai.ui.theme.LightShadow
 import com.infinity.ai.ui.theme.LightSurface
+import com.infinity.ai.ui.theme.ModernBorderDark
+import com.infinity.ai.ui.theme.ModernBorderLight
+import com.infinity.ai.ui.theme.ModernCardDark
+import com.infinity.ai.ui.theme.ModernCardLight
 import com.infinity.ai.ui.theme.TextPrimary
 import com.infinity.ai.ui.theme.TextPrimaryLight
+import com.infinity.ai.ui.theme.goneSurface
+import com.infinity.ai.ui.theme.pressScale
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -165,7 +171,7 @@ fun SeverityAccent(
     color: Color,
     modifier: Modifier = Modifier,
     width: Dp = 3.dp,
-    corner: Dp = 18.dp
+    corner: Dp = 26.dp
 ) {
     Box(
         modifier = modifier
@@ -188,14 +194,14 @@ fun SeverityAccent(
 fun Modifier.severityGlow(
     color: Color,
     active: Boolean,
-    corner: Dp = 18.dp,
-    layers: Int = 4
+    corner: Dp = 26.dp,
+    layers: Int = 3
 ): Modifier = if (!active) this else this.drawBehind {
     val r = corner.toPx()
     repeat(layers) { i ->
-        val spread = (i + 1) * 3.dp.toPx()
+        val spread = (i + 1) * 2.5.dp.toPx()
         drawRoundRect(
-            color = color.copy(alpha = 0.16f / (i + 1)),
+            color = color.copy(alpha = 0.08f / (i + 1)),
             topLeft = Offset(-spread, -spread),
             size = Size(size.width + spread * 2, size.height + spread * 2),
             cornerRadius = androidx.compose.ui.geometry.CornerRadius(r + spread)
@@ -232,10 +238,16 @@ fun MonitoringBadge(
 
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(50))
-            .background(if (darkTheme) DarkSurface else LightSurface)
-            .border(1.dp, if (darkTheme) DarkBorder else LightBorder, RoundedCornerShape(50))
-            .padding(horizontal = 12.dp, vertical = 7.dp),
+            .shadow(
+                elevation = if (darkTheme) 0.dp else 3.dp,
+                shape = CircleShape,
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
+            .clip(CircleShape)
+            .background(if (darkTheme) ModernCardDark else ModernCardLight)
+            .border(1.dp, if (darkTheme) ModernBorderDark else ModernBorderLight, CircleShape)
+            .padding(horizontal = 14.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -282,7 +294,7 @@ fun Sparkline(
         drawPath(
             path = path,
             color = color,
-            style = Stroke(width = 1.6.dp.toPx(), cap = StrokeCap.Round)
+            style = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round)
         )
     }
 }
@@ -290,7 +302,7 @@ fun Sparkline(
 // ── Vital tile ────────────────────────────────────────────────────────────────
 
 /**
- * One measurement, its trend, and its severity, as a dashboard tile.
+ * One measurement, its trend, and its severity, as a modern dashboard tile.
  *
  * [icon] is tinted with the severity accent, giving the tile a second, non-colour channel
  * for identification — useful both for scanning and for anyone who cannot separate the
@@ -317,36 +329,55 @@ fun VitalTile(
 
     val glowColor by animateColorAsState(accent, tween(600), label = "tileGlow")
     val interaction = remember { MutableInteractionSource() }
+    val cardShape = RoundedCornerShape(26.dp)
 
     Row(
         modifier = modifier
             .then(if (onClick != null) Modifier.pressScale(interaction) else Modifier)
-            // severityGlow draws outside its own bounds, so it must precede the surface —
-            // goneSurface clips, and a clipped glow is no glow at all.
-            .severityGlow(glowColor, active = warn, corner = GoneRadius.Card)
-            .then(goneSurface(darkTheme, corner = GoneRadius.Card))
+            .severityGlow(glowColor, active = warn, corner = 26.dp)
+            .shadow(
+                elevation = if (darkTheme) 0.dp else 6.dp,
+                shape = cardShape,
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
+            .clip(cardShape)
+            .background(if (darkTheme) ModernCardDark else ModernCardLight)
+            .border(
+                1.dp,
+                if (darkTheme) ModernBorderDark else ModernBorderLight,
+                cardShape
+            )
             .then(
                 if (onClick != null)
                     Modifier.clickable(interactionSource = interaction, indication = null, onClick = onClick)
                 else Modifier
             )
     ) {
-        SeverityAccent(color = accent, corner = 18.dp)
+        SeverityAccent(color = accent, corner = 26.dp)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (icon != null) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = accent,
-                        modifier = Modifier.size(13.dp)
-                    )
-                    Spacer(Modifier.width(5.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(CircleShape)
+                            .background(accent.copy(alpha = 0.12f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = accent,
+                            modifier = Modifier.size(15.dp)
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
                 }
                 Text(
                     text = label.uppercase(),
@@ -358,7 +389,7 @@ fun VitalTile(
             Row(verticalAlignment = Alignment.Bottom) {
                 content()
                 if (unit.isNotEmpty()) {
-                    Spacer(Modifier.width(3.dp))
+                    Spacer(Modifier.width(4.dp))
                     Text(
                         text = unit,
                         style = MaterialTheme.typography.labelSmall,
@@ -370,13 +401,13 @@ fun VitalTile(
             if (history.size >= 2) {
                 Sparkline(
                     values = history,
-                    color = accent.copy(alpha = 0.55f),
+                    color = accent.copy(alpha = 0.65f),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(18.dp)
+                        .height(20.dp)
                 )
             } else {
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(20.dp))
             }
         }
     }
@@ -405,7 +436,7 @@ fun RiskMeter(
     )
     val color by animateColorAsState(riskColor(score, darkTheme), tween(500), label = "riskColor")
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -426,9 +457,9 @@ fun RiskMeter(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(5.dp)
+                .height(6.dp)
                 .clip(RoundedCornerShape(3.dp))
-                .background(if (darkTheme) DarkBorder else LightBorder)
+                .background(if (darkTheme) ModernBorderDark else ModernBorderLight)
         ) {
             Box(
                 modifier = Modifier
@@ -458,46 +489,57 @@ fun LiveWaveform(
     bars: Int = 32
 ) {
     if (!active) {
-        Row(
-            modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            repeat(bars) {
-                Box(
-                    modifier = Modifier
-                        .width(2.dp)
-                        .height(2.dp)
-                        .clip(RoundedCornerShape(1.dp))
-                        .background(color.copy(alpha = 0.3f))
+        Canvas(modifier = modifier) {
+            val totalBars = bars
+            val barWidth = 2.5.dp.toPx()
+            val spacing = if (totalBars > 1) (size.width - (totalBars * barWidth)) / (totalBars - 1) else 0f
+            val idleHeight = 3.dp.toPx()
+            val yCenter = size.height / 2f
+            for (i in 0 until totalBars) {
+                val x = i * (barWidth + spacing)
+                drawRoundRect(
+                    color = color.copy(alpha = 0.25f),
+                    topLeft = Offset(x, yCenter - idleHeight / 2f),
+                    size = Size(barWidth, idleHeight),
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(1.5.dp.toPx())
                 )
             }
         }
         return
     }
 
-    val inf = rememberInfiniteTransition(label = "wave")
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        repeat(bars) { i ->
-            val height by inf.animateFloat(
-                initialValue = 2f,
-                targetValue = (4 + (i * 7) % 17).toFloat(),
-                animationSpec = infiniteRepeatable(
-                    tween(360 + (i * 23) % 420, easing = EaseInOut),
-                    RepeatMode.Reverse
-                ),
-                label = "bar$i"
-            )
-            Box(
-                modifier = Modifier
-                    .width(2.dp)
-                    .height(height.dp)
-                    .clip(RoundedCornerShape(1.dp))
-                    .background(color.copy(alpha = 0.85f))
+    val inf = rememberInfiniteTransition(label = "liveWave")
+    val phase by inf.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "phase"
+    )
+
+    Canvas(modifier = modifier) {
+        val totalBars = bars
+        val barWidth = 2.5.dp.toPx()
+        val spacing = if (totalBars > 1) (size.width - (totalBars * barWidth)) / (totalBars - 1) else 0f
+        val yCenter = size.height / 2f
+        val maxHeight = size.height.coerceAtLeast(18.dp.toPx())
+
+        for (i in 0 until totalBars) {
+            val x = i * (barWidth + spacing)
+            val normX = i.toFloat() / totalBars.toFloat()
+            val waveVal = kotlin.math.sin(normX.toDouble() * 4.0 * Math.PI - phase.toDouble() * 2.0 * Math.PI).toFloat()
+            val harmonic = kotlin.math.sin(normX.toDouble() * 8.0 * Math.PI + phase.toDouble() * 2.0 * Math.PI).toFloat() * 0.35f
+            val combined = ((waveVal + harmonic + 1.35f) / 2.7f).coerceIn(0.12f, 1f)
+            val barH = (combined * maxHeight).coerceIn(3.dp.toPx(), maxHeight)
+            val alpha = (0.45f + combined * 0.55f).coerceIn(0.3f, 1f)
+
+            drawRoundRect(
+                color = color.copy(alpha = alpha),
+                topLeft = Offset(x, yCenter - barH / 2f),
+                size = Size(barWidth, barH),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(1.5.dp.toPx())
             )
         }
     }
@@ -537,7 +579,7 @@ fun VitalLineChart(
         animationSpec = tween(700, easing = FastOutSlowInEasing),
         label = "chartDraw"
     )
-    val gridColor = if (darkTheme) DarkBorder else LightBorder
+    val gridColor = if (darkTheme) ModernBorderDark else ModernBorderLight
 
     Canvas(modifier = modifier) {
         // Baseline grid, drawn even when empty so the chart has presence before data.
@@ -723,19 +765,15 @@ fun HealthEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val accent = healthColors(darkTheme).Connected
         Box(
-            modifier = Modifier
-                .size(58.dp)
-                .background(accent.copy(alpha = 0.10f), CircleShape),
+            modifier = Modifier.size(90.dp),
             contentAlignment = Alignment.Center
         ) {
-            PulseRing(
-                color = accent.copy(alpha = 0.55f),
-                modifier = Modifier.size(26.dp)
+            com.infinity.ai.ui.components.WatchScanningLottieAnimation(
+                modifier = Modifier.size(90.dp)
             )
         }
-        Spacer(Modifier.height(18.dp))
+        Spacer(Modifier.height(14.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
@@ -788,12 +826,21 @@ fun HealthTabRow(
 
     val palette = healthColors(darkTheme)
     val safeIndex = selectedIndex.coerceIn(0, tabs.lastIndex)
+    val containerShape = RoundedCornerShape(24.dp)
 
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .height(40.dp)
-            .then(goneSurface(darkTheme, corner = GoneRadius.Pill))
+            .height(44.dp)
+            .shadow(
+                elevation = if (darkTheme) 0.dp else 4.dp,
+                shape = containerShape,
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
+            .clip(containerShape)
+            .background(if (darkTheme) ModernCardDark else ModernCardLight)
+            .border(1.dp, if (darkTheme) ModernBorderDark else ModernBorderLight, containerShape)
     ) {
         val segment: Dp = maxWidth / tabs.size
 
@@ -809,7 +856,7 @@ fun HealthTabRow(
                 .width(segment)
                 .fillMaxHeight()
                 .padding(3.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(20.dp))
                 .background(palette.Connected.copy(alpha = 0.15f))
         )
 
@@ -826,7 +873,7 @@ fun HealthTabRow(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
-                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(20.dp))
                         .clickable { onSelect(i) },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -839,15 +886,15 @@ fun HealthTabRow(
                         maxLines = 1
                     )
                     if (tab.count != null) {
-                        Spacer(Modifier.width(5.dp))
+                        Spacer(Modifier.width(6.dp))
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp))
+                                .clip(RoundedCornerShape(8.dp))
                                 .background(
                                     if (selected) palette.Connected.copy(alpha = 0.18f)
-                                    else (if (darkTheme) DarkBorder else LightBorder)
+                                    else (if (darkTheme) ModernBorderDark else ModernBorderLight)
                                 )
-                                .padding(horizontal = 5.dp, vertical = 1.dp)
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text = "${tab.count}",

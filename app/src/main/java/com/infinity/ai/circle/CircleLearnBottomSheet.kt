@@ -146,32 +146,17 @@ fun CircleLearnBottomSheetHost(
 @Composable
 private fun ProcessingPanel() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(32.dp),
+        modifier = Modifier.fillMaxWidth().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        val inf = rememberInfiniteTransition(label = "spin")
-        val angle by inf.animateFloat(0f, 360f,
-            infiniteRepeatable(tween(1200, easing = LinearEasing)), label = "a")
-
-        Box(
-            modifier = Modifier.size(64.dp)
-                .background(
-                    Brush.sweepGradient(listOf(Blue500, Purple500, Blue500)),
-                    CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Default.MonitorHeart, null,
-                tint = Color.White,
-                modifier = Modifier.size(28.dp)
-            )
-        }
+        com.infinity.ai.ui.components.WatchScanningLottieAnimation(
+            modifier = Modifier.size(120.dp)
+        )
         Text("Reading your selection…", style = MaterialTheme.typography.titleMedium,
             color = Color.White, textAlign = TextAlign.Center)
-        Text("OCR in progress", style = MaterialTheme.typography.bodySmall,
-            color = Color.White.copy(0.5f))
+        Text("On-device OCR in progress", style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(0.7f))
         Spacer(Modifier.height(8.dp))
     }
 }

@@ -21,6 +21,8 @@ local.properties
 *.ggml
 *.pt
 *.onnx
+*.crdownload
+*.tmp
 
 # Compiled native libraries — built locally via NDK
 *.so

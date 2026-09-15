@@ -14,11 +14,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.infinity.ai.ui.theme.*
 
 @Composable
@@ -46,11 +51,17 @@ fun GlassCard(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(if (darkTheme) DarkSurface else LightSurface)
-            .border(1.dp, if (darkTheme) DarkBorder else LightBorder, RoundedCornerShape(16.dp))
+            .shadow(
+                elevation = if (darkTheme) 0.dp else 4.dp,
+                shape = RoundedCornerShape(24.dp),
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
+            .clip(RoundedCornerShape(24.dp))
+            .background(if (darkTheme) ModernCardDark else ModernCardLight)
+            .border(1.dp, if (darkTheme) DarkBorder else LightBorder, RoundedCornerShape(24.dp))
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-            .padding(16.dp),
+            .padding(18.dp),
         content = content
     )
 }
@@ -154,5 +165,167 @@ fun AITaskCard(
             tint = Blue500.copy(alpha = 0.6f),
             modifier = Modifier.size(16.dp)
         )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Universal Breadcrumb Header ("Home / Feature / Sub-feature")
+// ─────────────────────────────────────────────────────────────────────────────
+
+data class BreadcrumbItem(
+    val title: String,
+    val onClick: (() -> Unit)? = null
+)
+
+/**
+ * Background-less, border-less, simple text breadcrumb row.
+ * Can be pinned sticky on top without container cards or borders.
+ */
+@Composable
+fun PureBreadcrumbText(
+    items: List<BreadcrumbItem>,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        items.forEachIndexed { index, item ->
+            val isLast = index == items.size - 1
+            if (item.onClick != null && !isLast) {
+                val interaction = remember { MutableInteractionSource() }
+                Text(
+                    text = item.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = ModernBlue,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .pressScale(interaction)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(
+                            interactionSource = interaction,
+                            indication = null,
+                            onClick = item.onClick
+                        )
+                        .padding(vertical = 4.dp, horizontal = 2.dp)
+                )
+            } else {
+                Text(
+                    text = item.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
+                    fontWeight = if (isLast) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    fontSize = if (isLast) 19.sp else 16.sp,
+                    maxLines = 1
+                )
+            }
+
+            if (!isLast) {
+                Text(
+                    text = "  /  ",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF94A3B8),
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
+                    fontSize = 14.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BreadcrumbHeader(
+    items: List<BreadcrumbItem>,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier,
+    trailingContent: (@Composable () -> Unit)? = null
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PureBreadcrumbText(items = items, isDarkTheme = isDarkTheme)
+
+        if (trailingContent != null) {
+            Spacer(Modifier.width(8.dp))
+            trailingContent()
+        }
+    }
+}
+
+/**
+ * Standard Header Action Pill button used consistently across all screens in G-one.
+ * Features rounded capsule styling, press animation, haptic feedback, icon, label, and badge.
+ */
+@Composable
+fun HeaderActionPill(
+    icon: ImageVector,
+    label: String,
+    darkTheme: Boolean,
+    modifier: Modifier = Modifier,
+    badgeCount: Int = 0,
+    iconTint: Color? = null,
+    onClick: () -> Unit
+) {
+    val interaction = remember { MutableInteractionSource() }
+    val haptic = LocalHapticFeedback.current
+
+    Box(
+        modifier = modifier
+            .pressScale(interaction, pressedScale = 0.95f)
+            .shadow(
+                elevation = if (darkTheme) 0.dp else 2.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (darkTheme) ModernCardDark else ModernCardLight)
+            .border(
+                1.dp,
+                if (badgeCount > 0) VitalRed.copy(alpha = 0.5f) else if (darkTheme) DarkBorder else LightBorder,
+                RoundedCornerShape(16.dp)
+            )
+            .clickable(interactionSource = interaction, indication = null) {
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onClick()
+            }
+            .padding(horizontal = 9.dp, vertical = 7.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Box {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = iconTint ?: (if (badgeCount > 0) VitalRed else if (darkTheme) AccentGoldBg else ModernBlue),
+                    modifier = Modifier.size(17.dp)
+                )
+                if (badgeCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = 3.dp, y = (-2).dp)
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(VitalRed)
+                    )
+                }
+            }
+            Text(
+                text = label,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (badgeCount > 0) VitalRed else if (darkTheme) TextPrimary else TextPrimaryLight
+            )
+        }
     }
 }

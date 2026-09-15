@@ -68,6 +68,10 @@ class HealthMonitoringService : Service() {
         private val _snapshot = MutableStateFlow(MonitoringSnapshot())
         val snapshot: StateFlow<MonitoringSnapshot> = _snapshot.asStateFlow()
 
+        fun updateSnapshot(snapshot: MonitoringSnapshot) {
+            _snapshot.value = snapshot
+        }
+
         fun start(
             context: Context,
             scenario: VitalsScenario = VitalsScenario.HEALTHY_BASELINE,
@@ -142,13 +146,31 @@ class HealthMonitoringService : Service() {
     }
 
     private fun startMonitoring(scenario: VitalsScenario) {
-        startForeground(
-            HealthNotifications.NOTIF_ID_MONITORING,
-            HealthNotifications.buildMonitoringNotification(
-                this,
-                "Watching your vitals · ${scenario.displayName}"
-            )
+        val prefs = getSharedPreferences("gone_preferences", Context.MODE_PRIVATE)
+        val isMockMode = prefs.getBoolean("is_mock_mode", false)
+        if (!isMockMode) {
+            Log.w(TAG, "Monitoring start ignored because no real Bluetooth vitals source is configured")
+            _running.value = false
+            _snapshot.value = MonitoringSnapshot()
+            return
+        }
+
+        val notification = HealthNotifications.buildMonitoringNotification(
+            this,
+            "Watching your vitals · ${scenario.displayName}"
         )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                HealthNotifications.NOTIF_ID_MONITORING,
+                notification,
+                android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            )
+        } else {
+            startForeground(
+                HealthNotifications.NOTIF_ID_MONITORING,
+                notification
+            )
+        }
         _running.value = true
 
         streamJob?.cancel()

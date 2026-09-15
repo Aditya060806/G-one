@@ -6,8 +6,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val Dark = darkColorScheme(
-    primary          = Blue500,
-    onPrimary        = TextPrimary,
+    primary          = AccentGoldBg,
+    onPrimary        = AccentGoldFg,
     background       = DarkBg,
     onBackground     = TextPrimary,
     surface          = DarkSurface,
@@ -16,37 +16,31 @@ private val Dark = darkColorScheme(
     onSurfaceVariant = TextSecondary,
     outline          = DarkBorder,
     outlineVariant   = DarkBorder,
-    secondary        = Blue400,
-    onSecondary      = DarkBg,
-    error            = ErrorRed,
-    onError          = TextPrimary
+    secondary        = AccentGoldBg,
+    onSecondary      = AccentGoldFg,
+    error            = DestructiveBg,
+    onError          = DestructiveFg
 )
 
 private val Light = lightColorScheme(
-    primary          = Blue500,
-    onPrimary        = LightSurface,
-    background       = LightBg,
-    onBackground     = TextPrimaryLight,
-    surface          = LightSurface,
-    onSurface        = TextPrimaryLight,
-    surfaceVariant   = LightSurfaceElevated,
-    onSurfaceVariant = TextSecondaryLight,
-    outline          = LightBorder,
-    outlineVariant   = LightBorder,
-    secondary        = Blue400,
-    onSecondary      = LightSurface,
-    error            = ErrorRed,
-    onError          = LightSurface
+    primary          = PrimaryBg,
+    onPrimary        = PrimaryFg,
+    background       = BaseBg,
+    onBackground     = BaseFg,
+    surface          = CardBg,
+    onSurface        = CardFg,
+    surfaceVariant   = SecondaryBg,
+    onSurfaceVariant = MutedFg,
+    outline          = TokenBorder,
+    outlineVariant   = TokenBorder,
+    secondary        = SecondaryBg,
+    onSecondary      = SecondaryFg,
+    error            = DestructiveBg,
+    onError          = DestructiveFg
 )
 
-/**
- * Default is light, matching [com.infinity.ai.data.ThemePreference]. Every real call site
- * passes the stored preference explicitly; the default only matters for previews and for
- * the Circle Learn overlay, which passes `true` deliberately because it draws over other
- * apps on a translucent black scrim.
- */
 @Composable
-fun GoneTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
+fun GoneTheme(darkTheme: Boolean = true, content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = if (darkTheme) Dark else Light,
         typography = Typography,
