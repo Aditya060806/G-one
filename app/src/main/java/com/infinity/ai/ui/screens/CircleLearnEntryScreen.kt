@@ -31,15 +31,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.infinity.ai.circle.InfinityOverlayService
 import com.infinity.ai.circle.OverlayPermissionHelper
+import com.infinity.ai.ui.components.BreadcrumbHeader
+import com.infinity.ai.ui.components.BreadcrumbItem
+import com.infinity.ai.ui.components.PureBreadcrumbText
 import com.infinity.ai.ui.components.GlassCard
-import com.infinity.ai.ui.components.GradientBackground
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.infinity.ai.ui.theme.*
 
 @Composable
 fun CircleLearnEntryScreen(
     isDarkTheme   : Boolean,
     bottomPadding : Dp,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateHome: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var serviceRunning  by remember { mutableStateOf(false) }
@@ -90,176 +98,176 @@ fun CircleLearnEntryScreen(
         serviceRunning = false
     }
 
-    GradientBackground(darkTheme = isDarkTheme, modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isDarkTheme) ModernBgDark else ModernBgLight)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(bottom = bottomPadding)
         ) {
-            // Header
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier.size(40.dp)
-                        .background(if (isDarkTheme) DarkGlass else LightGlass, CircleShape)
-                        .border(0.5.dp,
-                            if (isDarkTheme) Color.White.copy(0.08f) else Color.White.copy(0.6f),
-                            CircleShape)
-                        .clickable(onClick = onNavigateBack),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Default.ArrowBack, "Back",
-                        tint = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                        modifier = Modifier.size(18.dp))
-                }
-                Spacer(Modifier.width(12.dp))
-                Text("Circle Learn", style = MaterialTheme.typography.titleLarge,
-                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                    fontWeight = FontWeight.Bold)
-            }
+            // Sticky breadcrumb text on top (background-less, border-less)
+            PureBreadcrumbText(
+                items = listOf(
+                    BreadcrumbItem("Home", onNavigateHome),
+                    BreadcrumbItem("Tools", onNavigateBack),
+                    BreadcrumbItem("Circle Learn")
+                ),
+                isDarkTheme = isDarkTheme,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
 
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                FeatureHeroIdleCard(
+                    title = if (serviceRunning) "Circle Learn is Active" else "Circle Learn AI",
+                    subtitle = if (serviceRunning)
+                        "The assistant bubble is floating over your apps.\nTap it anytime to circle and analyze text instantly."
+                    else
+                        "Circle any text, image, or graph on your screen.\nPowered by on-device AI — fully offline & private.",
+                    isDarkTheme = isDarkTheme,
+                    lottieContent = {
+                        if (serviceRunning) {
+                            com.infinity.ai.ui.components.WatchScanningLottieAnimation(
+                                modifier = Modifier.size(115.dp)
+                            )
+                        } else {
+                            com.infinity.ai.ui.components.DoctorLottieAnimation(
+                                modifier = Modifier.size(125.dp)
+                            )
+                        }
+                    },
+                    actionContent = {
+                        val ctaInteraction = remember { MutableInteractionSource() }
+                        val haptic = LocalHapticFeedback.current
+                        val isPressed by ctaInteraction.collectIsPressedAsState()
+                        val ctaElevation by animateDpAsState(
+                            targetValue = if (isPressed) 1.dp else (if (isDarkTheme) 0.dp else 4.dp),
+                            label = "ctaElevation"
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .pressScale(ctaInteraction, pressedScale = 0.96f)
+                                .shadow(
+                                    elevation = ctaElevation,
+                                    shape = RoundedCornerShape(20.dp),
+                                    ambientColor = LightShadow,
+                                    spotColor = LightShadow
+                                )
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(if (serviceRunning) ErrorRed else ModernBlue)
+                                .clickable(
+                                    interactionSource = ctaInteraction,
+                                    indication = null,
+                                    onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        if (serviceRunning) stopService() else startService()
+                                    }
+                                )
+                                .padding(vertical = 18.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Icon(
+                                    if (serviceRunning) Icons.Default.Stop else Icons.Default.RadioButtonChecked,
+                                    null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Text(
+                                    if (serviceRunning) "Stop Circle Learn" else "Start Circle Learn",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    },
+                    noteContent = {
+                        if (!serviceRunning) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                PermissionCard(
+                                    "Overlay Permission",
+                                    "Required to show the floating bubble",
+                                    overlayGranted,
+                                    isDarkTheme,
+                                    Icons.Default.Layers
+                                )
+                                PermissionCard(
+                                    "Screen Capture",
+                                    "Required to capture and analyze screen content",
+                                    projectionData != null,
+                                    isDarkTheme,
+                                    Icons.Default.Screenshot
+                                )
+                            }
+                        }
+                    }
+                )
+
                 Spacer(Modifier.height(16.dp))
 
-                // Animated orb
-                CircleLearnOrb(isActive = serviceRunning)
-
-                Spacer(Modifier.height(20.dp))
-
-                Text(
-                    if (serviceRunning) "Circle Learn is Active" else "G-one Circle Learn",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                    fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    if (serviceRunning)
-                        "The bubble is now floating over all your apps.\nTap it to circle anything and learn instantly."
-                    else
-                        "Circle anything on your screen and learn instantly.\nPowered by on-device AI — fully offline.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
-                    textAlign = TextAlign.Center, lineHeight = 22.sp
-                )
-
-                Spacer(Modifier.height(28.dp))
-
-                // Permission status cards
+                // How it works Bento Card
                 if (!serviceRunning) {
-                    PermissionCard("Overlay Permission",
-                        "Required to show the floating bubble",
-                        overlayGranted, isDarkTheme,
-                        Icons.Default.Layers)
-                    Spacer(Modifier.height(8.dp))
-                    PermissionCard("Screen Capture",
-                        "Required to capture and analyze screen content",
-                        projectionData != null, isDarkTheme,
-                        Icons.Default.Screenshot)
-                    Spacer(Modifier.height(24.dp))
-                }
-
-                // Main CTA button
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(
-                            if (serviceRunning)
-                                Brush.linearGradient(listOf(Color(0xFFEF4444), Color(0xFFDC2626)))
-                            else
-                                Brush.linearGradient(listOf(Blue500, Color(0xFF8B5CF6)))
-                        )
-                        .clickable { if (serviceRunning) stopService() else startService() }
-                        .padding(vertical = 18.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Icon(
-                            if (serviceRunning) Icons.Default.Stop else Icons.Default.RadioButtonChecked,
-                            null, tint = Color.White, modifier = Modifier.size(22.dp)
-                        )
-                        Text(
-                            if (serviceRunning) "Stop Circle Learn" else "Start Circle Learn",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White, fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(24.dp))
-
-                // How it works
-                if (!serviceRunning) {
-                    Text("HOW IT WORKS", style = MaterialTheme.typography.labelSmall,
-                        color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
-                        letterSpacing = 1.5.sp)
-                    Spacer(Modifier.height(12.dp))
-                    listOf(
-                        Triple(Icons.Default.TouchApp,   "1. Tap the floating bubble",      "Appears on top of any app"),
-                        Triple(Icons.Default.CropFree,   "2. Drag to select a region",       "Rectangle selection on your screen"),
-                        Triple(Icons.Default.DocumentScanner, "3. OCR extracts the text",    "Powered by ML Kit — works offline"),
-                        Triple(Icons.Default.AutoAwesome, "4. Choose an AI action",          "Explain, Notes, Quiz, Flashcards…"),
-                        Triple(Icons.Default.BookmarkAdd, "5. Save to Library",              "Stored locally for offline access")
-                    ).forEach { (icon, title, sub) ->
-                        HowItWorksStep(icon, title, sub, isDarkTheme)
-                        Spacer(Modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(
+                                elevation = if (isDarkTheme) 0.dp else 4.dp,
+                                shape = RoundedCornerShape(24.dp),
+                                ambientColor = LightShadow,
+                                spotColor = LightShadow
+                            )
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(if (isDarkTheme) ModernCardDark else ModernCardLight)
+                            .border(
+                                1.dp,
+                                if (isDarkTheme) ModernBorderDark else ModernBorderLight,
+                                RoundedCornerShape(24.dp)
+                            )
+                            .padding(20.dp)
+                    ) {
+                        Column {
+                            Text(
+                                "HOW IT WORKS",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
+                                letterSpacing = 1.5.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            listOf(
+                                Triple(Icons.Default.TouchApp, "1. Tap the floating bubble", "Appears over any open app"),
+                                Triple(Icons.Default.CropFree, "2. Select screen region", "Drag a box around text or diagram"),
+                                Triple(Icons.Default.DocumentScanner, "3. On-device OCR", "Extracts text offline with ML Kit"),
+                                Triple(Icons.Default.AutoAwesome, "4. AI Synthesis", "Explain, summarize, generate flashcards"),
+                                Triple(Icons.Default.BookmarkAdd, "5. Save to Library", "Store to Knowledge Vault")
+                            ).forEach { (icon, title, sub) ->
+                                HowItWorksStep(icon, title, sub, isDarkTheme)
+                                Spacer(Modifier.height(10.dp))
+                            }
+                        }
                     }
                 }
 
                 Spacer(Modifier.height(24.dp))
             }
-        }
-    }
-}
-
-@Composable
-private fun CircleLearnOrb(isActive: Boolean) {
-    val inf = rememberInfiniteTransition(label = "orb")
-    val pulse by inf.animateFloat(
-        0.95f, 1.05f,
-        infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "p"
-    )
-    val rotation by inf.animateFloat(
-        0f, 360f,
-        infiniteRepeatable(tween(if (isActive) 4000 else 12000, easing = LinearEasing)),
-        label = "r"
-    )
-
-    Box(
-        modifier = Modifier.size((96 * pulse).dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .background(
-                    Brush.sweepGradient(
-                        listOf(Blue500.copy(0.3f), Color(0xFF8B5CF6).copy(0.3f),
-                            Blue500.copy(0.1f), Blue500.copy(0.3f))
-                    ), CircleShape
-                )
-        )
-        Box(
-            modifier = Modifier.size(72.dp)
-                .background(
-                    Brush.linearGradient(listOf(Blue500, Color(0xFF8B5CF6))),
-                    CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Default.MonitorHeart, null,
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
-            )
         }
     }
 }
@@ -272,32 +280,54 @@ private fun PermissionCard(
     isDarkTheme: Boolean,
     icon       : ImageVector
 ) {
-    GlassCard(darkTheme = isDarkTheme, modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.5f) else ModernBlueSubtle.copy(alpha = 0.5f))
+            .border(
+                1.dp,
+                if (isDarkTheme) ModernBorderDark else ModernBorderLight,
+                RoundedCornerShape(16.dp)
+            )
+            .padding(14.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             Box(
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .size(38.dp)
                     .background(
-                        if (granted) Color(0xFF10B981).copy(0.15f) else Color(0xFFF59E0B).copy(0.15f),
+                        if (granted) SuccessGreen.copy(0.15f) else WarnAmber.copy(0.15f),
                         RoundedCornerShape(10.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, null,
-                    tint = if (granted) Color(0xFF10B981) else Color(0xFFF59E0B),
-                    modifier = Modifier.size(20.dp))
+                Icon(
+                    icon, null,
+                    tint = if (granted) SuccessGreen else WarnAmber,
+                    modifier = Modifier.size(20.dp)
+                )
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.bodyMedium,
+                Text(
+                    title,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                    fontWeight = FontWeight.Medium)
-                Text(subtitle, style = MaterialTheme.typography.bodySmall,
-                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight)
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight
+                )
             }
             Icon(
                 if (granted) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                 null,
-                tint = if (granted) Color(0xFF10B981) else Color(0xFFF59E0B),
+                tint = if (granted) SuccessGreen else WarnAmber,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -311,23 +341,31 @@ private fun HowItWorksStep(
     subtitle  : String,
     isDarkTheme: Boolean
 ) {
-    GlassCard(darkTheme = isDarkTheme, modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Box(
-                modifier = Modifier.size(36.dp)
-                    .background(Blue500.copy(0.12f), RoundedCornerShape(10.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(icon, null, tint = Blue500, modifier = Modifier.size(18.dp))
-            }
-            Column {
-                Text(title, style = MaterialTheme.typography.bodyMedium,
-                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                    fontWeight = FontWeight.Medium)
-                Text(subtitle, style = MaterialTheme.typography.bodySmall,
-                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight)
-            }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .background(if (isDarkTheme) Color(0xFF1E293B) else ModernBlueSubtle, RoundedCornerShape(10.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(icon, null, tint = ModernBlue, modifier = Modifier.size(18.dp))
+        }
+        Column {
+            Text(
+                title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (isDarkTheme) TextSecondary else TextSecondaryLight
+            )
         }
     }
 }

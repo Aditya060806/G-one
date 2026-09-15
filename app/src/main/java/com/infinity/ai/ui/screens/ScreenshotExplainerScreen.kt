@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +34,7 @@ fun ScreenshotExplainerScreen(
     isDarkTheme: Boolean,
     bottomPadding: Dp,
     onNavigateBack: () -> Unit,
+    onNavigateHome: () -> Unit = {},
     vm: ScreenshotExplainerViewModel = viewModel()
 ) {
     val uiState       by vm.uiState.collectAsState()
@@ -44,7 +46,11 @@ fun ScreenshotExplainerScreen(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? -> uri?.let { vm.analyzeScreenshot(it) } }
 
-    GradientBackground(darkTheme = isDarkTheme, modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isDarkTheme) ModernBgDark else ModernBgLight)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,13 +72,14 @@ fun ScreenshotExplainerScreen(
                 dotColor    = when (uiState) {
                     is ScreenshotUiState.Error      -> ErrorRed
                     is ScreenshotUiState.Done       -> SuccessGreen
-                    is ScreenshotUiState.Processing -> Blue500
+                    is ScreenshotUiState.Processing -> ModernBlue
                     is ScreenshotUiState.Extracting -> WarnAmber
                     else                            -> if (isDarkTheme) TextSecondary else TextSecondaryLight
                 },
-                onBack      = onNavigateBack,
-                showReset   = uiState != ScreenshotUiState.Idle,
-                onReset     = { vm.reset() }
+                onBack         = onNavigateBack,
+                onNavigateHome = onNavigateHome,
+                showReset      = uiState != ScreenshotUiState.Idle,
+                onReset        = { vm.reset() }
             )
 
             when (uiState) {
@@ -80,7 +87,7 @@ fun ScreenshotExplainerScreen(
                     isDarkTheme = isDarkTheme,
                     onPick      = { galleryLauncher.launch("image/*") }
                 )
-                is ScreenshotUiState.Extracting -> CenteredSpinner("Reading screenshot...", WarnAmber, isDarkTheme)
+                is ScreenshotUiState.Extracting -> CenteredSpinner("Reading screenshot...", WarnAmber, isDarkTheme, isScanning = true)
                 is ScreenshotUiState.TextReady,
                 is ScreenshotUiState.Processing,
                 is ScreenshotUiState.Done -> {
@@ -112,59 +119,73 @@ fun ScreenshotExplainerScreen(
 
 @Composable
 private fun ScreenshotIdleState(isDarkTheme: Boolean, onPick: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier.size(88.dp).background(Color(0xFF8B5CF6).copy(0.12f), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Default.ScreenSearchDesktop, null,
-                tint = Color(0xFF8B5CF6), modifier = Modifier.size(40.dp))
-        }
-        Spacer(Modifier.height(24.dp))
-        Text("Screenshot Explainer", style = MaterialTheme.typography.headlineSmall,
-            color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-            fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(8.dp))
-        Text("Pick a screenshot of an error, code, exam question,\nor any text. The AI will explain it instantly.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
-            textAlign = TextAlign.Center, lineHeight = 22.sp)
-        Spacer(Modifier.height(32.dp))
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF8B5CF6))
-                .clickable(onClick = onPick)
-                .padding(vertical = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(Icons.Default.ScreenShare, null, tint = Color.White, modifier = Modifier.size(20.dp))
-                Text("Choose Screenshot", style = MaterialTheme.typography.titleSmall,
-                    color = Color.White, fontWeight = FontWeight.SemiBold)
-            }
-        }
-        Spacer(Modifier.height(16.dp))
-        GlassCard(darkTheme = isDarkTheme, modifier = Modifier.fillMaxWidth()) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Works great with:", style = MaterialTheme.typography.labelSmall,
-                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight)
-                listOf("Android Studio errors", "Code snippets", "Exam questions",
-                    "Technical documentation", "Study notes").forEach { item ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(4.dp).background(Color(0xFF8B5CF6), CircleShape))
-                        Text(item, style = MaterialTheme.typography.bodySmall,
-                            color = if (isDarkTheme) TextPrimary else TextPrimaryLight)
+        FeatureHeroIdleCard(
+            title = "Screenshot Explainer",
+            subtitle = "Pick a screenshot of an error, code, chart, or any text.\nThe AI will explain it instantly — fully offline.",
+            isDarkTheme = isDarkTheme,
+            lottieContent = {
+                com.infinity.ai.ui.components.WatchScanningLottieAnimation(
+                    modifier = Modifier.size(110.dp)
+                )
+            },
+            actionContent = {
+                PickButton(
+                    label = "Choose Screenshot",
+                    icon = Icons.Default.ScreenShare,
+                    color = ModernBlue,
+                    isDarkTheme = isDarkTheme,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onPick
+                )
+            },
+            noteContent = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.4f) else ModernBlueSubtle.copy(alpha = 0.4f))
+                        .border(
+                            1.dp,
+                            if (isDarkTheme) ModernBorderDark else ModernBorderLight,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .padding(14.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            "Works great with:",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        listOf(
+                            "Android Studio errors & stack traces",
+                            "Code snippets & terminal output",
+                            "Medical reports, ECGs & graphs",
+                            "Technical documentation & study notes"
+                        ).forEach { item ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(modifier = Modifier.size(4.dp).background(ModernBlue, CircleShape))
+                                Text(
+                                    item,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
+        )
     }
 }
 
@@ -182,16 +203,40 @@ private fun ScreenshotReadyBody(
     LaunchedEffect(resultText.length) { if (isProcessing) scroll.animateScrollTo(scroll.maxValue) }
 
     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-        GlassCard(darkTheme = isDarkTheme, modifier = Modifier.fillMaxWidth()) {
-            Text("Extracted Text", style = MaterialTheme.typography.labelSmall,
-                color = if (isDarkTheme) TextSecondary else TextSecondaryLight, letterSpacing = 1.sp)
-            Spacer(Modifier.height(8.dp))
-            Text(
-                if (extractedText.length > 200) extractedText.take(200) + "…" else extractedText,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                lineHeight = 18.sp
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = if (isDarkTheme) 0.dp else 4.dp,
+                    shape = RoundedCornerShape(24.dp),
+                    ambientColor = LightShadow,
+                    spotColor = LightShadow
+                )
+                .clip(RoundedCornerShape(24.dp))
+                .background(if (isDarkTheme) ModernCardDark else ModernCardLight)
+                .border(
+                    1.dp,
+                    if (isDarkTheme) ModernBorderDark else ModernBorderLight,
+                    RoundedCornerShape(24.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Column {
+                Text(
+                    "EXTRACTED TEXT",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    if (extractedText.length > 200) extractedText.take(200) + "…" else extractedText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
+                    lineHeight = 18.sp
+                )
+            }
         }
 
         Spacer(Modifier.height(12.dp))
@@ -204,24 +249,40 @@ private fun ScreenshotReadyBody(
                 ScreenshotAction.entries.forEach { action ->
                     Box(
                         modifier = Modifier
+                            .shadow(
+                                elevation = if (isDarkTheme) 0.dp else 2.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                ambientColor = LightShadow,
+                                spotColor = LightShadow
+                            )
                             .clip(RoundedCornerShape(20.dp))
-                            .background(Color(0xFF8B5CF6).copy(0.12f))
-                            .border(0.5.dp, Color(0xFF8B5CF6).copy(0.3f), RoundedCornerShape(20.dp))
+                            .background(if (isDarkTheme) Color(0xFF1E293B) else ModernBlueSubtle)
+                            .border(1.dp, ModernBlue.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
                             .clickable { onAction(action) }
                             .padding(horizontal = 14.dp, vertical = 8.dp)
                     ) {
-                        Text(action.label, style = MaterialTheme.typography.labelMedium,
-                            color = Color(0xFF8B5CF6))
+                        Text(
+                            action.label,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = ModernBlue,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
             Spacer(Modifier.height(4.dp))
             TextButton(onClick = onNewImage, modifier = Modifier.align(Alignment.End)) {
-                Icon(Icons.Default.AddPhotoAlternate, null,
-                    modifier = Modifier.size(16.dp), tint = Color(0xFF8B5CF6))
+                Icon(
+                    Icons.Default.AddPhotoAlternate, null,
+                    modifier = Modifier.size(16.dp), tint = ModernBlue
+                )
                 Spacer(Modifier.width(4.dp))
-                Text("New Screenshot", style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF8B5CF6))
+                Text(
+                    "New Screenshot",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = ModernBlue,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
 
@@ -234,7 +295,7 @@ private fun ScreenshotReadyBody(
                 scrollState = scroll,
                 onStop      = onStop,
                 modifier    = Modifier.weight(1f),
-                accentColor = Color(0xFF8B5CF6)
+                accentColor = ModernBlue
             )
         }
     }

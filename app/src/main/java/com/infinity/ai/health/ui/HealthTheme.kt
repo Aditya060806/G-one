@@ -77,35 +77,32 @@ interface HealthPalette {
     val Analysing: Color
 }
 
-/** Dark-mode palette. Bright and saturated, which is what reads on a near-black surface. */
+/** Dark-mode palette mapped to the design system tokens. */
 object HealthColors : HealthPalette {
-    override val Normal       = Color(0xFF10B981)
-    override val Warning      = Color(0xFFF59E0B)
-    override val Critical     = Color(0xFFEF4444)
-    override val Connected    = Blue500
-    override val Disconnected = Color(0xFF64748B)
-    override val SystemFault  = Color(0xFF9F5F5F)
-    override val Info         = Blue400
-    override val Caution      = Color(0xFFEAB308)
-    override val Analysing    = Color(0xFF8B5CF6)
+    override val Normal       = Color(0xFF68D391)
+    override val Warning      = com.infinity.ai.ui.theme.AccentGoldBg
+    override val Critical     = com.infinity.ai.ui.theme.DestructiveBg
+    override val Connected    = com.infinity.ai.ui.theme.AccentGoldBg
+    override val Disconnected = com.infinity.ai.ui.theme.TextSecondary
+    override val SystemFault  = com.infinity.ai.ui.theme.DestructiveBg
+    override val Info         = com.infinity.ai.ui.theme.Chart5
+    override val Caution      = com.infinity.ai.ui.theme.Chart3
+    override val Analysing    = com.infinity.ai.ui.theme.AccentGoldBg
 }
 
 /**
- * Light-mode palette. Same hues, darkened until each clears 4.5:1 on white.
- *
- * Critical stays the most recognisably red of the set rather than being darkened to
- * maroon — legibility must not cost the instant "this is the alarming one" read.
+ * Light-mode palette mapped directly to the design system tokens.
  */
 object HealthColorsLight : HealthPalette {
-    override val Normal       = Color(0xFF047857)   // emerald 700
-    override val Warning      = Color(0xFFB45309)   // amber 700
-    override val Critical     = Color(0xFFDC2626)   // red 600
-    override val Connected    = Color(0xFF2563EB)   // blue 600
-    override val Disconnected = Color(0xFF64748B)   // slate 500, already passes
-    override val SystemFault  = Color(0xFF8A4B4B)
-    override val Info         = Color(0xFF2563EB)
-    override val Caution      = Color(0xFFA16207)   // yellow 700
-    override val Analysing    = Color(0xFF7C3AED)   // violet 600
+    override val Normal       = com.infinity.ai.ui.theme.Chart3
+    override val Warning      = com.infinity.ai.ui.theme.Chart4
+    override val Critical     = com.infinity.ai.ui.theme.DestructiveBg
+    override val Connected    = com.infinity.ai.ui.theme.ForestPrimary
+    override val Disconnected = com.infinity.ai.ui.theme.MutedFg
+    override val SystemFault  = com.infinity.ai.ui.theme.DestructiveBg.copy(alpha = 0.8f)
+    override val Info         = com.infinity.ai.ui.theme.Chart5
+    override val Caution      = com.infinity.ai.ui.theme.Chart2
+    override val Analysing    = com.infinity.ai.ui.theme.Chart5
 }
 
 /** The palette for the current theme. */

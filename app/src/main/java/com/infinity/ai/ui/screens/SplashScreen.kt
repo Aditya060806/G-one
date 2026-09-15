@@ -144,6 +144,16 @@ fun SplashScreen(isDarkTheme: Boolean, onNavigate: () -> Unit) {
                     color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
                     modifier = Modifier.alpha(fade.value * 0.9f)
                 )
+
+                Spacer(Modifier.height(28.dp))
+                Box(
+                    modifier = Modifier.alpha(fade.value),
+                    contentAlignment = Alignment.Center
+                ) {
+                    com.infinity.ai.ui.components.LoadingLottieAnimation(
+                        modifier = Modifier.size(72.dp)
+                    )
+                }
             }
         }
     }

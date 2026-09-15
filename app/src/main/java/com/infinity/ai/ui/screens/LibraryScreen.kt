@@ -1,9 +1,15 @@
 package com.infinity.ai.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +22,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,9 +35,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import com.infinity.ai.data.library.EntryType
 import com.infinity.ai.data.library.LibraryEntry
-import com.infinity.ai.ui.components.GradientBackground
+import com.infinity.ai.ui.components.BreadcrumbHeader
+import com.infinity.ai.ui.components.BreadcrumbItem
+import com.infinity.ai.ui.components.HeaderActionPill
+import com.infinity.ai.ui.components.PureBreadcrumbText
 import com.infinity.ai.ui.theme.*
 import com.infinity.ai.viewmodel.LibraryViewModel
 import java.text.SimpleDateFormat
@@ -39,76 +54,98 @@ fun LibraryScreen(
     isDarkTheme   : Boolean,
     bottomPadding : Dp,
     onOpenEntry   : (Long) -> Unit,
+    onNavigateBack: () -> Unit = {},
+    onNavigateHome: () -> Unit = {},
     vm            : LibraryViewModel = viewModel()
 ) {
     val entries      by vm.entries.collectAsState()
     val selectedType by vm.selectedType.collectAsState()
     val searchQuery  by vm.searchQuery.collectAsState()
+    val listState    = rememberLazyListState()
+    val isScrolled   by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 10
+        }
+    }
     val dark = isDarkTheme
+    val haptic = LocalHapticFeedback.current
 
-    GradientBackground(darkTheme = dark, modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (dark) ModernBgDark else ModernBgLight)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(bottom = bottomPadding)
         ) {
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
 
-            // ── Header ────────────────────────────────────────────────────────
+            // ── Header (Sticky breadcrumb text, non-sticky action pill) ──────
             Row(
-                modifier = Modifier.padding(horizontal = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        "Knowledge Vault",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = if (dark) TextPrimary else TextPrimaryLight,
-                        fontWeight = FontWeight.Bold
+                PureBreadcrumbText(
+                    items = listOf(
+                        BreadcrumbItem("Home", onNavigateHome),
+                        BreadcrumbItem("Tools", onNavigateBack),
+                        BreadcrumbItem("Library")
+                    ),
+                    isDarkTheme = dark
+                )
+
+                AnimatedVisibility(
+                    visible = !isScrolled,
+                    enter = fadeIn(tween(180)) + expandHorizontally(),
+                    exit = fadeOut(tween(140)) + shrinkHorizontally()
+                ) {
+                    HeaderActionPill(
+                        icon = Icons.Default.FilterList,
+                        label = if (selectedType != null) "Filtered" else "All",
+                        darkTheme = dark,
+                        onClick = { if (selectedType != null) vm.setFilter(null) else vm.setFilter(EntryType.NOTE) }
                     )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        "Your saved AI-generated content",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (dark) TextSecondary else TextSecondaryLight
-                    )
-                }
-                AnimatedVisibility(visible = entries.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Blue50)
-                            .padding(horizontal = 10.dp, vertical = 5.dp)
-                    ) {
-                        Text(
-                            "${entries.size}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Blue500,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Your saved AI-generated content",
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (dark) Color(0xFF94A3B8) else Color(0xFF64748B),
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+
+            Spacer(Modifier.height(18.dp))
 
             // ── Search bar ────────────────────────────────────────────────────
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(if (dark) DarkSurface else LightSurface)
-                    .border(1.dp, if (dark) DarkBorder else LightBorder, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                    .shadow(
+                        elevation = if (dark) 0.dp else 2.dp,
+                        shape = RoundedCornerShape(16.dp),
+                        ambientColor = LightShadow,
+                        spotColor = LightShadow
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(if (dark) ModernCardDark else ModernCardLight)
+                    .border(1.dp, if (dark) ModernBorderDark else ModernBorderLight, RoundedCornerShape(16.dp))
+                    .padding(horizontal = 16.dp, vertical = 13.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(
                     Icons.Default.Search, null,
                     tint = if (dark) TextSecondary else TextSecondaryLight,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(18.dp)
                 )
                 BasicTextField(
                     value         = searchQuery,
@@ -117,7 +154,7 @@ fun LibraryScreen(
                     textStyle     = MaterialTheme.typography.bodyMedium.copy(
                         color = if (dark) TextPrimary else TextPrimaryLight
                     ),
-                    cursorBrush   = SolidColor(Blue500),
+                    cursorBrush   = SolidColor(ModernBlue),
                     singleLine    = true,
                     decorationBox = { inner ->
                         if (searchQuery.isEmpty()) {
@@ -134,21 +171,24 @@ fun LibraryScreen(
                     Icon(
                         Icons.Default.Close, "Clear",
                         tint = if (dark) TextSecondary else TextSecondaryLight,
-                        modifier = Modifier.size(16.dp).clickable { vm.setSearch("") }
+                        modifier = Modifier.size(18.dp).clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            vm.setSearch("")
+                        }
                     )
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(14.dp))
 
             // ── Filter chips ──────────────────────────────────────────────────
             Row(
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(7.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                VaultChip("All", selectedType == null, Blue500, dark) { vm.setFilter(null) }
+                VaultChip("All", selectedType == null, ModernBlue, dark) { vm.setFilter(null) }
                 EntryType.entries.forEach { type ->
                     VaultChip(
                         label    = type.label,
@@ -167,7 +207,7 @@ fun LibraryScreen(
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     EntryType.entries.forEach { type ->
                         val c = entries.count { it.type == type }
@@ -183,8 +223,9 @@ fun LibraryScreen(
                 VaultEmptyState(dark, searchQuery.isNotBlank())
             } else {
                 LazyColumn(
+                    state               = listState,
                     contentPadding      = PaddingValues(horizontal = 20.dp, vertical = 2.dp),
-                    verticalArrangement = Arrangement.spacedBy(9.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(entries, key = { it.id }) { entry ->
                         VaultEntryCard(
@@ -205,26 +246,63 @@ fun LibraryScreen(
 
 @Composable
 private fun VaultChip(label: String, selected: Boolean, color: Color, dark: Boolean, onClick: () -> Unit) {
+    val interaction = remember { MutableInteractionSource() }
+    val haptic = LocalHapticFeedback.current
+    val isPressed by interaction.collectIsPressedAsState()
+
+    val animatedBg by animateColorAsState(
+        targetValue = if (selected) color.copy(alpha = if (dark) 0.22f else 0.14f)
+                      else if (dark) ModernCardDark else ModernCardLight,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "chipBg"
+    )
+    val animatedBorder by animateColorAsState(
+        targetValue = if (selected) color.copy(alpha = if (dark) 0.60f else 0.45f)
+                      else if (dark) ModernBorderDark else ModernBorderLight,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "chipBorder"
+    )
+    val animatedTextColor by animateColorAsState(
+        targetValue = if (selected) color else if (dark) TextSecondary else TextSecondaryLight,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "chipText"
+    )
+    val animatedElevation by animateDpAsState(
+        targetValue = if (isPressed) 0.dp else if (dark) 0.dp else (if (selected) 2.dp else 1.dp),
+        label = "chipElevation"
+    )
+
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                if (selected) color.copy(0.10f)
-                else if (dark) DarkSurface else LightSurface
+            .pressScale(interaction, pressedScale = 0.95f)
+            .shadow(
+                elevation = animatedElevation,
+                shape = RoundedCornerShape(20.dp),
+                ambientColor = LightShadow,
+                spotColor = LightShadow
             )
+            .clip(RoundedCornerShape(20.dp))
+            .background(animatedBg)
             .border(
                 1.dp,
-                if (selected) color.copy(0.30f) else if (dark) DarkBorder else LightBorder,
+                animatedBorder,
                 RoundedCornerShape(20.dp)
             )
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 7.dp)
+            .clickable(
+                interactionSource = interaction,
+                indication = null,
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onClick()
+                }
+            )
+            .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
         Text(
             label,
             style      = MaterialTheme.typography.labelMedium,
-            color      = if (selected) color else if (dark) TextSecondary else TextSecondaryLight,
-            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
+            color      = animatedTextColor,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
         )
     }
 }
@@ -235,18 +313,25 @@ private fun VaultChip(label: String, selected: Boolean, color: Color, dark: Bool
 private fun VaultStatPill(label: String, count: Int, color: Color, dark: Boolean) {
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(if (dark) DarkSurface else LightSurface)
-            .border(1.dp, if (dark) DarkBorder else LightBorder, RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (dark) ModernCardDark else ModernCardLight)
+            .border(1.dp, if (dark) ModernBorderDark else ModernBorderLight, RoundedCornerShape(12.dp))
             .padding(horizontal = 10.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment     = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier.size(5.dp).background(color, CircleShape))
-        Text(label, style = MaterialTheme.typography.labelSmall,
-            color = if (dark) TextSecondary else TextSecondaryLight)
-        Text("$count", style = MaterialTheme.typography.labelSmall,
-            color = color, fontWeight = FontWeight.Bold)
+        Box(modifier = Modifier.size(6.dp).background(color, CircleShape))
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            color = if (dark) TextSecondary else TextSecondaryLight
+        )
+        Text(
+            "$count",
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -259,30 +344,51 @@ private fun VaultEntryCard(
     val color = typeColor(entry.type)
     val fmt   = remember { SimpleDateFormat("MMM d, yyyy · h:mm a", Locale.getDefault()) }
     var confirmDelete by remember { mutableStateOf(false) }
+    val interaction = remember { MutableInteractionSource() }
+    val haptic = LocalHapticFeedback.current
+    val isPressed by interaction.collectIsPressedAsState()
+    val elevation by animateDpAsState(
+        targetValue = if (isPressed) 1.dp else (if (dark) 0.dp else 4.dp),
+        label = "entryCardElevation"
+    )
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(if (dark) DarkSurface else LightSurface)
-            .border(1.dp, if (dark) DarkBorder else LightBorder, RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
+            .pressScale(interaction, pressedScale = 0.98f)
+            .shadow(
+                elevation = elevation,
+                shape = RoundedCornerShape(24.dp),
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
+            .clip(RoundedCornerShape(24.dp))
+            .background(if (dark) ModernCardDark else ModernCardLight)
+            .border(1.dp, if (dark) ModernBorderDark else ModernBorderLight, RoundedCornerShape(24.dp))
+            .clickable(
+                interactionSource = interaction,
+                indication = null,
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onClick()
+                }
+            )
     ) {
         // Top accent strip
-        Box(modifier = Modifier.fillMaxWidth().height(2.5.dp).background(color.copy(0.35f)))
+        Box(modifier = Modifier.fillMaxWidth().height(3.dp).background(color.copy(alpha = 0.5f)))
 
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
-                    .background(color.copy(0.09f), RoundedCornerShape(10.dp)),
+                    .size(42.dp)
+                    .background(color.copy(alpha = 0.12f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(typeIcon(entry.type), null, tint = color, modifier = Modifier.size(17.dp))
+                Icon(typeIcon(entry.type), null, tint = color, modifier = Modifier.size(20.dp))
             }
 
             Column(modifier = Modifier.weight(1f)) {
@@ -290,35 +396,35 @@ private fun VaultEntryCard(
                     entry.title,
                     style      = MaterialTheme.typography.bodyMedium,
                     color      = if (dark) TextPrimary else TextPrimaryLight,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     maxLines   = 1,
                     overflow   = TextOverflow.Ellipsis
                 )
-                Spacer(Modifier.height(3.dp))
+                Spacer(Modifier.height(4.dp))
                 Text(
-                    entry.content.take(100).replace("\n", " "),
+                    entry.content.take(120).replace("\n", " "),
                     style      = MaterialTheme.typography.bodySmall,
                     color      = if (dark) TextSecondary else TextSecondaryLight,
                     maxLines   = 2,
                     overflow   = TextOverflow.Ellipsis,
-                    lineHeight = 17.sp
+                    lineHeight = 18.sp
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment     = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(5.dp))
-                            .background(color.copy(0.09f))
-                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(color.copy(alpha = 0.12f))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
                         Text(
                             entry.type.label,
                             style = MaterialTheme.typography.labelSmall,
                             color = color,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                     Text(
@@ -330,26 +436,47 @@ private fun VaultEntryCard(
             }
 
             if (!confirmDelete) {
-                IconButton(onClick = { confirmDelete = true }, modifier = Modifier.size(30.dp)) {
+                IconButton(
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        confirmDelete = true
+                    },
+                    modifier = Modifier.size(32.dp)
+                ) {
                     Icon(
                         Icons.Default.DeleteOutline, "Delete",
                         tint = if (dark) TextDisabled else TextTertiary,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             } else {
-                Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
-                    IconButton(onClick = { confirmDelete = false }, modifier = Modifier.size(30.dp)) {
-                        Icon(Icons.Default.Close, "Cancel",
+                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            confirmDelete = false
+                        },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Close, "Cancel",
                             tint = if (dark) TextSecondary else TextSecondaryLight,
-                            modifier = Modifier.size(14.dp))
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
                     IconButton(
-                        onClick  = { onDelete(); confirmDelete = false },
-                        modifier = Modifier.size(30.dp)
+                        onClick  = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onDelete()
+                            confirmDelete = false
+                        },
+                        modifier = Modifier.size(32.dp)
                     ) {
-                        Icon(Icons.Default.Delete, "Confirm",
-                            tint = ErrorRed, modifier = Modifier.size(14.dp))
+                        Icon(
+                            Icons.Default.Delete, "Confirm",
+                            tint = ErrorRed,
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
                 }
             }
@@ -370,13 +497,15 @@ private fun VaultEmptyState(dark: Boolean, isSearching: Boolean) {
     ) {
         Box(
             modifier = Modifier
-                .size(72.dp)
-                .background(Blue50, CircleShape),
+                .size(80.dp)
+                .background(if (dark) Color(0xFF1E293B) else ModernBlueSubtle, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 if (isSearching) Icons.Default.SearchOff else Icons.Default.AutoStories,
-                null, tint = Blue500, modifier = Modifier.size(30.dp)
+                null,
+                tint = ModernBlue,
+                modifier = Modifier.size(36.dp)
             )
         }
         Spacer(Modifier.height(20.dp))
@@ -384,7 +513,7 @@ private fun VaultEmptyState(dark: Boolean, isSearching: Boolean) {
             if (isSearching) "No results found" else "Vault is empty",
             style      = MaterialTheme.typography.titleMedium,
             color      = if (dark) TextPrimary else TextPrimaryLight,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(8.dp))
         Text(
@@ -402,7 +531,7 @@ private fun VaultEmptyState(dark: Boolean, isSearching: Boolean) {
 
 fun typeColor(type: EntryType): Color = when (type) {
     EntryType.PDF_SUMMARY -> Color(0xFF10B981)
-    EntryType.OCR         -> Blue500
+    EntryType.OCR         -> ModernBlue
     EntryType.SCREENSHOT  -> Color(0xFF8B5CF6)
     EntryType.QUIZ        -> Color(0xFF10B981)
     EntryType.NOTE        -> Color(0xFFF59E0B)
@@ -415,3 +544,4 @@ fun typeIcon(type: EntryType): ImageVector = when (type) {
     EntryType.QUIZ        -> Icons.Default.Quiz
     EntryType.NOTE        -> Icons.Default.EditNote
 }
+

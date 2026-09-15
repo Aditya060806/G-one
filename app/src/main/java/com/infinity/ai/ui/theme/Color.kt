@@ -2,62 +2,132 @@ package com.infinity.ai.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ── Dark backgrounds ───────────────────────────────────────────────────────────
-val DarkBg              = Color(0xFF0A0E1A)
-val DarkSurface         = Color(0xFF111827)
-val DarkSurfaceElevated = Color(0xFF1A2235)
-val DarkBorder          = Color(0xFF1E2D45)
+// ── Official Token Palette (Updated Charcoal/Cream/Amber/Stone System) ────────
+// 1. PRIMARY
+val PrimaryBg           = Color(0xFF2C2C2C)   // #2c2c2c
+val PrimaryFg           = Color(0xFFF8F8F7)   // #f8f8f7
+
+// 2. SECONDARY
+val SecondaryBg         = Color(0xFFF5F5F0)   // #f5f5f0
+val SecondaryFg         = Color(0xFF3D3D38)   // #3d3d38
+
+// 3. ACCENT
+val AccentGoldBg        = Color(0xFFFFD061)   // #ffd061
+val AccentGoldFg        = Color(0xFF2C2C2C)   // #2c2c2c
+
+// 4. BASE
+val BaseBg              = Color(0xFFF8F8F7)   // #f8f8f7
+val BaseFg              = Color(0xFF1D1D1B)   // #1d1d1b
+
+// 5. CARD & POPOVER
+val CardBg              = Color(0xFFFFFFFF)   // #ffffff
+val CardFg              = Color(0xFF1D1D1B)   // #1d1d1b
+val PopoverBg           = Color(0xFFFFFFFF)   // #ffffff
+val PopoverFg           = Color(0xFF1D1D1B)   // #1d1d1b
+
+// 6. MUTED
+val MutedBg             = Color(0xFFF6F3EE)   // #f6f3ee
+val MutedFg             = Color(0xFF6E6E68)   // #6e6e68
+
+// 7. DESTRUCTIVE
+val DestructiveBg       = Color(0xFFDB3837)   // #db3837
+val DestructiveFg       = Color(0xFFFFFFFF)   // #ffffff
+
+// 8. BORDER & INPUT
+val TokenBorder         = Color(0xFFE7E4DD)   // #e7e4dd
+val TokenInput          = Color(0xFFE7E4DD)   // #e7e4dd
+val TokenRing           = Color(0xFFFFD061)   // #ffd061
+
+// 9. CHARTS
+val Chart1              = Color(0xFFFFD061)   // #ffd061
+val Chart2              = Color(0xFF8D8D85)   // #8d8d85
+val Chart3              = Color(0xFFD3A473)   // #d3a473
+val Chart4              = Color(0xFF5B5B55)   // #5b5b55
+val Chart5              = Color(0xFFE0A315)   // #e0a315
+
+// 10. SIDEBAR / NAV
+val SidebarBg           = Color(0xFFF5F5F0)   // #f5f5f0
+val SidebarFg           = Color(0xFF1D1D1B)   // #1d1d1b
+val SidebarPrimary      = Color(0xFF2C2C2C)   // #2c2c2c
+val SidebarPrimaryFg    = Color(0xFFF8F8F7)   // #f8f8f7
+val SidebarAccent       = Color(0xFFFFD061)   // #ffd061
+val SidebarAccentFg     = Color(0xFF2C2C2C)   // #2c2c2c
+val SidebarBorder       = Color(0xFFE7E4DD)   // #e7e4dd
+val SidebarRing         = Color(0xFFFFD061)   // #ffd061
+
+// ── Application Surfaces & Backward Compatible Aliases ───────────────────────
+val DarkBg              = Color(0xFF141414)   // Deep Charcoal Night
+val DarkSurface         = Color(0xFF1D1D1D)
+val DarkSurfaceElevated = Color(0xFF262626)
+val DarkBorder          = Color(0xFF383838)
 val DarkGlass           = Color(0x18FFFFFF)
 
-// ── Light backgrounds ──────────────────────────────────────────────────────────
-// Carries a faint cool tint rather than being pure grey. Cards are pure white, so the
-// tint is what separates a card from the page — on a flat #FFFFFF background a white
-// card is invisible without a heavy border, which is what made the old light theme
-// look like a wireframe.
-val LightBg              = Color(0xFFF4F7FC)
-val LightSurface         = Color(0xFFFFFFFF)
-val LightSurfaceElevated = Color(0xFFFAFCFF)
-val LightBorder          = Color(0xFFE3E9F4)
-/** For emphasis and selected states, where [LightBorder] is too faint to register. */
-val LightBorderStrong    = Color(0xFFC9D6EA)
-val LightGlass           = Color(0xFAFFFFFF)
-/**
- * Blue-tinted rather than neutral black.
- *
- * A pure-black shadow over a cool background reads as grey sludge. Tinting the shadow
- * toward the background hue is what makes soft elevation look intentional on light UI.
- */
-val LightShadow          = Color(0x141B3A6B)
+val LightBg              = BaseBg
+val LightSurface         = CardBg
+val LightSurfaceElevated = SecondaryBg
+val LightBorder          = TokenBorder
+val LightBorderStrong    = Color(0xFFCEC9BF)
+val LightGlass           = Color(0xF2F8F8F7)
+val LightShadow          = Color(0x142C2C2C)
 
-// ── Brand — professional blue ──────────────────────────────────────────────────
-val Blue500      = Color(0xFF4F8CFF)   // primary
-val Blue600      = Color(0xFF3A7BF7)   // pressed
-val Blue400      = Color(0xFF6FA8FF)   // secondary / lighter
-val Blue50       = Color(0xFFEEF4FF)   // tint background
-val Blue100      = Color(0xFFDBEAFF)   // softer tint
-val BlueAlpha12  = Color(0x1F4F8CFF)
+// Brand
+val Blue500      = PrimaryBg          // Charcoal Primary
+val Blue600      = Color(0xFF1D1D1D)
+val Blue400      = Chart5             // Vibrant Deep Amber Gold
+val Blue50       = SecondaryBg
+val Blue100      = MutedBg
+val BlueAlpha12  = Color(0x1F2C2C2C)
 
-// ── Light page gradient ───────────────────────────────────────────────────────
-// Top-down, near-white to a slightly deeper tint. Subtle on purpose: enough to give the
-// page depth and to stop long scrolls feeling like flat paper, not enough to compete
-// with the content. The dark theme already had a three-stop gradient; light was a single
-// flat fill, which is most of why the two themes felt unequal in quality.
-val GradStart = Color(0xFFFFFFFF)
-val GradMid   = Color(0xFFF4F7FC)
-val GradEnd   = Color(0xFFE8EFFA)
-val OrbColor1 = Color(0xFF93C5FD)
-val OrbColor2 = Color(0xFF60A5FA)
-val OrbColor3 = Color(0xFFBFDBFE)
+// Page Gradients
+val GradStart = BaseBg
+val GradMid   = Color(0xFFF3F3EE)
+val GradEnd   = SecondaryBg
+val OrbColor1 = Color(0xFFFFE59E)
+val OrbColor2 = Color(0xFFFFD061)
+val OrbColor3 = Color(0xFFF5F5F0)
 
-// ── Text ───────────────────────────────────────────────────────────────────────
-val TextPrimary        = Color(0xFFE8EDF5)   // dark-mode primary
-val TextSecondary      = Color(0xFF7A8BA8)   // dark-mode secondary
-val TextDisabled       = Color(0xFF3D4E65)
-val TextPrimaryLight   = Color(0xFF0F172A)   // light-mode primary
-val TextSecondaryLight = Color(0xFF64748B)   // light-mode secondary
-val TextTertiary       = Color(0xFF94A3B8)   // extra subtle
+// Text
+val TextPrimary        = Color(0xFFF8F8F7)
+val TextSecondary      = Color(0xFFA8A8A0)
+val TextDisabled       = Color(0xFF60605A)
+val TextPrimaryLight   = BaseFg
+val TextSecondaryLight = MutedFg
+val TextTertiary       = Color(0xFF94948C)
 
-// ── Status ─────────────────────────────────────────────────────────────────────
-val SuccessGreen = Color(0xFF10B981)
-val ErrorRed     = Color(0xFFEF4444)
-val WarnAmber    = Color(0xFFF59E0B)
+// Status
+val SuccessGreen = Chart3
+val ErrorRed     = DestructiveBg
+val WarnAmber    = Chart1
+
+// Modern Design Tokens
+val ModernBgLight      = BaseBg
+val ModernBgDark       = Color(0xFF141414)
+val ModernCardLight    = CardBg
+val ModernCardDark     = Color(0xFF1E1E1E)
+val ModernBorderLight  = TokenBorder
+val ModernBorderDark   = Color(0xFF333333)
+val ModernBlue         = PrimaryBg
+val ModernBlueDark     = Color(0xFF1A1A1A)
+val ModernBlueSubtle   = SecondaryBg
+val TrendGreenBg       = SecondaryBg
+val TrendGreenText     = PrimaryBg
+val VitalRed           = DestructiveBg
+val VitalRedSubtle     = Color(0xFFFBECEC)
+val VitalCyan          = Chart5
+val VitalCyanSubtle    = Color(0xFFFFF8E6)
+val VitalOrange        = Chart1
+val VitalOrangeSubtle  = MutedBg
+val GraphDarkBar       = PrimaryBg
+val GraphCoralBar      = DestructiveBg
+val GraphMutedBar      = TokenBorder
+val GraphDarkMutedBar  = Color(0xFF3D3D3D)
+val FloatingNavBg      = PrimaryBg
+val FloatingNavActive  = AccentGoldBg
+
+// Backward compatibility aliases for tokens
+val ForestPrimary       = PrimaryBg
+val ForestPrimaryFg     = PrimaryFg
+val ForestSecondaryBg   = SecondaryBg
+val ForestSecondaryFg   = SecondaryFg
+val AccentPeachBg       = AccentGoldBg
+val AccentPeachFg       = AccentGoldFg

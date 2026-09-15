@@ -24,10 +24,11 @@ import androidx.compose.ui.unit.dp
  * feels. Three steps is enough for this app.
  */
 object GoneRadius {
-    val Small = 10.dp
-    val Pill = 14.dp
-    val Card = 18.dp
-    val Hero = 26.dp
+    val Small = 12.dp
+    val Pill = 18.dp
+    val Card = 24.dp
+    val Hero = 30.dp
+    val Island = 36.dp
 }
 
 /**

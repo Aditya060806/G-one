@@ -8,16 +8,32 @@ import android.speech.SpeechRecognizer
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.filled.ShowChart
@@ -36,10 +52,11 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.*
 import com.infinity.ai.ui.theme.GoneMotion
-import com.infinity.ai.health.ui.AlertsScreen
 import com.infinity.ai.health.ui.HealthDashboardScreen
-import com.infinity.ai.health.ui.HealthHistoryScreen
+import com.infinity.ai.health.ui.HealthViewModel
+import com.infinity.ai.health.ui.InAppAlertStack
 import com.infinity.ai.health.ui.LiveMonitorScreen
+import com.infinity.ai.health.ui.TrailsScreen
 import com.infinity.ai.ui.components.toOrbState
 import com.infinity.ai.ui.screens.*
 import com.infinity.ai.viewmodel.ChatViewModel
@@ -48,44 +65,96 @@ import com.infinity.ai.viewmodel.LibraryViewModel
 /**
  * Bottom-navigation destinations.
  *
- * Health-first ordering: the four monitoring surfaces come before the assistant, because
- * G-one is a health companion that happens to contain an assistant, not the reverse.
- *
- * Tools, Library and Settings are intentionally NOT in the bottom bar — five tabs is the
- * practical ceiling before labels truncate. They are reachable in one tap from the
- * Dashboard header instead, which keeps the bar focused on real-time health status.
+ * 5 primary tabs: Health (Dashboard), Monitor (Live), Trails (Combined History & Alerts),
+ * Tools (AI capabilities hub), and Assistant (Chat).
  */
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Health    : Screen("health",  "Health",  Icons.Default.Favorite)
     object Monitor   : Screen("monitor", "Monitor", Icons.Default.MonitorHeart)
-    object History   : Screen("history", "History", Icons.AutoMirrored.Filled.ShowChart)
-    object Alerts    : Screen("alerts",  "Alerts",  Icons.Default.NotificationsActive)
+    object Trails    : Screen("trails",  "Trails",  Icons.AutoMirrored.Filled.ShowChart)
+    object Tools     : Screen("tools",   "Tools",   Icons.Default.Apps)
     object Assistant : Screen("chat",    "Assist",  Icons.AutoMirrored.Filled.Chat)
 }
 
 private val navItems =
-    listOf(Screen.Health, Screen.Monitor, Screen.History, Screen.Alerts, Screen.Assistant)
+    listOf(Screen.Health, Screen.Monitor, Screen.Trails, Screen.Tools, Screen.Assistant)
 
 /** Routes that keep the bottom bar visible. Everything else is a pushed detail screen. */
 private val navRoutes = navItems.map { it.route }
 
 /**
- * Two different transitions, because the two navigation gestures mean different things.
+ * Navigation transitions:
  *
- * Switching bottom-nav tabs is lateral movement between peers, so it gets a fade-through
- * (fade plus a slight scale) with no directional slide — sliding implies an ordering the
- * tabs do not have, and picking a direction would be arbitrary. Opening a detail screen
- * is a push deeper, so it slides in from the right and back out to the right, which is
- * what makes the back gesture feel like reversal rather than another forward step.
+ * 1. Bottom-nav tab switching behaves like a directional carousel:
+ *    Tabs are ordered: Health (0), Monitor (1), Trails (2), Tools (3), Assistant (4).
+ *    - Moving right (targetIndex > initialIndex): new tab slides in from right, old slides out to left.
+ *    - Moving left (targetIndex < initialIndex): new tab slides in from left, old slides out to right.
+ *    - Uses a spring animation (damping = 0.85f, stiffness = Spring.StiffnessMediumLow).
+ *
+ * 2. Detail screen push/pop:
+ *    - Pushing a detail screen slides in from right (pushIn) while current tab fades out (fadeThroughOut).
+ *    - Popping back slides out to right (pushOutBack) while destination tab fades in (fadeThroughIn).
  */
-private fun fadeThroughIn() =
-    fadeIn(tween(GoneMotion.Medium, delayMillis = 50, easing = GoneMotion.EaseOutSoft)) +
-        scaleIn(
-            initialScale = 0.97f,
-            animationSpec = tween(GoneMotion.Medium, delayMillis = 50, easing = GoneMotion.EaseOutSoft)
-        )
+private fun tabIndex(route: String?): Int? = when (route) {
+    Screen.Health.route    -> 0
+    Screen.Monitor.route   -> 1
+    Screen.Trails.route    -> 2
+    Screen.Tools.route     -> 3
+    Screen.Assistant.route -> 4
+    else -> null
+}
 
-private fun fadeThroughOut() = fadeOut(tween(GoneMotion.Quick, easing = LinearEasing))
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.tabEnterTransition(): EnterTransition {
+    val initialIndex = tabIndex(initialState.destination.route)
+    val targetIndex = tabIndex(targetState.destination.route)
+    return when {
+        initialIndex != null && targetIndex != null -> {
+            val slideSpec = tween<IntOffset>(durationMillis = 260, easing = FastOutSlowInEasing)
+            val fadeSpec = tween<Float>(durationMillis = 200, easing = FastOutSlowInEasing)
+            if (targetIndex > initialIndex) {
+                slideInHorizontally(animationSpec = slideSpec) { width -> (width * 0.35f).toInt() } + fadeIn(animationSpec = fadeSpec)
+            } else if (targetIndex < initialIndex) {
+                slideInHorizontally(animationSpec = slideSpec) { width -> (-width * 0.35f).toInt() } + fadeIn(animationSpec = fadeSpec)
+            } else {
+                fadeThroughIn()
+            }
+        }
+        else -> fadeThroughIn()
+    }
+}
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.tabExitTransition(): ExitTransition {
+    val initialIndex = tabIndex(initialState.destination.route)
+    val targetIndex = tabIndex(targetState.destination.route)
+    return when {
+        initialIndex != null && targetIndex != null -> {
+            val slideSpec = tween<IntOffset>(durationMillis = 260, easing = FastOutSlowInEasing)
+            val fadeSpec = tween<Float>(durationMillis = 180, easing = FastOutSlowInEasing)
+            if (targetIndex > initialIndex) {
+                slideOutHorizontally(animationSpec = slideSpec) { width -> (-width * 0.35f).toInt() } + fadeOut(animationSpec = fadeSpec)
+            } else if (targetIndex < initialIndex) {
+                slideOutHorizontally(animationSpec = slideSpec) { width -> (width * 0.35f).toInt() } + fadeOut(animationSpec = fadeSpec)
+            } else {
+                fadeThroughOut()
+            }
+        }
+        else -> fadeThroughOut()
+    }
+}
+
+private fun fadeThroughIn() = fadeIn(
+    animationSpec = tween(280, easing = FastOutSlowInEasing)
+) + scaleIn(
+    initialScale = 0.96f,
+    animationSpec = tween(280, easing = FastOutSlowInEasing)
+)
+
+private fun fadeThroughOut() = fadeOut(
+    animationSpec = tween(220, easing = FastOutSlowInEasing)
+) + scaleOut(
+    targetScale = 1.02f,
+    animationSpec = tween(220, easing = FastOutSlowInEasing)
+)
 
 private fun pushIn() = slideInHorizontally(
     animationSpec = tween(GoneMotion.Medium, easing = GoneMotion.EaseOutSoft)
@@ -112,17 +181,21 @@ private fun NavGraphBuilder.detailScreen(
     content            = content
 )
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
     val navController = rememberNavController()
     val backStack     by navController.currentBackStackEntryAsState()
     val currentRoute  = backStack?.destination?.route
-    val showNav       = currentRoute in navRoutes
+    val isImeVisible  = WindowInsets.isImeVisible
+    val showNav       = currentRoute in navRoutes && !isImeVisible
 
     val context = LocalContext.current
     val chatViewModel: ChatViewModel = viewModel()
     val libraryViewModel: LibraryViewModel = viewModel()
+    val healthViewModel: HealthViewModel = viewModel()
     val aiState by chatViewModel.aiState.collectAsState()
+    val activeEvents by healthViewModel.activeEvents.collectAsState()
     val orbState = aiState.toOrbState()
 
     // ── Mic permission + SpeechRecognizer ─────────────────────────────────────
@@ -171,177 +244,235 @@ fun AppNavigation(isDarkTheme: Boolean, onToggleTheme: () -> Unit) {
         }
     }
 
+    var showSettingsSheet by remember { mutableStateOf(false) }
+
     Scaffold(
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            if (showNav) {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 0.dp,
-                    windowInsets   = WindowInsets.navigationBars
-                ) {
-                    navItems.forEach { screen ->
-                        val selected = currentRoute == screen.route
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick  = {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState    = true
+            AnimatedVisibility(
+                visible = showNav,
+                enter = androidx.compose.animation.slideInVertically(animationSpec = tween(220)) { it } + fadeIn(tween(180)),
+                exit = androidx.compose.animation.slideOutVertically(animationSpec = tween(180)) { it } + fadeOut(tween(150))
+            ) {
+                com.infinity.ai.ui.components.FloatingIslandNav(
+                    items        = navItems,
+                    currentRoute = currentRoute,
+                    onNavigate   = { screen ->
+                        if (currentRoute != screen.route) {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
                                 }
-                            },
-                            icon  = { Icon(screen.icon, screen.label, modifier = Modifier.size(22.dp)) },
-                            label = { Text(screen.label, style = MaterialTheme.typography.labelSmall) },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor   = Color(0xFF4F8CFF),
-                                selectedTextColor   = Color(0xFF4F8CFF),
-                                indicatorColor      = Color(0xFF4F8CFF).copy(alpha = 0.10f),
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        )
+                                launchSingleTop = true
+                                restoreState    = true
+                            }
+                        }
                     }
-                }
+                )
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController    = navController,
-            startDestination = "splash",
-            // Tab-level default. Detail routes override these below with a push.
-            enterTransition     = { fadeThroughIn() },
-            exitTransition      = { fadeThroughOut() },
-            popEnterTransition  = { fadeThroughIn() },
-            popExitTransition   = { fadeThroughOut() }
-        ) {
-            composable("splash") {
-                SplashScreen(isDarkTheme = isDarkTheme) {
-                    navController.navigate(Screen.Health.route) {
-                        popUpTo("splash") { inclusive = true }
+        Box(modifier = Modifier.fillMaxSize()) {
+            NavHost(
+                navController       = navController,
+                startDestination    = "splash",
+                // Carousel transitions between navbar tabs; fade-through fallback for details/splash
+                enterTransition     = { tabEnterTransition() },
+                exitTransition      = { tabExitTransition() },
+                popEnterTransition  = { tabEnterTransition() },
+                popExitTransition   = { tabExitTransition() }
+            ) {
+                composable("splash") {
+                    SplashScreen(isDarkTheme = isDarkTheme) {
+                        val prefs = context.getSharedPreferences("gone_preferences", android.content.Context.MODE_PRIVATE)
+                        val isReboardingDone = prefs.getBoolean("reboarding_v2_completed", false)
+                        if (isReboardingDone) {
+                            navController.navigate(Screen.Health.route) {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate("onboarding") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                        }
                     }
+                }
+
+                composable("onboarding") {
+                    OnboardingScreen(
+                        isDarkTheme = isDarkTheme,
+                        onToggleTheme = onToggleTheme,
+                        onFinish = {
+                            navController.navigate(Screen.Health.route) {
+                                popUpTo("onboarding") { inclusive = true }
+                            }
+                        }
+                    )
+                }
+
+                // ── Health surfaces ───────────────────────────────────────────────
+                composable(Screen.Health.route) {
+                    HealthDashboardScreen(
+                        isDarkTheme            = isDarkTheme,
+                        bottomPadding          = innerPadding.calculateBottomPadding(),
+                        onOpenAlerts           = { navController.navigate(Screen.Trails.route) },
+                        onOpenMonitor          = { navController.navigate(Screen.Monitor.route) },
+                        onOpenHistory          = { navController.navigate(Screen.Trails.route) },
+                        onOpenTools            = { navController.navigate(Screen.Tools.route) },
+                        onOpenSettings         = { showSettingsSheet = true },
+                        onOpenAssist           = { navController.navigate(Screen.Assistant.route) },
+                        onNavigateToPdf        = { navController.navigate("pdf_summary") },
+                        onNavigateToOcr        = { navController.navigate("ocr") },
+                        onNavigateToScreenshot = { navController.navigate("screenshot") },
+                        onNavigateToQuiz       = { navController.navigate("quiz") },
+                        vm                     = healthViewModel
+                    )
+                }
+                composable(Screen.Monitor.route) {
+                    LiveMonitorScreen(
+                        isDarkTheme        = isDarkTheme,
+                        bottomPadding      = innerPadding.calculateBottomPadding(),
+                        onNavigateHome     = { navController.navigate(Screen.Health.route) },
+                        onOpenAlerts       = { navController.navigate(Screen.Trails.route) },
+                        onNavigateToTrails = { navController.navigate(Screen.Trails.route) },
+                        vm                 = healthViewModel
+                    )
+                }
+                composable(Screen.Trails.route) {
+                    TrailsScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onNavigateHome = { navController.navigate(Screen.Health.route) },
+                        vm             = healthViewModel
+                    )
+                }
+
+                // ── Tools surface (Main Tab) ───────────────────────────────────────
+                composable(Screen.Tools.route) {
+                    ToolsScreen(
+                        isDarkTheme            = isDarkTheme,
+                        bottomPadding          = innerPadding.calculateBottomPadding(),
+                        onNavigateHome         = { navController.navigate(Screen.Health.route) },
+                        onNavigateToPdf        = { navController.navigate("pdf_summary") },
+                        onNavigateToOcr        = { navController.navigate("ocr") },
+                        onNavigateToScreenshot = { navController.navigate("screenshot") },
+                        onNavigateToQuiz       = { navController.navigate("quiz") },
+                        onNavigateToCircle     = { navController.navigate("circle_learn") },
+                        onNavigateToLibrary    = { navController.navigate("library") },
+                        onNavigateToSettings   = { showSettingsSheet = true }
+                    )
+                }
+
+                // ── Assistant surface ─────────────────────────────────────────────
+                composable(Screen.Assistant.route) {
+                    ChatScreen(
+                        isDarkTheme       = isDarkTheme,
+                        bottomPadding     = innerPadding.calculateBottomPadding(),
+                        onNavigateHome    = { navController.navigate(Screen.Health.route) },
+                        onNavigateToVoice = { navController.navigate("voice") },
+                        chatViewModel     = chatViewModel
+                    )
+                }
+                detailScreen("pdf_summary") {
+                    PdfSummaryScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = { navController.navigate(Screen.Health.route) }
+                    )
+                }
+                detailScreen("ocr") {
+                    OcrScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = { navController.navigate(Screen.Health.route) }
+                    )
+                }
+                detailScreen("screenshot") {
+                    ScreenshotExplainerScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = { navController.navigate(Screen.Health.route) }
+                    )
+                }
+                detailScreen("quiz") {
+                    QuizScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = { navController.navigate(Screen.Health.route) }
+                    )
+                }
+                detailScreen("circle_learn") {
+                    CircleLearnEntryScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = { navController.navigate(Screen.Health.route) }
+                    )
+                }
+                detailScreen("settings") {
+                    SettingsScreen(
+                        isDarkTheme        = isDarkTheme,
+                        bottomPadding      = innerPadding.calculateBottomPadding(),
+                        aiState            = aiState,
+                        onToggleTheme      = onToggleTheme,
+                        onNavigateHome     = { navController.navigate(Screen.Health.route) },
+                        onRedoOnboarding   = { navController.navigate("onboarding") }
+                    )
+                }
+                detailScreen("library") {
+                    LibraryScreen(
+                        isDarkTheme    = isDarkTheme,
+                        bottomPadding  = innerPadding.calculateBottomPadding(),
+                        onOpenEntry    = { /* detail view future */ },
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = { navController.navigate(Screen.Health.route) },
+                        vm             = libraryViewModel
+                    )
+                }
+                detailScreen("voice") {
+                    VoiceScreen(
+                        isDarkTheme    = isDarkTheme,
+                        orbState       = orbState,
+                        aiState        = aiState,
+                        onSetListening = startListening,
+                        onSetIdle      = {
+                            speechRecognizer?.stopListening()
+                            chatViewModel.stopGeneration()
+                        },
+                        onDismiss      = { navController.popBackStack() }
+                    )
                 }
             }
 
-            // ── Health surfaces ───────────────────────────────────────────────
-            composable(Screen.Health.route) {
-                HealthDashboardScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onOpenAlerts   = { navController.navigate(Screen.Alerts.route) },
-                    onOpenMonitor  = { navController.navigate(Screen.Monitor.route) },
-                    onOpenHistory  = { navController.navigate(Screen.History.route) },
-                    onOpenTools    = { navController.navigate("tools") },
-                    onOpenSettings = { navController.navigate("settings") }
-                )
-            }
-            composable(Screen.Monitor.route) {
-                LiveMonitorScreen(
-                    isDarkTheme   = isDarkTheme,
-                    bottomPadding = innerPadding.calculateBottomPadding()
-                )
-            }
-            composable(Screen.History.route) {
-                HealthHistoryScreen(
-                    isDarkTheme   = isDarkTheme,
-                    bottomPadding = innerPadding.calculateBottomPadding()
-                )
-            }
-            composable(Screen.Alerts.route) {
-                AlertsScreen(
-                    isDarkTheme   = isDarkTheme,
-                    bottomPadding = innerPadding.calculateBottomPadding()
-                )
-            }
-
-            // ── Inherited assistant surfaces ──────────────────────────────────
-            composable(Screen.Assistant.route) {
-                ChatScreen(
-                    isDarkTheme       = isDarkTheme,
-                    bottomPadding     = innerPadding.calculateBottomPadding(),
-                    onNavigateToVoice = { navController.navigate("voice") },
-                    chatViewModel     = chatViewModel
-                )
-            }
-            detailScreen("tools") {
-                ToolsScreen(
-                    isDarkTheme            = isDarkTheme,
-                    bottomPadding          = innerPadding.calculateBottomPadding(),
-                    onNavigateToPdf        = { navController.navigate("pdf_summary") },
-                    onNavigateToOcr        = { navController.navigate("ocr") },
-                    onNavigateToScreenshot = { navController.navigate("screenshot") },
-                    onNavigateToQuiz       = { navController.navigate("quiz") },
-                    onNavigateToCircle     = { navController.navigate("circle_learn") },
-                    onNavigateToLibrary    = { navController.navigate("library") }
-                )
-            }
-            detailScreen("pdf_summary") {
-                PdfSummaryScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            detailScreen("ocr") {
-                OcrScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            detailScreen("screenshot") {
-                ScreenshotExplainerScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            detailScreen("quiz") {
-                QuizScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            detailScreen("circle_learn") {
-                CircleLearnEntryScreen(
-                    isDarkTheme    = isDarkTheme,
-                    bottomPadding  = innerPadding.calculateBottomPadding(),
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            detailScreen("settings") {
-                SettingsScreen(
-                    isDarkTheme   = isDarkTheme,
-                    bottomPadding = innerPadding.calculateBottomPadding(),
-                    aiState       = aiState,
-                    onToggleTheme = onToggleTheme
-                )
-            }
-            detailScreen("library") {
-                LibraryScreen(
-                    isDarkTheme   = isDarkTheme,
-                    bottomPadding = innerPadding.calculateBottomPadding(),
-                    onOpenEntry   = { /* detail view future */ },
-                    vm            = libraryViewModel
-                )
-            }
-            detailScreen("voice") {
-                VoiceScreen(
-                    isDarkTheme    = isDarkTheme,
-                    orbState       = orbState,
-                    aiState        = aiState,
-                    onSetListening = startListening,
-                    onSetIdle      = {
-                        speechRecognizer?.stopListening()
-                        chatViewModel.stopGeneration()
-                    },
-                    onDismiss      = { navController.popBackStack() }
+            if (currentRoute != "splash" && currentRoute != "onboarding") {
+                InAppAlertStack(
+                    events = activeEvents,
+                    isDarkTheme = isDarkTheme,
+                    onAcknowledge = { healthViewModel.acknowledge(it) },
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
         }
+    }
+
+    if (showSettingsSheet) {
+        SettingsBottomSheet(
+            isDarkTheme      = isDarkTheme,
+            aiState          = aiState,
+            onToggleTheme    = onToggleTheme,
+            onDismiss        = { showSettingsSheet = false },
+            onRedoOnboarding = {
+                showSettingsSheet = false
+                navController.navigate("onboarding")
+            }
+        )
     }
 }

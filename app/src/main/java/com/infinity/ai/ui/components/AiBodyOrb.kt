@@ -163,9 +163,13 @@ fun AiBodyOrb(
 // ── Draw helpers ──────────────────────────────────────────────────────────────
 
 private fun DrawScope.drawAmbientGlow(cx: Float, cy: Float, r: Float, color: Color, pulse: Float) {
-    val glowR = r * 1.35f * pulse
+    val glowR = r * 1.25f * pulse
     drawCircle(
-        brush = Brush.radialGradient(listOf(color, Color.Transparent), Offset(cx, cy), glowR),
+        brush = Brush.radialGradient(
+            listOf(color.copy(alpha = (color.alpha * 0.5f).coerceIn(0f, 1f)), Color.Transparent),
+            Offset(cx, cy),
+            glowR
+        ),
         radius = glowR, center = Offset(cx, cy)
     )
 }
@@ -239,13 +243,13 @@ private fun DrawScope.drawSpecular(cx: Float, cy: Float, r: Float) {
     val coreR = r * 0.46f
     val specR = coreR * 0.28f
     drawCircle(
-        brush = Brush.radialGradient(listOf(Color.White.copy(0.55f), Color.Transparent),
+        brush = Brush.radialGradient(listOf(Color.White.copy(0.35f), Color.Transparent),
             Offset(cx - coreR * 0.32f, cy - coreR * 0.32f), specR),
         radius = specR, center = Offset(cx - coreR * 0.32f, cy - coreR * 0.32f)
     )
     val spec2R = coreR * 0.10f
     drawCircle(
-        brush = Brush.radialGradient(listOf(Color.White.copy(0.30f), Color.Transparent),
+        brush = Brush.radialGradient(listOf(Color.White.copy(0.20f), Color.Transparent),
             Offset(cx + coreR * 0.25f, cy - coreR * 0.40f), spec2R),
         radius = spec2R, center = Offset(cx + coreR * 0.25f, cy - coreR * 0.40f)
     )

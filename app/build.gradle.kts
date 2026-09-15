@@ -140,6 +140,10 @@ android {
             keepDebugSymbols += "**/*.so"
         }
     }
+
+    androidResources {
+        noCompress += "gguf"
+    }
 }
 
 // ── Room schema export ─────────────────────────────────────────────────────────
@@ -169,6 +173,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    implementation(libs.lottie.compose)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)

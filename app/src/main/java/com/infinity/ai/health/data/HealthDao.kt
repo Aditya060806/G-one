@@ -43,6 +43,9 @@ interface DeviceDao {
 
     @Query("UPDATE devices SET lastSeenAt = :seenAt, batteryPercent = :battery WHERE id = :id")
     suspend fun touch(id: String, seenAt: Long, battery: Int?)
+
+    @Query("DELETE FROM devices WHERE patientId = :patientId")
+    suspend fun clearForPatient(patientId: String): Int
 }
 
 @Dao
@@ -100,6 +103,9 @@ interface VitalsDao {
     /** Retention trim — monitoring at 1 Hz would otherwise grow unbounded. */
     @Query("DELETE FROM vitals_readings WHERE patientId = :patientId AND timestamp < :before")
     suspend fun deleteOlderThan(patientId: String, before: Long): Int
+
+    @Query("DELETE FROM vitals_readings WHERE patientId = :patientId")
+    suspend fun clearAll(patientId: String): Int
 }
 
 @Dao
@@ -176,4 +182,7 @@ interface AnomalyDao {
 
     @Query("SELECT COUNT(*) FROM anomaly_events WHERE patientId = :patientId AND status = 'ACTIVE'")
     fun observeActiveCount(patientId: String): Flow<Int>
+
+    @Query("DELETE FROM anomaly_events WHERE patientId = :patientId")
+    suspend fun clearAll(patientId: String): Int
 }

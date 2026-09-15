@@ -1,6 +1,7 @@
 package com.infinity.ai.health.ui
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -39,8 +42,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.infinity.ai.ui.theme.DarkBorder
-import com.infinity.ai.ui.theme.LightBorder
+import com.infinity.ai.ui.theme.LightShadow
+import com.infinity.ai.ui.theme.ModernBorderDark
+import com.infinity.ai.ui.theme.ModernBorderLight
+import com.infinity.ai.ui.theme.ModernCardDark
+import com.infinity.ai.ui.theme.ModernCardLight
 import com.infinity.ai.ui.theme.TextPrimary
 import com.infinity.ai.ui.theme.TextPrimaryLight
 import kotlin.math.max
@@ -83,11 +89,11 @@ fun RadialGauge(
 
     val swept by animateFloatAsState(
         targetValue = target,
-        animationSpec = tween(GaugeAnimMs, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        animationSpec = tween(GaugeAnimMs, easing = FastOutSlowInEasing),
         label = "gaugeSweep"
     )
     val color = riskColor(clamped, darkTheme)
-    val track = if (darkTheme) DarkBorder else LightBorder
+    val track = if (darkTheme) ModernBorderDark else ModernBorderLight
 
     Column(
         modifier = modifier,
@@ -181,7 +187,7 @@ fun BarChart(
     val peak = max(1, data.maxOf { it.value })
     val grow by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = tween(GoneBarAnimMs, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        animationSpec = tween(GoneBarAnimMs, easing = FastOutSlowInEasing),
         label = "barGrow"
     )
 
@@ -216,7 +222,7 @@ fun BarChart(
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawRoundRect(
                                 color = d.color ?: barColor,
-                                cornerRadius = CornerRadius(this.size.width * 0.28f)
+                                cornerRadius = CornerRadius(this.size.width * 0.32f)
                             )
                         }
                     }
@@ -230,7 +236,7 @@ fun BarChart(
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
                                 drawRoundRect(
-                                    color = (if (darkTheme) DarkBorder else LightBorder),
+                                    color = (if (darkTheme) ModernBorderDark else ModernBorderLight),
                                     cornerRadius = CornerRadius(1.dp.toPx())
                                 )
                             }
@@ -259,7 +265,7 @@ fun BarChart(
     }
 }
 
-private val BarShape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+private val BarShape = RoundedCornerShape(6.dp)
 private const val GoneBarAnimMs = 700
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -304,7 +310,7 @@ fun RangeBandChart(
 
     val reveal by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = tween(GoneBarAnimMs, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        animationSpec = tween(GoneBarAnimMs, easing = FastOutSlowInEasing),
         label = "bandReveal"
     )
 
@@ -407,7 +413,7 @@ fun DonutChart(
 
     val grow by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = tween(GaugeAnimMs, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        animationSpec = tween(GaugeAnimMs, easing = FastOutSlowInEasing),
         label = "donutGrow"
     )
 
@@ -518,7 +524,7 @@ fun StatusRing(
 ) {
     val riskFraction by animateFloatAsState(
         targetValue = dominantRisk.coerceIn(0, 100) / 100f,
-        animationSpec = tween(900, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        animationSpec = tween(900, easing = FastOutSlowInEasing),
         label = "heroRisk"
     )
     val accent by animateColorAsState(stateColor, tween(600), label = "heroAccent")
@@ -535,7 +541,7 @@ fun StatusRing(
     )
     val livePulse = if (active) pulse else 0f
 
-    val track = if (darkTheme) DarkBorder else LightBorder
+    val track = if (darkTheme) ModernBorderDark else ModernBorderLight
 
     Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
 

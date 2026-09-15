@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.infinity.ai.ui.components.GlassCard
-import com.infinity.ai.ui.components.GradientBackground
 import com.infinity.ai.ui.theme.*
 import com.infinity.ai.viewmodel.OcrAction
 import com.infinity.ai.viewmodel.OcrUiState
@@ -41,6 +40,7 @@ fun OcrScreen(
     isDarkTheme: Boolean,
     bottomPadding: Dp,
     onNavigateBack: () -> Unit,
+    onNavigateHome: () -> Unit = {},
     vm: OcrViewModel = viewModel()
 ) {
     val uiState           by vm.uiState.collectAsState()
@@ -84,7 +84,11 @@ fun OcrScreen(
         }
     }
 
-    GradientBackground(darkTheme = isDarkTheme, modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isDarkTheme) ModernBgDark else ModernBgLight)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,13 +100,17 @@ fun OcrScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .background(WarnAmber.copy(alpha = 0.15f))
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .border(1.dp, WarnAmber.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
                     Text(
                         "Large document detected. Summarizing first section for speed.",
                         style = MaterialTheme.typography.labelSmall,
-                        color = WarnAmber
+                        color = WarnAmber,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
@@ -122,13 +130,14 @@ fun OcrScreen(
                     is OcrUiState.Error      -> ErrorRed
                     is OcrUiState.Done       -> SuccessGreen
                     is OcrUiState.Partial    -> WarnAmber
-                    is OcrUiState.Processing -> Blue500
+                    is OcrUiState.Processing -> ModernBlue
                     is OcrUiState.Extracting -> WarnAmber
                     else                     -> if (isDarkTheme) TextSecondary else TextSecondaryLight
                 },
-                onBack      = onNavigateBack,
-                showReset   = uiState != OcrUiState.Idle,
-                onReset     = { vm.reset() }
+                onBack         = onNavigateBack,
+                onNavigateHome = onNavigateHome,
+                showReset      = uiState != OcrUiState.Idle,
+                onReset        = { vm.reset() }
             )
 
             when (uiState) {
@@ -137,7 +146,7 @@ fun OcrScreen(
                     onGallery   = { galleryLauncher.launch("image/*") },
                     onCamera    = onCamera
                 )
-                is OcrUiState.Extracting -> CenteredSpinner("Reading image...", WarnAmber, isDarkTheme)
+                is OcrUiState.Extracting -> CenteredSpinner("Reading image...", WarnAmber, isDarkTheme, isScanning = true)
                 is OcrUiState.TextReady, is OcrUiState.Processing, is OcrUiState.Done, is OcrUiState.Partial -> {
                     val isProcessing = uiState is OcrUiState.Processing
                     val isPartial    = uiState is OcrUiState.Partial
@@ -170,33 +179,76 @@ fun OcrScreen(
 
 @Composable
 private fun OcrIdleState(isDarkTheme: Boolean, onGallery: () -> Unit, onCamera: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier.size(88.dp).background(Blue500.copy(0.12f), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Default.DocumentScanner, null, tint = Blue500, modifier = Modifier.size(40.dp))
-        }
-        Spacer(Modifier.height(24.dp))
-        Text("OCR Scanner", style = MaterialTheme.typography.headlineSmall,
-            color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-            fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(8.dp))
-        Text("Extract text from any image, then summarize,\nexplain, or convert it using on-device AI.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
-            textAlign = TextAlign.Center, lineHeight = 22.sp)
-        Spacer(Modifier.height(32.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            PickButton("Gallery", Icons.Default.PhotoLibrary, Blue500, isDarkTheme,
-                Modifier.weight(1f), onGallery)
-            PickButton("Camera", Icons.Default.CameraAlt, Color(0xFF10B981), isDarkTheme,
-                Modifier.weight(1f), onCamera)
-        }
+        FeatureHeroIdleCard(
+            title = "OCR Scanner",
+            subtitle = "Extract text from any image or document, then summarize,\nexplain, or convert it using on-device AI.",
+            isDarkTheme = isDarkTheme,
+            lottieContent = {
+                com.infinity.ai.ui.components.WatchScanningLottieAnimation(
+                    modifier = Modifier.size(110.dp)
+                )
+            },
+            actionContent = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    PickButton(
+                        label = "Gallery",
+                        icon = Icons.Default.PhotoLibrary,
+                        color = ModernBlue,
+                        isDarkTheme = isDarkTheme,
+                        modifier = Modifier.weight(1f),
+                        onClick = onGallery
+                    )
+                    PickButton(
+                        label = "Camera",
+                        icon = Icons.Default.CameraAlt,
+                        color = SuccessGreen,
+                        isDarkTheme = isDarkTheme,
+                        modifier = Modifier.weight(1f),
+                        onClick = onCamera
+                    )
+                }
+            },
+            noteContent = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.4f) else ModernBlueSubtle.copy(alpha = 0.4f))
+                        .border(
+                            1.dp,
+                            if (isDarkTheme) ModernBorderDark else ModernBorderLight,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .padding(14.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.DocumentScanner, null,
+                            tint = ModernBlue,
+                            modifier = Modifier.size(18.dp).padding(top = 1.dp)
+                        )
+                        Text(
+                            "OCR runs locally via on-device vision models. Scanned prescriptions, lab reports, and textbooks work instantly without internet.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
+                            lineHeight = 18.sp
+                        )
+                    }
+                }
+            }
+        )
     }
 }
 
@@ -216,17 +268,40 @@ private fun OcrReadyBody(
 
     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         // Extracted text preview
-        GlassCard(darkTheme = isDarkTheme, modifier = Modifier.fillMaxWidth()) {
-            Text("Extracted Text", style = MaterialTheme.typography.labelSmall,
-                color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
-                letterSpacing = 1.sp)
-            Spacer(Modifier.height(8.dp))
-            Text(
-                if (extractedText.length > 200) extractedText.take(200) + "…" else extractedText,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
-                lineHeight = 18.sp
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = if (isDarkTheme) 0.dp else 4.dp,
+                    shape = RoundedCornerShape(24.dp),
+                    ambientColor = LightShadow,
+                    spotColor = LightShadow
+                )
+                .clip(RoundedCornerShape(24.dp))
+                .background(if (isDarkTheme) ModernCardDark else ModernCardLight)
+                .border(
+                    1.dp,
+                    if (isDarkTheme) ModernBorderDark else ModernBorderLight,
+                    RoundedCornerShape(24.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Column {
+                Text(
+                    "EXTRACTED TEXT",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.sp
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    if (extractedText.length > 200) extractedText.take(200) + "…" else extractedText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isDarkTheme) TextPrimary else TextPrimaryLight,
+                    lineHeight = 18.sp
+                )
+            }
         }
 
         Spacer(Modifier.height(12.dp))
@@ -234,7 +309,9 @@ private fun OcrReadyBody(
         // Action chips
         if (!isProcessing) {
             Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OcrAction.entries.forEach { action ->
@@ -242,12 +319,17 @@ private fun OcrReadyBody(
                 }
             }
             Spacer(Modifier.height(4.dp))
-            TextButton(onClick = onNewImage,
-                modifier = Modifier.align(Alignment.End)) {
-                Icon(Icons.Default.AddPhotoAlternate, null,
-                    modifier = Modifier.size(16.dp), tint = Blue500)
+            TextButton(
+                onClick = onNewImage,
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Icon(
+                    Icons.Default.AddPhotoAlternate, null,
+                    modifier = Modifier.size(16.dp),
+                    tint = ModernBlue
+                )
                 Spacer(Modifier.width(4.dp))
-                Text("New Image", style = MaterialTheme.typography.labelMedium, color = Blue500)
+                Text("New Image", style = MaterialTheme.typography.labelMedium, color = ModernBlue, fontWeight = FontWeight.SemiBold)
             }
         }
 
@@ -261,6 +343,7 @@ private fun OcrReadyBody(
                 scrollState    = scroll,
                 onStop         = onStop,
                 modifier       = Modifier.weight(1f),
+                accentColor    = ModernBlue,
                 streamingLabel = "Generating...",
                 completeLabel  = if (isPartial) "Partial summary generated" else "Complete",
                 completeColor  = if (isPartial) WarnAmber else SuccessGreen
@@ -273,12 +356,24 @@ private fun OcrReadyBody(
 private fun ActionChip(label: String, isDarkTheme: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
+            .shadow(
+                elevation = if (isDarkTheme) 0.dp else 2.dp,
+                shape = RoundedCornerShape(20.dp),
+                ambientColor = LightShadow,
+                spotColor = LightShadow
+            )
             .clip(RoundedCornerShape(20.dp))
-            .background(Blue500.copy(0.12f))
-            .border(0.5.dp, Blue500.copy(0.3f), RoundedCornerShape(20.dp))
+            .background(if (isDarkTheme) Color(0xFF1E293B) else ModernBlueSubtle)
+            .border(1.dp, ModernBlue.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = Blue500)
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            color = ModernBlue,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
+

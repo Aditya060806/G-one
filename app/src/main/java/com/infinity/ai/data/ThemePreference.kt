@@ -27,7 +27,7 @@ class ThemePreference(private val context: Context) {
      * silently discard the preference of anyone who had already chosen a theme.
      */
     val isDarkTheme: Flow<Boolean> = context.dataStore.data
-        .map { it[DARK_THEME_KEY] ?: false }
+        .map { it[DARK_THEME_KEY] ?: true }
 
     suspend fun setDarkTheme(isDark: Boolean) {
         context.dataStore.edit { it[DARK_THEME_KEY] = isDark }
