@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/readme-banner.svg" alt="G-one: Sense. Understand. Act. — wearable signals, local intelligence, information you control" width="100%" />
+<img src="docs/assets/Readme%20-%20logo.png" alt="G-one — Private. Local. Always." width="240" />
 
 # G-one
 ### Personal health awareness. Local intelligence. User-controlled sharing.
