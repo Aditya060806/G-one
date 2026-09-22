@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="650" viewBox="0 0 1000 650" role="img" aria-labelledby="title desc">
+<title id="title">G-one model footprint</title>
+<desc id="desc">Actual APK is 1182249970 bytes, with 94.51 percent occupied by the uncompressed GGUF. Theoretical nominal 1.5 billion parameter weight sizes are shown separately from measured GGUF size.</desc>
+<rect width="1000" height="650" rx="24" fill="#f7f7f2"/>
+<g font-family="Arial, sans-serif" fill="#292a27">
+<text x="48" y="56" font-size="28" font-weight="700">G-one / local intelligence footprint</text>
+<text x="48" y="88" font-size="15" fill="#656963">Workspace artifact inspection · 22 September 2026</text>
+<text x="48" y="135" font-size="19" font-weight="700">01 / Measured release APK</text>
+<rect x="48" y="156" width="824" height="44" rx="8" fill="#d9dcd5"/><rect x="48" y="156" width="778.75" height="44" rx="8" fill="#edc85b"/>
+<text x="65" y="184" font-size="17" font-weight="700">GGUF model · 94.51%</text>
+<text x="48" y="227" font-size="15">Model: 1,065.56 MiB     Other content + overhead: 61.92 MiB</text>
+<text x="48" y="253" font-size="15">Total APK: 1,127.48 MiB · GGUF ZIP method 0 (stored, not deflated)</text>
+<line x1="48" y1="281" x2="952" y2="281" stroke="#d9dcd5"/>
+<text x="48" y="317" font-size="19" font-weight="700">02 / Weight storage: theoretical versus measured</text>
+<text x="48" y="343" font-size="14" fill="#656963">Nominal 1.5B parameters × bits / 8. Decimal GB. Theoretical bars are not checkpoints.</text>
+<text x="48" y="396" font-size="15">FP32 / theoretical</text>
+<rect x="260" y="376" width="560.00" height="28" rx="5" fill="#c9cec6"/>
+<text x="830.00" y="396" font-size="15">6.00 GB</text>
+<text x="48" y="447" font-size="15">FP16 / theoretical</text>
+<rect x="260" y="427" width="280.00" height="28" rx="5" fill="#c9cec6"/>
+<text x="550.00" y="447" font-size="15">3.00 GB</text>
+<text x="48" y="498" font-size="15">4-bit / ideal packing</text>
+<rect x="260" y="478" width="70.00" height="28" rx="5" fill="#c9cec6"/>
+<text x="340.00" y="498" font-size="15">0.75 GB</text>
+<text x="48" y="549" font-size="15">Q4_K_M / actual GGUF</text>
+<rect x="260" y="529" width="104.28" height="28" rx="5" fill="#4d8b82"/>
+<text x="374.28" y="549" font-size="15">1.117 GB</text>
+<text x="48" y="602" font-size="14" fill="#656963">Mixed tensor precision and metadata affect actual GGUF size.</text>
+<text x="48" y="624" font-size="14" fill="#656963">No measured full-precision baseline, compression ratio or accuracy-retention result is claimed.</text>
+</g></svg>

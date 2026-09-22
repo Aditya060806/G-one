@@ -1,0 +1,44 @@
+00:00.656  blend            | Read blend: "D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-phase1-strap\G-one-Phase-1-Strap.blend"
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-phase1-strap\export_glb_web.py:92: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  p = next((n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED'), None) if m.use_nodes else None
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-phase1-strap\export_glb_web.py:96: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+INFO Draco is available, use library at D:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at D:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+17:05:37 | INFO: Starting glTF 2.0 export
+17:05:37 | INFO: Extracting primitive: Forearm and metacarpal topology.001
+17:05:38 | INFO: Primitives created: 4
+17:05:38 | INFO: Extracting primitive: Strap | broad elastic cuff.001
+17:05:38 | INFO: Primitives created: 4
+17:05:38 | INFO: Extracting primitive: Cube.179
+17:05:38 | INFO: Primitives created: 8
+17:05:38 | INFO: Extracting primitive: Cube.259
+17:05:38 | INFO: Primitives created: 8
+17:05:38 | INFO: Extracting primitive: Cube.299
+17:05:38 | INFO: Primitives created: 7
+17:05:38 | INFO: Extracting primitive: Cube.297
+17:05:38 | INFO: Primitives created: 4
+17:05:38 | INFO: Extracting primitive: Jumper | 00 photo-style loose loop
+17:05:38 | INFO: Primitives created: 11
+17:05:38 | INFO: Extracting primitive: Cylinder.270
+17:05:38 | INFO: Primitives created: 9
+17:05:38 | INFO: Extracting primitive: Cylinder.290
+17:05:38 | INFO: Primitives created: 5
+17:05:39 | INFO: Finished glTF 2.0 export in 1.4824347496032715 s
+
+17:05:39 | INFO: Data are loaded, start creating Blender stuff
+17:05:39 | INFO: Blender create Mesh node Forearm and metacarpal topology.001
+17:05:40 | INFO: Blender create Mesh node Strap | broad elastic cuff.001
+17:05:40 | INFO: Blender create Mesh node Cube.179
+17:05:41 | INFO: Blender create Mesh node Cube.259
+17:05:41 | INFO: Blender create Mesh node Cube.299
+17:05:41 | INFO: Blender create Mesh node Cube.297
+17:05:41 | INFO: Blender create Mesh node Jumper | 00 photo-style loose loop
+17:05:41 | INFO: Blender create Mesh node Cylinder.270
+17:05:41 | INFO: Blender create Mesh node Cylinder.290
+17:05:41 | INFO: glTF import finished in 2.47s
+EXPORT_VALIDATED {"file": "G-one-Phase-1-Strap-web.glb", "bytes": 21084380, "meshes": 9, "triangles": 694586, "materials": 28, "bounds_metres": [[-0.14269468188285828, -0.08386365324258804, 0.011634333990514278], [0.16800004243850708, 0.05668541043996811, 0.15185989439487457]], "geometry_optimized": true, "roundtrip_max_error_metres": 0.0, "source_sha256": "03db36e9d49fc744384ab85ca090e39987f16705b42500c63aa9658dfd71e2b5", "source_unchanged": true, "self_contained": true, "material_note": "Portable PBR colors, metallic and roughness; procedural micro-bump omitted."}
+PHASE1_EXPORT_VALIDATED
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

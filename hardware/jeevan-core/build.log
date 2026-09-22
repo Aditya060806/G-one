@@ -1,0 +1,42 @@
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\jeevan-core\build_core.py:26: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m=bpy.data.materials.new(name);m.diffuse_color=(*c,1);m.use_nodes=True
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\jeevan-core\build_core.py:260: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  S.world=bpy.data.worlds.new('Studio atmosphere');S.world.use_nodes=True;S.world.node_tree.nodes['Background'].inputs[0].default_value=(.16,.19,.21,1);S.world.node_tree.nodes['Background'].inputs[1].default_value=.5
+00:17.766  cycles           | WARNING HIPEW initialization failed: Error opening HIP dynamic library
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Applied modifier was not first, result may not be as expected
+Info: Saved as "Jeevan-Core.blend"
+CORE_SAVED
+01:02.250  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\jeevan-core\core-assembled.png'
+01:43.437  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\jeevan-core\core-exploded.png'
+02:01.812  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\jeevan-core\core-skin.png'
+Info: Saved as "Jeevan-Core.blend"
+CORE_RENDERED
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

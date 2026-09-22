@@ -1,0 +1,15 @@
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-pcb-3d\build_pcb.py:33: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m=bpy.data.materials.new(name); m.diffuse_color=(*color,1); m.use_nodes=True
+BOARD_GEOMETRY 1988 1061
+01:07.859  cycles           | WARNING HIPEW initialization failed: Error opening HIP dynamic library
+01:46.609  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-pcb-3d\isometric.png'
+02:25.265  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-pcb-3d\top.png'
+02:43.218  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-pcb-3d\bottom.png'
+03:00.953  render           | Saved: 'D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-pcb-3d\detail.png'
+Info: Applied modifier was not first, result may not be as expected
+Info: Saved as "G-one-PCB.blend"
+Info: Saved as "G-one-PCB.blend"
+G1_COMPLETE {"object_count": 905, "mesh_count": 820, "collections": ["01 | PCB laminate, drilled holes and plating", "02 | ESP32-S3-WROOM-1-N16R8 module", "03 | MPU6050 inertial sensor", "04 | microSD socket and removable card", "05 | EMG analog front end and electrode interface", "06 | Charger, buck-boost and battery interface", "07 | USB-C, programming pads, switches and LEDs", "08 | Skin side MAX30102 optical sensor", "09 | DS18B20 thermal island", "10 | Visible routing relief and silkscreen", "11 | Optional battery envelope (hidden by default)", "12 | Studio, cameras and reference", "Collection"], "board_mm": [44, 64, 1], "scope": "G-ONE PCB / editable reconstruction\n44 x 64 x 1 mm main board. Antenna extends beyond main board.\nReference image layout; package envelopes approximated where unidentified.\nU1 ESP32-S3-WROOM-1-N16R8; U2 MAX30102; U3 MPU6050; U4 DS18B20.\nEMG section: INA333 + opamp envelope models, NOT a validated EMG circuit.\nSix mounting holes follow the top reference; source bottom view was inconsistent.\nAll traces are visual surface detail, NOT electrically routed nets.\nOptional battery envelope is hidden, no exact battery part known.\nNo Gerbers, electrical DRC, assembly validation or patient-use suitability implied.\nMAX30102 requires firmware migration from the repository MAX30100 library.\nCamera views: top, bottom, isometric, detail. Native Cycles GPU rendering.\n"}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

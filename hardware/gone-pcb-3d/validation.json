@@ -1,0 +1,30 @@
+{
+  "result": "PASS",
+  "board_mm": [
+    44.0,
+    64.0,
+    1.0
+  ],
+  "board_vertices": 1988,
+  "objects": 905,
+  "meshes": 820,
+  "required_parts": [
+    "ESP32-S3-WROOM-1-N16R8",
+    "MAX30102EFD+",
+    "MPU6050",
+    "DS18B20",
+    "INA333",
+    "BQ24074",
+    "TPS63070"
+  ],
+  "empty_meshes": [],
+  "meshes_without_materials": [],
+  "packed_reference": true,
+  "renders": [
+    "isometric.png",
+    "top.png",
+    "bottom.png",
+    "detail.png"
+  ],
+  "validation_scope": "Presence, dimensions, geometry and file checks only; no electrical or fabrication validation."
+}

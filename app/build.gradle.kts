@@ -25,11 +25,11 @@ val hasReleaseKeystore = keystorePropertiesFile.exists() &&
     keystoreProperties.getProperty("storeFile") != null
 
 android {
-    namespace = "com.infinity.ai"
+    namespace = "com.gone.ai"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.infinity.ai"
+        applicationId = "com.gone.ai"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -99,6 +99,12 @@ android {
         }
     }
 
+    // Room's MigrationTestHelper reads each version's exported schema from the test APK's
+    // assets. Without this the instrumented migration tests could not find 1.json … 4.json.
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
@@ -140,10 +146,6 @@ android {
             keepDebugSymbols += "**/*.so"
         }
     }
-
-    androidResources {
-        noCompress += "gguf"
-    }
 }
 
 // ── Room schema export ─────────────────────────────────────────────────────────
@@ -174,7 +176,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.lottie.compose)
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.zxing.core)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)

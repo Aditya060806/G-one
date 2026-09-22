@@ -1,0 +1,22 @@
+{
+  "scenes": [
+    "01 | Worn Phase-1 prototype",
+    "02 | Opened strap - sensor inspection"
+  ],
+  "objects": 1684,
+  "packed_photos": 11,
+  "hardware_modules": [
+    "ESP32-S3 development board",
+    "Muscle BioAmp Patchy",
+    "MAX30100/30102 breakout",
+    "MPU6050 GY-521",
+    "temperature probe"
+  ],
+  "resistors": 4,
+  "scale": "Approximate millimetres; nominal 2.54 mm header pitch",
+  "limitations": [
+    "Closed-fist anatomy approximated",
+    "Hidden routing and pin assignments not electrically validated",
+    "Exact dimensions and resistor values not measurable from photos"
+  ]
+}

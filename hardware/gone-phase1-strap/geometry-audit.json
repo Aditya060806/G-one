@@ -1,0 +1,7 @@
+{
+  "worn_scene_objects": 1112,
+  "empty_or_unmaterialed_meshes": [],
+  "wire_samples_inside_body": [],
+  "packed_references": 11,
+  "scope": "Body penetration check samples main jumper centerlines only; not a full solid interference or electrical validation."
+}

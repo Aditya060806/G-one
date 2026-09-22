@@ -1,9 +1,9 @@
 # ── JNI Bridge ────────────────────────────────────────────────────────────────
 # These classes are called by name from C++ via JNI.
 # If ProGuard renames them, the JNI calls will fail with UnsatisfiedLinkError.
--keep class com.infinity.ai.ai.runtime.LlamaJniBridge { *; }
--keep interface com.infinity.ai.ai.runtime.LlamaCallback { *; }
--keepclassmembers class com.infinity.ai.ai.runtime.LlamaJniBridge {
+-keep class com.gone.ai.ai.runtime.LlamaJniBridge { *; }
+-keep interface com.gone.ai.ai.runtime.LlamaCallback { *; }
+-keepclassmembers class com.gone.ai.ai.runtime.LlamaJniBridge {
     native <methods>;
 }
 
@@ -15,8 +15,8 @@
 # only the interface is not enough; the implementors must survive intact.
 # Symptom if this is missing: generation silently produces zero tokens in release
 # while debug works perfectly.
--keep class * implements com.infinity.ai.ai.runtime.LlamaCallback { *; }
--keepclassmembers class * implements com.infinity.ai.ai.runtime.LlamaCallback {
+-keep class * implements com.gone.ai.ai.runtime.LlamaCallback { *; }
+-keepclassmembers class * implements com.gone.ai.ai.runtime.LlamaCallback {
     void onToken(java.lang.String);
     void onComplete();
     void onError(java.lang.String);
@@ -44,3 +44,13 @@
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+# Release builds drop verbose, debug and info logs. They describe prompts, extraction and
+# sync progress, which is useful while developing and needless on a user's phone, where any
+# app with log access (adb, a bug report) could read it. Warnings and errors stay.
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+}

@@ -1,0 +1,29 @@
+{
+  "package_body_intersections": [],
+  "empty_or_unmaterialed_meshes": [],
+  "checked_package_bodies": 49,
+  "wire_sample_checks": [
+    {
+      "wire": "W1 | BAT+ battery harness",
+      "sampled_points": 120,
+      "surface_clearance_hits": []
+    },
+    {
+      "wire": "W2 | BAT- battery harness",
+      "sampled_points": 120,
+      "surface_clearance_hits": []
+    },
+    {
+      "wire": "W3 | NTC battery harness",
+      "sampled_points": 120,
+      "surface_clearance_hits": []
+    }
+  ],
+  "board_mm": [
+    44.0,
+    64.0,
+    1.0
+  ],
+  "object_count": 1177,
+  "scope": "Package AABB and sampled wire-to-package/carrier surface checks. Connector/tab insertion excluded. Does not certify all surfaces or electrical routing."
+}

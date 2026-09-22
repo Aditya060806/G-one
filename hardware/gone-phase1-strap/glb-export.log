@@ -1,0 +1,3284 @@
+00:05.125  blend            | Read blend: "D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-phase1-strap\G-one-Phase-1-Strap.blend"
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-phase1-strap\export_glb.py:73: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  p = next((n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED'), None) if m.use_nodes else None
+D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\gone-phase1-strap\export_glb.py:77: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+INFO Draco is available, use library at D:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at D:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+17:03:18 | INFO: Starting glTF 2.0 export
+17:03:18 | INFO: Extracting primitive: Body hair 000
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 001
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 002
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 003
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 004
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 005
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 006
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 007
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 008
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 009
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 010
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 011
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 012
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 013
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 014
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 015
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 016
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 017
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 018
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 019
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 020
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 021
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 022
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 023
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 024
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 025
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 026
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 027
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 028
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 029
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 030
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 031
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 032
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 033
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 034
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 035
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 036
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 037
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 038
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 039
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 040
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 041
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 042
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 043
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 044
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 045
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 046
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 047
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 048
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 049
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 050
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 051
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 052
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 053
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 054
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 055
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 056
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 057
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 058
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 059
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 060
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 061
+17:03:18 | INFO: Primitives created: 1
+17:03:18 | INFO: Extracting primitive: Body hair 062
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 063
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 064
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 065
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 066
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 067
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 068
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 069
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 070
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 071
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 072
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 073
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 074
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 075
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 076
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 077
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 078
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 079
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 080
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 081
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 082
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 083
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 084
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 085
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 086
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 087
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 088
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 089
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 090
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 091
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 092
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 093
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 094
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 095
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 096
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 097
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 098
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 099
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 100
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 101
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 102
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 103
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 104
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 105
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 106
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 107
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 108
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 109
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 110
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 111
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 112
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 113
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 114
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 115
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 116
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 117
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 118
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 119
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 120
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 121
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 122
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 123
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 124
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 125
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 126
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 127
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 128
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 129
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 130
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 131
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 132
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 133
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 134
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 135
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 136
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 137
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 138
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 139
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 140
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 141
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 142
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 143
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Body hair 144
+17:03:19 | INFO: Primitives created: 1
+17:03:19 | INFO: Extracting primitive: Forearm and metacarpal topology.001
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Skin | wrist flexion crease
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Skin | wrist flexion crease.001
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Sphere.001
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Fastener | reinforced stitching row.004
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Fastener | reinforced stitching row.005
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Fastener | reinforced stitching row.006
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Fastener | reinforced stitching row.007
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Cube.178
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: RAV
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 000
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 001
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 002
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 003
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 004
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 005
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 006
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 007
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 008
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 009
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 010
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 011
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 012
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 013
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 014
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 015
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 016
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 017
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 018
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 019
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 020
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 021
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 022
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 023
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 024
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 025
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 026
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 027
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 028
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 029
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 030
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 031
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 032
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 033
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 034
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 035
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 036
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 037
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 038
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 039
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 040
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 041
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 042
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 043
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 044
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 045
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 046
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 047
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 048
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 049
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 050
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 051
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 052
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 053
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 054
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 055
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 056
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 057
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 058
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 059
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 060
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 061
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 062
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 063
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 064
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 065
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 066
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 067
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 068
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 069
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 070
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 071
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 072
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 073
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 074
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 075
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 076
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 077
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 078
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 079
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 080
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 081
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 082
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 083
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 084
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 085
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 086
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 087
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 088
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 089
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 090
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 091
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 092
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 093
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 094
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 095
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 096
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 097
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 098
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 099
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 100
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 101
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 102
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 103
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 104
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 105
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 106
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 107
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 108
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 109
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 110
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 111
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 112
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 113
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 114
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 115
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 116
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 117
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 118
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 119
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 120
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 121
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 122
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 123
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 124
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 125
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 126
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 127
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 128
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 129
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 130
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 131
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 132
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 133
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 134
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 135
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 136
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 137
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 138
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 139
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 140
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 141
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 142
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 143
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge 36 144
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 000
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 001
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 002
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 003
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 004
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 005
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 006
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 007
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 008
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 009
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 010
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 011
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 012
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 013
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 014
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 015
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 016
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 017
+17:03:20 | INFO: Primitives created: 1
+17:03:20 | INFO: Extracting primitive: Stitch | edge -36 018
+17:03:20 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 019
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 020
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 021
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 022
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 023
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 024
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 025
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 026
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 027
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 028
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 029
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 030
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 031
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 032
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 033
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 034
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 035
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 036
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 037
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 038
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 039
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 040
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 041
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 042
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 043
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 044
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 045
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 046
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 047
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 048
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 049
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 050
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 051
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 052
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 053
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 054
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 055
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 056
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 057
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 058
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 059
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 060
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 061
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 062
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 063
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 064
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 065
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 066
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 067
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 068
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 069
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 070
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 071
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 072
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 073
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 074
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 075
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 076
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 077
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 078
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 079
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 080
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 081
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 082
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 083
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 084
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 085
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 086
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 087
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 088
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 089
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 090
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 091
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 092
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 093
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 094
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 095
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 096
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 097
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 098
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 099
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 100
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 101
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 102
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 103
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 104
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 105
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 106
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 107
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 108
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 109
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 110
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 111
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 112
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 113
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 114
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 115
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 116
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 117
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 118
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 119
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 120
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 121
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 122
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 123
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 124
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 125
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 126
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 127
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 128
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 129
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 130
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 131
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 132
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 133
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 134
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 135
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 136
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 137
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 138
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 139
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 140
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 141
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 142
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 143
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Stitch | edge -36 144
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Strap | broad elastic cuff.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Strap | overlapping Velcro fastening flap.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Strap | reinforced transverse overlap.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Strap | rolled bound edge
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Strap | rolled bound edge.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 000
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 002
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 003
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 004
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 005
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 006
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 007
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 008
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 009
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 010
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 011
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 012
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 013
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 014
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 015
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 016
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 017
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 018
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 019
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 020
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 021
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 022
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 023
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 024
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 025
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 026
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 027
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 028
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 029
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 030
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 031
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 032
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 033
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 034
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 035
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 036
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 037
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 038
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 039
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 040
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 041
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 042
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 043
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 044
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 045
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 046
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 047
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 048
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 049
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 050
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 051
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 052
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 053
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 054
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 055
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 056
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 057
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 058
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 059
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 060
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 061
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 062
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 063
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 064
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 065
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 066
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 067
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 068
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 069
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 070
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 071
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 072
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 073
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 074
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 075
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 076
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 077
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 078
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 079
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 080
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 081
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 082
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 083
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 084
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 085
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 086
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 087
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 088
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 089
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 090
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 091
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 092
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 093
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 094
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 095
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 096
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 097
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 098
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 099
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 100
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 101
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 102
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 103
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 104
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 105
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 106
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 107
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 108
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 109
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 110
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 111
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 112
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 113
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 114
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 115
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 116
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 117
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 118
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 119
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 120
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 121
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 122
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 123
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 124
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 125
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 126
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 127
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 128
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 129
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 130
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 131
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 132
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 133
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 134
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 135
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 136
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 137
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 138
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 139
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 140
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 141
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 142
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 143
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 144
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 145
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 146
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 147
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 148
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 149
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 150
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 151
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 152
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 153
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 154
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 155
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 156
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 157
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 158
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 159
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 160
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 161
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 162
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 163
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 164
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 165
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 166
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 167
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 168
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 169
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 170
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 171
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 172
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 173
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 174
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 175
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 176
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 177
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 178
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Velcro | exposed loop 179
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.230
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.180
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.231
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.232
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.206
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.207
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.208
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.209
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.210
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.211
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.212
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.213
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.214
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.215
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.216
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.217
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.218
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.219
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.220
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.221
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.222
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.223
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.224
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.225
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.226
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.227
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.228
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.182
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.183
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.184
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.185
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.186
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.187
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.188
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.189
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.190
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.191
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.192
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.193
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.194
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.195
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.196
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.197
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.198
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.199
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.200
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.201
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.202
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.203
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.204
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: ESP32 | printed antenna
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.233
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.229
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.234
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.235
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.236
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.237
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.238
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.239
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.240
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.241
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.242
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.243
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.244
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.245
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.246
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.247
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.146
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.147
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.148
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.149
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.150
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.151
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.152
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.153
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.154
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.155
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.156
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.157
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.158
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.159
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.160
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.161
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.162
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.163
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.164
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.165
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.166
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.167
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.168
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.169
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.170
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.171
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.172
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.173
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.174
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.175
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.176
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.177
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.178
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.179
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.180
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.181
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.182
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.183
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.184
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.185
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.186
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.187
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.188
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.189
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.190
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.191
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.192
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cylinder.193
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.181
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.205
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.258
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.179
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 1
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 1.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 2
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 2.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 3
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 3.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 4
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 4.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 5
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 5.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 6
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 6.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 7
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 7.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 8
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 8.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 9
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 9.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 10
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 10.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 11
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 11.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 12
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 12.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 13
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 13.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 14
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 14.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 15
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 15.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 16
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 16.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 17
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 17.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 18
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 18.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 19
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 19.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 20
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 20.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 21
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 21.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 22
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 22.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 23
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 23.001
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: 2022-V1.3
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: ESP32-S3
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: N16R8
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.252
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.257
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.250
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.251
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.255
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.256
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.248
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.249
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.253
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.254
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.264
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.265
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.266
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.267
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.268
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.269
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.270
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.271
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.272
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.273
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.274
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.275
+17:03:21 | INFO: Primitives created: 1
+17:03:21 | INFO: Extracting primitive: Cube.276
+17:03:21 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.277
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.278
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.279
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.280
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.281
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.282
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.283
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.284
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.259
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.285
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.287
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.289
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.291
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.293
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.295
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.262
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.263
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | mounting annulus.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | mounting annulus.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.260
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.286
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.288
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.290
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.292
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.294
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.296
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.261
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | solder pad.006
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | solder pad.007
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | solder pad.008
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | solder pad.009
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | solder pad.010
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: optical | solder pad.011
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: MAX30100/30102
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.302
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.303
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.304
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.305
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.306
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.307
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.308
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.309
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.310
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.311
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.312
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.313
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.314
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.315
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.316
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.317
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.318
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.319
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.320
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.321
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.322
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.299
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.323
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.325
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.327
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.329
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.331
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.333
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.335
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.337
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | mounting annulus.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | mounting annulus.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.300
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.324
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.326
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.328
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.330
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.332
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.334
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.336
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.338
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.301
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.008
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.009
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.010
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.011
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.012
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.013
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.014
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: imu | solder pad.015
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: MPU-6050
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.297
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | connector plated hole.004
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | connector plated hole.005
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | connector plated hole.006
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | connector plated hole.007
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.196
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.197
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.198
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.199
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.200
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.201
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.202
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.203
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.204
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.205
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.206
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.207
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.208
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.209
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.210
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.211
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.212
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.213
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.214
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.215
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.216
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.217
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.218
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.219
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.220
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.221
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.222
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.223
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.224
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.225
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.226
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.227
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.228
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.229
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.230
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.231
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.234
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.235
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.236
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.237
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.238
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.239
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.240
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.241
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.242
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.243
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.244
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.245
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.246
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.247
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.248
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.249
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.250
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.251
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.252
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.253
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.254
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.255
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.256
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.257
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.258
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.259
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.260
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.261
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.262
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.263
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.264
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.265
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.266
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.267
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.268
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.269
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | nickel electrode snap.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | nickel electrode snap.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.298
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | raised contact rim.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: BioAmp | raised contact rim.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.195
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.233
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.194
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.232
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: GND
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: MUSCLE BIOAMP PATCHY
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: OUT
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: REF
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Upside Down Labs
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: VCC
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.352
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.353
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 00 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 01 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 02 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 03 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 04 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 05 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 06 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 07 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 08 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 09 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 10 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 11 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Jumper | 12 photo-style loose loop
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.339
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.340
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.341
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.342
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.343
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.344
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.345
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.346
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.347
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.348
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.349
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.350
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.351
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.004
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.005
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.006
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.007
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.008
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.009
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.010
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.011
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.012
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.013
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.014
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Tape | folded edge
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Tape | folded edge.001
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Tape | folded edge.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Tape | folded edge.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Tape | folded edge.004
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Tape | folded edge.005
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.271
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.272
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.273
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.274
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.270
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.276
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.277
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.278
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.279
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.275
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.281
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.282
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.283
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.284
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.280
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.286
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.287
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.288
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.289
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.285
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | bent bare lead to header
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | bent bare lead to header.001
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | bent bare lead to header.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | bent bare lead to header.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | insulated connection
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | insulated connection.001
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | insulated connection.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | insulated connection.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.015
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.016
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.017
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Sphere.018
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | twisted exposed junction
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | twisted exposed junction.001
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | twisted exposed junction.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Resistor | twisted exposed junction.003
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Probe | black cable
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.291
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Probe | breakout conductor
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Probe | breakout conductor.001
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Probe | breakout conductor.002
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cylinder.290
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: Cube.354
+17:03:22 | INFO: Primitives created: 1
+17:03:22 | INFO: Extracting primitive: USB | power and data cable
+17:03:22 | INFO: Primitives created: 1
+17:03:23 | INFO: Finished glTF 2.0 export in 5.069133043289185 s
+
+17:03:24 | INFO: Data are loaded, start creating Blender stuff
+17:03:24 | INFO: Blender create Mesh node Body hair 000
+17:03:24 | INFO: Blender create Mesh node Body hair 001
+17:03:24 | INFO: Blender create Mesh node Body hair 002
+17:03:24 | INFO: Blender create Mesh node Body hair 003
+17:03:24 | INFO: Blender create Mesh node Body hair 004
+17:03:24 | INFO: Blender create Mesh node Body hair 005
+17:03:24 | INFO: Blender create Mesh node Body hair 006
+17:03:24 | INFO: Blender create Mesh node Body hair 007
+17:03:24 | INFO: Blender create Mesh node Body hair 008
+17:03:24 | INFO: Blender create Mesh node Body hair 009
+17:03:24 | INFO: Blender create Mesh node Body hair 010
+17:03:24 | INFO: Blender create Mesh node Body hair 011
+17:03:24 | INFO: Blender create Mesh node Body hair 012
+17:03:24 | INFO: Blender create Mesh node Body hair 013
+17:03:24 | INFO: Blender create Mesh node Body hair 014
+17:03:24 | INFO: Blender create Mesh node Body hair 015
+17:03:24 | INFO: Blender create Mesh node Body hair 016
+17:03:24 | INFO: Blender create Mesh node Body hair 017
+17:03:24 | INFO: Blender create Mesh node Body hair 018
+17:03:24 | INFO: Blender create Mesh node Body hair 019
+17:03:24 | INFO: Blender create Mesh node Body hair 020
+17:03:24 | INFO: Blender create Mesh node Body hair 021
+17:03:24 | INFO: Blender create Mesh node Body hair 022
+17:03:24 | INFO: Blender create Mesh node Body hair 023
+17:03:24 | INFO: Blender create Mesh node Body hair 024
+17:03:24 | INFO: Blender create Mesh node Body hair 025
+17:03:24 | INFO: Blender create Mesh node Body hair 026
+17:03:24 | INFO: Blender create Mesh node Body hair 027
+17:03:24 | INFO: Blender create Mesh node Body hair 028
+17:03:24 | INFO: Blender create Mesh node Body hair 029
+17:03:24 | INFO: Blender create Mesh node Body hair 030
+17:03:24 | INFO: Blender create Mesh node Body hair 031
+17:03:24 | INFO: Blender create Mesh node Body hair 032
+17:03:24 | INFO: Blender create Mesh node Body hair 033
+17:03:24 | INFO: Blender create Mesh node Body hair 034
+17:03:24 | INFO: Blender create Mesh node Body hair 035
+17:03:24 | INFO: Blender create Mesh node Body hair 036
+17:03:24 | INFO: Blender create Mesh node Body hair 037
+17:03:24 | INFO: Blender create Mesh node Body hair 038
+17:03:24 | INFO: Blender create Mesh node Body hair 039
+17:03:24 | INFO: Blender create Mesh node Body hair 040
+17:03:24 | INFO: Blender create Mesh node Body hair 041
+17:03:24 | INFO: Blender create Mesh node Body hair 042
+17:03:24 | INFO: Blender create Mesh node Body hair 043
+17:03:24 | INFO: Blender create Mesh node Body hair 044
+17:03:24 | INFO: Blender create Mesh node Body hair 045
+17:03:24 | INFO: Blender create Mesh node Body hair 046
+17:03:24 | INFO: Blender create Mesh node Body hair 047
+17:03:24 | INFO: Blender create Mesh node Body hair 048
+17:03:24 | INFO: Blender create Mesh node Body hair 049
+17:03:24 | INFO: Blender create Mesh node Body hair 050
+17:03:24 | INFO: Blender create Mesh node Body hair 051
+17:03:24 | INFO: Blender create Mesh node Body hair 052
+17:03:24 | INFO: Blender create Mesh node Body hair 053
+17:03:24 | INFO: Blender create Mesh node Body hair 054
+17:03:24 | INFO: Blender create Mesh node Body hair 055
+17:03:24 | INFO: Blender create Mesh node Body hair 056
+17:03:24 | INFO: Blender create Mesh node Body hair 057
+17:03:24 | INFO: Blender create Mesh node Body hair 058
+17:03:24 | INFO: Blender create Mesh node Body hair 059
+17:03:24 | INFO: Blender create Mesh node Body hair 060
+17:03:24 | INFO: Blender create Mesh node Body hair 061
+17:03:24 | INFO: Blender create Mesh node Body hair 062
+17:03:24 | INFO: Blender create Mesh node Body hair 063
+17:03:24 | INFO: Blender create Mesh node Body hair 064
+17:03:24 | INFO: Blender create Mesh node Body hair 065
+17:03:24 | INFO: Blender create Mesh node Body hair 066
+17:03:24 | INFO: Blender create Mesh node Body hair 067
+17:03:24 | INFO: Blender create Mesh node Body hair 068
+17:03:24 | INFO: Blender create Mesh node Body hair 069
+17:03:24 | INFO: Blender create Mesh node Body hair 070
+17:03:24 | INFO: Blender create Mesh node Body hair 071
+17:03:24 | INFO: Blender create Mesh node Body hair 072
+17:03:24 | INFO: Blender create Mesh node Body hair 073
+17:03:24 | INFO: Blender create Mesh node Body hair 074
+17:03:24 | INFO: Blender create Mesh node Body hair 075
+17:03:24 | INFO: Blender create Mesh node Body hair 076
+17:03:24 | INFO: Blender create Mesh node Body hair 077
+17:03:24 | INFO: Blender create Mesh node Body hair 078
+17:03:24 | INFO: Blender create Mesh node Body hair 079
+17:03:24 | INFO: Blender create Mesh node Body hair 080
+17:03:24 | INFO: Blender create Mesh node Body hair 081
+17:03:24 | INFO: Blender create Mesh node Body hair 082
+17:03:24 | INFO: Blender create Mesh node Body hair 083
+17:03:24 | INFO: Blender create Mesh node Body hair 084
+17:03:24 | INFO: Blender create Mesh node Body hair 085
+17:03:24 | INFO: Blender create Mesh node Body hair 086
+17:03:24 | INFO: Blender create Mesh node Body hair 087
+17:03:24 | INFO: Blender create Mesh node Body hair 088
+17:03:24 | INFO: Blender create Mesh node Body hair 089
+17:03:24 | INFO: Blender create Mesh node Body hair 090
+17:03:24 | INFO: Blender create Mesh node Body hair 091
+17:03:24 | INFO: Blender create Mesh node Body hair 092
+17:03:24 | INFO: Blender create Mesh node Body hair 093
+17:03:24 | INFO: Blender create Mesh node Body hair 094
+17:03:24 | INFO: Blender create Mesh node Body hair 095
+17:03:24 | INFO: Blender create Mesh node Body hair 096
+17:03:24 | INFO: Blender create Mesh node Body hair 097
+17:03:24 | INFO: Blender create Mesh node Body hair 098
+17:03:24 | INFO: Blender create Mesh node Body hair 099
+17:03:24 | INFO: Blender create Mesh node Body hair 100
+17:03:24 | INFO: Blender create Mesh node Body hair 101
+17:03:24 | INFO: Blender create Mesh node Body hair 102
+17:03:24 | INFO: Blender create Mesh node Body hair 103
+17:03:24 | INFO: Blender create Mesh node Body hair 104
+17:03:24 | INFO: Blender create Mesh node Body hair 105
+17:03:24 | INFO: Blender create Mesh node Body hair 106
+17:03:24 | INFO: Blender create Mesh node Body hair 107
+17:03:24 | INFO: Blender create Mesh node Body hair 108
+17:03:24 | INFO: Blender create Mesh node Body hair 109
+17:03:24 | INFO: Blender create Mesh node Body hair 110
+17:03:24 | INFO: Blender create Mesh node Body hair 111
+17:03:24 | INFO: Blender create Mesh node Body hair 112
+17:03:24 | INFO: Blender create Mesh node Body hair 113
+17:03:24 | INFO: Blender create Mesh node Body hair 114
+17:03:24 | INFO: Blender create Mesh node Body hair 115
+17:03:24 | INFO: Blender create Mesh node Body hair 116
+17:03:24 | INFO: Blender create Mesh node Body hair 117
+17:03:24 | INFO: Blender create Mesh node Body hair 118
+17:03:24 | INFO: Blender create Mesh node Body hair 119
+17:03:24 | INFO: Blender create Mesh node Body hair 120
+17:03:24 | INFO: Blender create Mesh node Body hair 121
+17:03:24 | INFO: Blender create Mesh node Body hair 122
+17:03:24 | INFO: Blender create Mesh node Body hair 123
+17:03:24 | INFO: Blender create Mesh node Body hair 124
+17:03:24 | INFO: Blender create Mesh node Body hair 125
+17:03:24 | INFO: Blender create Mesh node Body hair 126
+17:03:24 | INFO: Blender create Mesh node Body hair 127
+17:03:24 | INFO: Blender create Mesh node Body hair 128
+17:03:24 | INFO: Blender create Mesh node Body hair 129
+17:03:24 | INFO: Blender create Mesh node Body hair 130
+17:03:24 | INFO: Blender create Mesh node Body hair 131
+17:03:24 | INFO: Blender create Mesh node Body hair 132
+17:03:24 | INFO: Blender create Mesh node Body hair 133
+17:03:24 | INFO: Blender create Mesh node Body hair 134
+17:03:24 | INFO: Blender create Mesh node Body hair 135
+17:03:24 | INFO: Blender create Mesh node Body hair 136
+17:03:24 | INFO: Blender create Mesh node Body hair 137
+17:03:24 | INFO: Blender create Mesh node Body hair 138
+17:03:24 | INFO: Blender create Mesh node Body hair 139
+17:03:24 | INFO: Blender create Mesh node Body hair 140
+17:03:24 | INFO: Blender create Mesh node Body hair 141
+17:03:24 | INFO: Blender create Mesh node Body hair 142
+17:03:24 | INFO: Blender create Mesh node Body hair 143
+17:03:24 | INFO: Blender create Mesh node Body hair 144
+17:03:25 | INFO: Blender create Mesh node Forearm and metacarpal topology.001
+17:03:27 | INFO: Blender create Mesh node Skin | wrist flexion crease
+17:03:27 | INFO: Blender create Mesh node Skin | wrist flexion crease.001
+17:03:27 | INFO: Blender create Mesh node Sphere.001
+17:03:28 | INFO: Blender create Mesh node Fastener | reinforced stitching row.004
+17:03:28 | INFO: Blender create Mesh node Fastener | reinforced stitching row.005
+17:03:28 | INFO: Blender create Mesh node Fastener | reinforced stitching row.006
+17:03:28 | INFO: Blender create Mesh node Fastener | reinforced stitching row.007
+17:03:28 | INFO: Blender create Mesh node Cube.178
+17:03:28 | INFO: Blender create Mesh node RAV
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 000
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 001
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 002
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 003
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 004
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 005
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 006
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 007
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 008
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 009
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 010
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 011
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 012
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 013
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 014
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 015
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 016
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 017
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 018
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 019
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 020
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 021
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 022
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 023
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 024
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 025
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 026
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 027
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 028
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 029
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 030
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 031
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 032
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 033
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 034
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 035
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 036
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 037
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 038
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 039
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 040
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 041
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 042
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 043
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 044
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 045
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 046
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 047
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 048
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 049
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 050
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 051
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 052
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 053
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 054
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 055
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 056
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 057
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 058
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 059
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 060
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 061
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 062
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 063
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 064
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 065
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 066
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 067
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 068
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 069
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 070
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 071
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 072
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 073
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 074
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 075
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 076
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 077
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 078
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 079
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 080
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 081
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 082
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 083
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 084
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 085
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 086
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 087
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 088
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 089
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 090
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 091
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 092
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 093
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 094
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 095
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 096
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 097
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 098
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 099
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 100
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 101
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 102
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 103
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 104
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 105
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 106
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 107
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 108
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 109
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 110
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 111
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 112
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 113
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 114
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 115
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 116
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 117
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 118
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 119
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 120
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 121
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 122
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 123
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 124
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 125
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 126
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 127
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 128
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 129
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 130
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 131
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 132
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 133
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 134
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 135
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 136
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 137
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 138
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 139
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 140
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 141
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 142
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 143
+17:03:28 | INFO: Blender create Mesh node Stitch | edge 36 144
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 000
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 001
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 002
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 003
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 004
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 005
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 006
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 007
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 008
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 009
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 010
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 011
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 012
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 013
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 014
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 015
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 016
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 017
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 018
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 019
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 020
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 021
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 022
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 023
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 024
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 025
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 026
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 027
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 028
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 029
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 030
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 031
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 032
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 033
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 034
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 035
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 036
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 037
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 038
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 039
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 040
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 041
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 042
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 043
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 044
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 045
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 046
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 047
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 048
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 049
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 050
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 051
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 052
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 053
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 054
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 055
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 056
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 057
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 058
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 059
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 060
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 061
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 062
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 063
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 064
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 065
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 066
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 067
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 068
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 069
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 070
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 071
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 072
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 073
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 074
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 075
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 076
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 077
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 078
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 079
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 080
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 081
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 082
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 083
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 084
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 085
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 086
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 087
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 088
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 089
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 090
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 091
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 092
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 093
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 094
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 095
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 096
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 097
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 098
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 099
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 100
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 101
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 102
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 103
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 104
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 105
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 106
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 107
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 108
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 109
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 110
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 111
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 112
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 113
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 114
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 115
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 116
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 117
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 118
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 119
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 120
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 121
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 122
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 123
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 124
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 125
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 126
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 127
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 128
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 129
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 130
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 131
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 132
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 133
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 134
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 135
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 136
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 137
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 138
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 139
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 140
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 141
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 142
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 143
+17:03:28 | INFO: Blender create Mesh node Stitch | edge -36 144
+17:03:28 | INFO: Blender create Mesh node Strap | broad elastic cuff.001
+17:03:28 | INFO: Blender create Mesh node Strap | overlapping Velcro fastening flap.001
+17:03:28 | INFO: Blender create Mesh node Strap | reinforced transverse overlap.001
+17:03:28 | INFO: Blender create Mesh node Strap | rolled bound edge
+17:03:28 | INFO: Blender create Mesh node Strap | rolled bound edge.001
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 000
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 001
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 002
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 003
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 004
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 005
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 006
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 007
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 008
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 009
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 010
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 011
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 012
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 013
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 014
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 015
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 016
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 017
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 018
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 019
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 020
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 021
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 022
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 023
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 024
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 025
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 026
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 027
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 028
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 029
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 030
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 031
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 032
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 033
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 034
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 035
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 036
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 037
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 038
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 039
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 040
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 041
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 042
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 043
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 044
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 045
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 046
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 047
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 048
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 049
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 050
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 051
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 052
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 053
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 054
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 055
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 056
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 057
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 058
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 059
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 060
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 061
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 062
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 063
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 064
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 065
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 066
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 067
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 068
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 069
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 070
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 071
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 072
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 073
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 074
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 075
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 076
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 077
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 078
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 079
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 080
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 081
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 082
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 083
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 084
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 085
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 086
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 087
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 088
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 089
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 090
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 091
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 092
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 093
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 094
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 095
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 096
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 097
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 098
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 099
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 100
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 101
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 102
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 103
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 104
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 105
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 106
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 107
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 108
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 109
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 110
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 111
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 112
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 113
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 114
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 115
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 116
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 117
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 118
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 119
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 120
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 121
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 122
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 123
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 124
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 125
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 126
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 127
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 128
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 129
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 130
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 131
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 132
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 133
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 134
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 135
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 136
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 137
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 138
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 139
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 140
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 141
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 142
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 143
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 144
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 145
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 146
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 147
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 148
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 149
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 150
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 151
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 152
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 153
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 154
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 155
+17:03:28 | INFO: Blender create Mesh node Velcro | exposed loop 156
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 157
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 158
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 159
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 160
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 161
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 162
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 163
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 164
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 165
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 166
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 167
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 168
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 169
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 170
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 171
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 172
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 173
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 174
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 175
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 176
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 177
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 178
+17:03:29 | INFO: Blender create Mesh node Velcro | exposed loop 179
+17:03:29 | INFO: Blender create Mesh node Cube.230
+17:03:29 | INFO: Blender create Mesh node Cube.180
+17:03:29 | INFO: Blender create Mesh node Cube.231
+17:03:29 | INFO: Blender create Mesh node Cube.232
+17:03:29 | INFO: Blender create Mesh node Cube.206
+17:03:29 | INFO: Blender create Mesh node Cube.207
+17:03:29 | INFO: Blender create Mesh node Cube.208
+17:03:29 | INFO: Blender create Mesh node Cube.209
+17:03:29 | INFO: Blender create Mesh node Cube.210
+17:03:29 | INFO: Blender create Mesh node Cube.211
+17:03:29 | INFO: Blender create Mesh node Cube.212
+17:03:29 | INFO: Blender create Mesh node Cube.213
+17:03:29 | INFO: Blender create Mesh node Cube.214
+17:03:29 | INFO: Blender create Mesh node Cube.215
+17:03:29 | INFO: Blender create Mesh node Cube.216
+17:03:29 | INFO: Blender create Mesh node Cube.217
+17:03:29 | INFO: Blender create Mesh node Cube.218
+17:03:29 | INFO: Blender create Mesh node Cube.219
+17:03:29 | INFO: Blender create Mesh node Cube.220
+17:03:29 | INFO: Blender create Mesh node Cube.221
+17:03:29 | INFO: Blender create Mesh node Cube.222
+17:03:29 | INFO: Blender create Mesh node Cube.223
+17:03:29 | INFO: Blender create Mesh node Cube.224
+17:03:29 | INFO: Blender create Mesh node Cube.225
+17:03:29 | INFO: Blender create Mesh node Cube.226
+17:03:29 | INFO: Blender create Mesh node Cube.227
+17:03:29 | INFO: Blender create Mesh node Cube.228
+17:03:29 | INFO: Blender create Mesh node Cube.182
+17:03:29 | INFO: Blender create Mesh node Cube.183
+17:03:29 | INFO: Blender create Mesh node Cube.184
+17:03:29 | INFO: Blender create Mesh node Cube.185
+17:03:29 | INFO: Blender create Mesh node Cube.186
+17:03:29 | INFO: Blender create Mesh node Cube.187
+17:03:29 | INFO: Blender create Mesh node Cube.188
+17:03:29 | INFO: Blender create Mesh node Cube.189
+17:03:29 | INFO: Blender create Mesh node Cube.190
+17:03:29 | INFO: Blender create Mesh node Cube.191
+17:03:29 | INFO: Blender create Mesh node Cube.192
+17:03:29 | INFO: Blender create Mesh node Cube.193
+17:03:29 | INFO: Blender create Mesh node Cube.194
+17:03:29 | INFO: Blender create Mesh node Cube.195
+17:03:29 | INFO: Blender create Mesh node Cube.196
+17:03:29 | INFO: Blender create Mesh node Cube.197
+17:03:29 | INFO: Blender create Mesh node Cube.198
+17:03:29 | INFO: Blender create Mesh node Cube.199
+17:03:29 | INFO: Blender create Mesh node Cube.200
+17:03:29 | INFO: Blender create Mesh node Cube.201
+17:03:29 | INFO: Blender create Mesh node Cube.202
+17:03:29 | INFO: Blender create Mesh node Cube.203
+17:03:29 | INFO: Blender create Mesh node Cube.204
+17:03:29 | INFO: Blender create Mesh node ESP32 | printed antenna
+17:03:29 | INFO: Blender create Mesh node Cube.233
+17:03:29 | INFO: Blender create Mesh node Cube.229
+17:03:29 | INFO: Blender create Mesh node Cube.234
+17:03:29 | INFO: Blender create Mesh node Cube.235
+17:03:29 | INFO: Blender create Mesh node Cube.236
+17:03:29 | INFO: Blender create Mesh node Cube.237
+17:03:29 | INFO: Blender create Mesh node Cube.238
+17:03:29 | INFO: Blender create Mesh node Cube.239
+17:03:29 | INFO: Blender create Mesh node Cube.240
+17:03:29 | INFO: Blender create Mesh node Cube.241
+17:03:29 | INFO: Blender create Mesh node Cube.242
+17:03:29 | INFO: Blender create Mesh node Cube.243
+17:03:29 | INFO: Blender create Mesh node Cube.244
+17:03:29 | INFO: Blender create Mesh node Cube.245
+17:03:29 | INFO: Blender create Mesh node Cube.246
+17:03:29 | INFO: Blender create Mesh node Cube.247
+17:03:29 | INFO: Blender create Mesh node Cylinder.146
+17:03:29 | INFO: Blender create Mesh node Cylinder.147
+17:03:29 | INFO: Blender create Mesh node Cylinder.148
+17:03:29 | INFO: Blender create Mesh node Cylinder.149
+17:03:29 | INFO: Blender create Mesh node Cylinder.150
+17:03:29 | INFO: Blender create Mesh node Cylinder.151
+17:03:29 | INFO: Blender create Mesh node Cylinder.152
+17:03:29 | INFO: Blender create Mesh node Cylinder.153
+17:03:29 | INFO: Blender create Mesh node Cylinder.154
+17:03:29 | INFO: Blender create Mesh node Cylinder.155
+17:03:29 | INFO: Blender create Mesh node Cylinder.156
+17:03:29 | INFO: Blender create Mesh node Cylinder.157
+17:03:29 | INFO: Blender create Mesh node Cylinder.158
+17:03:29 | INFO: Blender create Mesh node Cylinder.159
+17:03:29 | INFO: Blender create Mesh node Cylinder.160
+17:03:29 | INFO: Blender create Mesh node Cylinder.161
+17:03:29 | INFO: Blender create Mesh node Cylinder.162
+17:03:29 | INFO: Blender create Mesh node Cylinder.163
+17:03:29 | INFO: Blender create Mesh node Cylinder.164
+17:03:29 | INFO: Blender create Mesh node Cylinder.165
+17:03:29 | INFO: Blender create Mesh node Cylinder.166
+17:03:29 | INFO: Blender create Mesh node Cylinder.167
+17:03:29 | INFO: Blender create Mesh node Cylinder.168
+17:03:29 | INFO: Blender create Mesh node Cylinder.169
+17:03:29 | INFO: Blender create Mesh node Cylinder.170
+17:03:29 | INFO: Blender create Mesh node Cylinder.171
+17:03:29 | INFO: Blender create Mesh node Cylinder.172
+17:03:29 | INFO: Blender create Mesh node Cylinder.173
+17:03:29 | INFO: Blender create Mesh node Cylinder.174
+17:03:29 | INFO: Blender create Mesh node Cylinder.175
+17:03:29 | INFO: Blender create Mesh node Cylinder.176
+17:03:29 | INFO: Blender create Mesh node Cylinder.177
+17:03:29 | INFO: Blender create Mesh node Cylinder.178
+17:03:29 | INFO: Blender create Mesh node Cylinder.179
+17:03:29 | INFO: Blender create Mesh node Cylinder.180
+17:03:29 | INFO: Blender create Mesh node Cylinder.181
+17:03:29 | INFO: Blender create Mesh node Cylinder.182
+17:03:29 | INFO: Blender create Mesh node Cylinder.183
+17:03:29 | INFO: Blender create Mesh node Cylinder.184
+17:03:29 | INFO: Blender create Mesh node Cylinder.185
+17:03:29 | INFO: Blender create Mesh node Cylinder.186
+17:03:29 | INFO: Blender create Mesh node Cylinder.187
+17:03:29 | INFO: Blender create Mesh node Cylinder.188
+17:03:29 | INFO: Blender create Mesh node Cylinder.189
+17:03:29 | INFO: Blender create Mesh node Cylinder.190
+17:03:29 | INFO: Blender create Mesh node Cylinder.191
+17:03:29 | INFO: Blender create Mesh node Cylinder.192
+17:03:29 | INFO: Blender create Mesh node Cylinder.193
+17:03:29 | INFO: Blender create Mesh node Cube.181
+17:03:29 | INFO: Blender create Mesh node Cube.205
+17:03:29 | INFO: Blender create Mesh node Cube.258
+17:03:29 | INFO: Blender create Mesh node Cube.179
+17:03:29 | INFO: Blender create Mesh node 1
+17:03:29 | INFO: Blender create Mesh node 1.001
+17:03:29 | INFO: Blender create Mesh node 2
+17:03:29 | INFO: Blender create Mesh node 2.001
+17:03:29 | INFO: Blender create Mesh node 3
+17:03:29 | INFO: Blender create Mesh node 3.001
+17:03:29 | INFO: Blender create Mesh node 4
+17:03:29 | INFO: Blender create Mesh node 4.001
+17:03:29 | INFO: Blender create Mesh node 5
+17:03:29 | INFO: Blender create Mesh node 5.001
+17:03:29 | INFO: Blender create Mesh node 6
+17:03:29 | INFO: Blender create Mesh node 6.001
+17:03:29 | INFO: Blender create Mesh node 7
+17:03:29 | INFO: Blender create Mesh node 7.001
+17:03:29 | INFO: Blender create Mesh node 8
+17:03:29 | INFO: Blender create Mesh node 8.001
+17:03:29 | INFO: Blender create Mesh node 9
+17:03:29 | INFO: Blender create Mesh node 9.001
+17:03:29 | INFO: Blender create Mesh node 10
+17:03:29 | INFO: Blender create Mesh node 10.001
+17:03:29 | INFO: Blender create Mesh node 11
+17:03:29 | INFO: Blender create Mesh node 11.001
+17:03:29 | INFO: Blender create Mesh node 12
+17:03:29 | INFO: Blender create Mesh node 12.001
+17:03:29 | INFO: Blender create Mesh node 13
+17:03:29 | INFO: Blender create Mesh node 13.001
+17:03:29 | INFO: Blender create Mesh node 14
+17:03:29 | INFO: Blender create Mesh node 14.001
+17:03:29 | INFO: Blender create Mesh node 15
+17:03:29 | INFO: Blender create Mesh node 15.001
+17:03:29 | INFO: Blender create Mesh node 16
+17:03:29 | INFO: Blender create Mesh node 16.001
+17:03:29 | INFO: Blender create Mesh node 17
+17:03:29 | INFO: Blender create Mesh node 17.001
+17:03:29 | INFO: Blender create Mesh node 18
+17:03:29 | INFO: Blender create Mesh node 18.001
+17:03:29 | INFO: Blender create Mesh node 19
+17:03:29 | INFO: Blender create Mesh node 19.001
+17:03:29 | INFO: Blender create Mesh node 20
+17:03:29 | INFO: Blender create Mesh node 20.001
+17:03:29 | INFO: Blender create Mesh node 21
+17:03:29 | INFO: Blender create Mesh node 21.001
+17:03:29 | INFO: Blender create Mesh node 22
+17:03:29 | INFO: Blender create Mesh node 22.001
+17:03:29 | INFO: Blender create Mesh node 23
+17:03:29 | INFO: Blender create Mesh node 23.001
+17:03:29 | INFO: Blender create Mesh node 2022-V1.3
+17:03:29 | INFO: Blender create Mesh node ESP32-S3
+17:03:29 | INFO: Blender create Mesh node N16R8
+17:03:29 | INFO: Blender create Mesh node Cube.252
+17:03:29 | INFO: Blender create Mesh node Cube.257
+17:03:29 | INFO: Blender create Mesh node Cube.250
+17:03:29 | INFO: Blender create Mesh node Cube.251
+17:03:29 | INFO: Blender create Mesh node Cube.255
+17:03:29 | INFO: Blender create Mesh node Cube.256
+17:03:29 | INFO: Blender create Mesh node Cube.248
+17:03:29 | INFO: Blender create Mesh node Cube.249
+17:03:29 | INFO: Blender create Mesh node Cube.253
+17:03:29 | INFO: Blender create Mesh node Cube.254
+17:03:29 | INFO: Blender create Mesh node Cube.264
+17:03:29 | INFO: Blender create Mesh node Cube.265
+17:03:29 | INFO: Blender create Mesh node Cube.266
+17:03:29 | INFO: Blender create Mesh node Cube.267
+17:03:29 | INFO: Blender create Mesh node Cube.268
+17:03:29 | INFO: Blender create Mesh node Cube.269
+17:03:29 | INFO: Blender create Mesh node Cube.270
+17:03:29 | INFO: Blender create Mesh node Cube.271
+17:03:29 | INFO: Blender create Mesh node Cube.272
+17:03:29 | INFO: Blender create Mesh node Cube.273
+17:03:29 | INFO: Blender create Mesh node Cube.274
+17:03:29 | INFO: Blender create Mesh node Cube.275
+17:03:29 | INFO: Blender create Mesh node Cube.276
+17:03:29 | INFO: Blender create Mesh node Cube.277
+17:03:29 | INFO: Blender create Mesh node Cube.278
+17:03:29 | INFO: Blender create Mesh node Cube.279
+17:03:29 | INFO: Blender create Mesh node Cube.280
+17:03:29 | INFO: Blender create Mesh node Cube.281
+17:03:29 | INFO: Blender create Mesh node Cube.282
+17:03:29 | INFO: Blender create Mesh node Cube.283
+17:03:29 | INFO: Blender create Mesh node Cube.284
+17:03:29 | INFO: Blender create Mesh node Cube.259
+17:03:29 | INFO: Blender create Mesh node Cube.285
+17:03:29 | INFO: Blender create Mesh node Cube.287
+17:03:29 | INFO: Blender create Mesh node Cube.289
+17:03:29 | INFO: Blender create Mesh node Cube.291
+17:03:29 | INFO: Blender create Mesh node Cube.293
+17:03:29 | INFO: Blender create Mesh node Cube.295
+17:03:29 | INFO: Blender create Mesh node Cube.262
+17:03:29 | INFO: Blender create Mesh node Cube.263
+17:03:29 | INFO: Blender create Mesh node optical | mounting annulus.002
+17:03:29 | INFO: Blender create Mesh node optical | mounting annulus.003
+17:03:29 | INFO: Blender create Mesh node Cube.260
+17:03:29 | INFO: Blender create Mesh node Cube.286
+17:03:29 | INFO: Blender create Mesh node Cube.288
+17:03:29 | INFO: Blender create Mesh node Cube.290
+17:03:29 | INFO: Blender create Mesh node Cube.292
+17:03:29 | INFO: Blender create Mesh node Cube.294
+17:03:29 | INFO: Blender create Mesh node Cube.296
+17:03:29 | INFO: Blender create Mesh node Cube.261
+17:03:29 | INFO: Blender create Mesh node optical | solder pad.006
+17:03:29 | INFO: Blender create Mesh node optical | solder pad.007
+17:03:29 | INFO: Blender create Mesh node optical | solder pad.008
+17:03:29 | INFO: Blender create Mesh node optical | solder pad.009
+17:03:29 | INFO: Blender create Mesh node optical | solder pad.010
+17:03:29 | INFO: Blender create Mesh node optical | solder pad.011
+17:03:29 | INFO: Blender create Mesh node MAX30100/30102
+17:03:29 | INFO: Blender create Mesh node Cube.302
+17:03:29 | INFO: Blender create Mesh node Cube.303
+17:03:29 | INFO: Blender create Mesh node Cube.304
+17:03:29 | INFO: Blender create Mesh node Cube.305
+17:03:29 | INFO: Blender create Mesh node Cube.306
+17:03:29 | INFO: Blender create Mesh node Cube.307
+17:03:29 | INFO: Blender create Mesh node Cube.308
+17:03:29 | INFO: Blender create Mesh node Cube.309
+17:03:29 | INFO: Blender create Mesh node Cube.310
+17:03:29 | INFO: Blender create Mesh node Cube.311
+17:03:29 | INFO: Blender create Mesh node Cube.312
+17:03:29 | INFO: Blender create Mesh node Cube.313
+17:03:29 | INFO: Blender create Mesh node Cube.314
+17:03:29 | INFO: Blender create Mesh node Cube.315
+17:03:29 | INFO: Blender create Mesh node Cube.316
+17:03:29 | INFO: Blender create Mesh node Cube.317
+17:03:29 | INFO: Blender create Mesh node Cube.318
+17:03:30 | INFO: Blender create Mesh node Cube.319
+17:03:30 | INFO: Blender create Mesh node Cube.320
+17:03:30 | INFO: Blender create Mesh node Cube.321
+17:03:30 | INFO: Blender create Mesh node Cube.322
+17:03:30 | INFO: Blender create Mesh node Cube.299
+17:03:30 | INFO: Blender create Mesh node Cube.323
+17:03:30 | INFO: Blender create Mesh node Cube.325
+17:03:30 | INFO: Blender create Mesh node Cube.327
+17:03:30 | INFO: Blender create Mesh node Cube.329
+17:03:30 | INFO: Blender create Mesh node Cube.331
+17:03:30 | INFO: Blender create Mesh node Cube.333
+17:03:30 | INFO: Blender create Mesh node Cube.335
+17:03:30 | INFO: Blender create Mesh node Cube.337
+17:03:30 | INFO: Blender create Mesh node imu | mounting annulus.002
+17:03:30 | INFO: Blender create Mesh node imu | mounting annulus.003
+17:03:30 | INFO: Blender create Mesh node Cube.300
+17:03:30 | INFO: Blender create Mesh node Cube.324
+17:03:30 | INFO: Blender create Mesh node Cube.326
+17:03:30 | INFO: Blender create Mesh node Cube.328
+17:03:30 | INFO: Blender create Mesh node Cube.330
+17:03:30 | INFO: Blender create Mesh node Cube.332
+17:03:30 | INFO: Blender create Mesh node Cube.334
+17:03:30 | INFO: Blender create Mesh node Cube.336
+17:03:30 | INFO: Blender create Mesh node Cube.338
+17:03:30 | INFO: Blender create Mesh node Cube.301
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.008
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.009
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.010
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.011
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.012
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.013
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.014
+17:03:30 | INFO: Blender create Mesh node imu | solder pad.015
+17:03:30 | INFO: Blender create Mesh node MPU-6050
+17:03:30 | INFO: Blender create Mesh node Cube.297
+17:03:30 | INFO: Blender create Mesh node BioAmp | connector plated hole.004
+17:03:30 | INFO: Blender create Mesh node BioAmp | connector plated hole.005
+17:03:30 | INFO: Blender create Mesh node BioAmp | connector plated hole.006
+17:03:30 | INFO: Blender create Mesh node BioAmp | connector plated hole.007
+17:03:30 | INFO: Blender create Mesh node Cylinder.196
+17:03:30 | INFO: Blender create Mesh node Cylinder.197
+17:03:30 | INFO: Blender create Mesh node Cylinder.198
+17:03:30 | INFO: Blender create Mesh node Cylinder.199
+17:03:30 | INFO: Blender create Mesh node Cylinder.200
+17:03:30 | INFO: Blender create Mesh node Cylinder.201
+17:03:30 | INFO: Blender create Mesh node Cylinder.202
+17:03:30 | INFO: Blender create Mesh node Cylinder.203
+17:03:30 | INFO: Blender create Mesh node Cylinder.204
+17:03:30 | INFO: Blender create Mesh node Cylinder.205
+17:03:30 | INFO: Blender create Mesh node Cylinder.206
+17:03:30 | INFO: Blender create Mesh node Cylinder.207
+17:03:30 | INFO: Blender create Mesh node Cylinder.208
+17:03:30 | INFO: Blender create Mesh node Cylinder.209
+17:03:30 | INFO: Blender create Mesh node Cylinder.210
+17:03:30 | INFO: Blender create Mesh node Cylinder.211
+17:03:30 | INFO: Blender create Mesh node Cylinder.212
+17:03:30 | INFO: Blender create Mesh node Cylinder.213
+17:03:30 | INFO: Blender create Mesh node Cylinder.214
+17:03:30 | INFO: Blender create Mesh node Cylinder.215
+17:03:30 | INFO: Blender create Mesh node Cylinder.216
+17:03:30 | INFO: Blender create Mesh node Cylinder.217
+17:03:30 | INFO: Blender create Mesh node Cylinder.218
+17:03:30 | INFO: Blender create Mesh node Cylinder.219
+17:03:30 | INFO: Blender create Mesh node Cylinder.220
+17:03:30 | INFO: Blender create Mesh node Cylinder.221
+17:03:30 | INFO: Blender create Mesh node Cylinder.222
+17:03:30 | INFO: Blender create Mesh node Cylinder.223
+17:03:30 | INFO: Blender create Mesh node Cylinder.224
+17:03:30 | INFO: Blender create Mesh node Cylinder.225
+17:03:30 | INFO: Blender create Mesh node Cylinder.226
+17:03:30 | INFO: Blender create Mesh node Cylinder.227
+17:03:30 | INFO: Blender create Mesh node Cylinder.228
+17:03:30 | INFO: Blender create Mesh node Cylinder.229
+17:03:30 | INFO: Blender create Mesh node Cylinder.230
+17:03:30 | INFO: Blender create Mesh node Cylinder.231
+17:03:30 | INFO: Blender create Mesh node Cylinder.234
+17:03:30 | INFO: Blender create Mesh node Cylinder.235
+17:03:30 | INFO: Blender create Mesh node Cylinder.236
+17:03:30 | INFO: Blender create Mesh node Cylinder.237
+17:03:30 | INFO: Blender create Mesh node Cylinder.238
+17:03:30 | INFO: Blender create Mesh node Cylinder.239
+17:03:30 | INFO: Blender create Mesh node Cylinder.240
+17:03:30 | INFO: Blender create Mesh node Cylinder.241
+17:03:30 | INFO: Blender create Mesh node Cylinder.242
+17:03:30 | INFO: Blender create Mesh node Cylinder.243
+17:03:30 | INFO: Blender create Mesh node Cylinder.244
+17:03:30 | INFO: Blender create Mesh node Cylinder.245
+17:03:30 | INFO: Blender create Mesh node Cylinder.246
+17:03:30 | INFO: Blender create Mesh node Cylinder.247
+17:03:30 | INFO: Blender create Mesh node Cylinder.248
+17:03:30 | INFO: Blender create Mesh node Cylinder.249
+17:03:30 | INFO: Blender create Mesh node Cylinder.250
+17:03:30 | INFO: Blender create Mesh node Cylinder.251
+17:03:30 | INFO: Blender create Mesh node Cylinder.252
+17:03:30 | INFO: Blender create Mesh node Cylinder.253
+17:03:30 | INFO: Blender create Mesh node Cylinder.254
+17:03:30 | INFO: Blender create Mesh node Cylinder.255
+17:03:30 | INFO: Blender create Mesh node Cylinder.256
+17:03:30 | INFO: Blender create Mesh node Cylinder.257
+17:03:30 | INFO: Blender create Mesh node Cylinder.258
+17:03:30 | INFO: Blender create Mesh node Cylinder.259
+17:03:30 | INFO: Blender create Mesh node Cylinder.260
+17:03:30 | INFO: Blender create Mesh node Cylinder.261
+17:03:30 | INFO: Blender create Mesh node Cylinder.262
+17:03:30 | INFO: Blender create Mesh node Cylinder.263
+17:03:30 | INFO: Blender create Mesh node Cylinder.264
+17:03:30 | INFO: Blender create Mesh node Cylinder.265
+17:03:30 | INFO: Blender create Mesh node Cylinder.266
+17:03:30 | INFO: Blender create Mesh node Cylinder.267
+17:03:30 | INFO: Blender create Mesh node Cylinder.268
+17:03:30 | INFO: Blender create Mesh node Cylinder.269
+17:03:30 | INFO: Blender create Mesh node BioAmp | nickel electrode snap.002
+17:03:30 | INFO: Blender create Mesh node BioAmp | nickel electrode snap.003
+17:03:30 | INFO: Blender create Mesh node Cube.298
+17:03:30 | INFO: Blender create Mesh node BioAmp | raised contact rim.002
+17:03:30 | INFO: Blender create Mesh node BioAmp | raised contact rim.003
+17:03:30 | INFO: Blender create Mesh node Cylinder.195
+17:03:30 | INFO: Blender create Mesh node Cylinder.233
+17:03:30 | INFO: Blender create Mesh node Cylinder.194
+17:03:30 | INFO: Blender create Mesh node Cylinder.232
+17:03:30 | INFO: Blender create Mesh node GND
+17:03:30 | INFO: Blender create Mesh node MUSCLE BIOAMP PATCHY
+17:03:30 | INFO: Blender create Mesh node OUT
+17:03:30 | INFO: Blender create Mesh node REF
+17:03:30 | INFO: Blender create Mesh node Upside Down Labs
+17:03:30 | INFO: Blender create Mesh node VCC
+17:03:30 | INFO: Blender create Mesh node Cube.352
+17:03:30 | INFO: Blender create Mesh node Cube.353
+17:03:30 | INFO: Blender create Mesh node Jumper | 00 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 01 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 02 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 03 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 04 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 05 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 06 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 07 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 08 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 09 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 10 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 11 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Jumper | 12 photo-style loose loop
+17:03:30 | INFO: Blender create Mesh node Cube.339
+17:03:30 | INFO: Blender create Mesh node Cube.340
+17:03:30 | INFO: Blender create Mesh node Cube.341
+17:03:30 | INFO: Blender create Mesh node Cube.342
+17:03:30 | INFO: Blender create Mesh node Cube.343
+17:03:30 | INFO: Blender create Mesh node Cube.344
+17:03:30 | INFO: Blender create Mesh node Cube.345
+17:03:30 | INFO: Blender create Mesh node Cube.346
+17:03:30 | INFO: Blender create Mesh node Cube.347
+17:03:30 | INFO: Blender create Mesh node Cube.348
+17:03:30 | INFO: Blender create Mesh node Cube.349
+17:03:30 | INFO: Blender create Mesh node Cube.350
+17:03:30 | INFO: Blender create Mesh node Cube.351
+17:03:30 | INFO: Blender create Mesh node Sphere.002
+17:03:30 | INFO: Blender create Mesh node Sphere.003
+17:03:30 | INFO: Blender create Mesh node Sphere.004
+17:03:30 | INFO: Blender create Mesh node Sphere.005
+17:03:30 | INFO: Blender create Mesh node Sphere.006
+17:03:30 | INFO: Blender create Mesh node Sphere.007
+17:03:30 | INFO: Blender create Mesh node Sphere.008
+17:03:30 | INFO: Blender create Mesh node Sphere.009
+17:03:30 | INFO: Blender create Mesh node Sphere.010
+17:03:30 | INFO: Blender create Mesh node Sphere.011
+17:03:30 | INFO: Blender create Mesh node Sphere.012
+17:03:30 | INFO: Blender create Mesh node Sphere.013
+17:03:30 | INFO: Blender create Mesh node Sphere.014
+17:03:30 | INFO: Blender create Mesh node Tape | folded edge
+17:03:30 | INFO: Blender create Mesh node Tape | folded edge.001
+17:03:30 | INFO: Blender create Mesh node Tape | folded edge.002
+17:03:30 | INFO: Blender create Mesh node Tape | folded edge.003
+17:03:30 | INFO: Blender create Mesh node Tape | folded edge.004
+17:03:30 | INFO: Blender create Mesh node Tape | folded edge.005
+17:03:30 | INFO: Blender create Mesh node Cylinder.271
+17:03:30 | INFO: Blender create Mesh node Cylinder.272
+17:03:30 | INFO: Blender create Mesh node Cylinder.273
+17:03:30 | INFO: Blender create Mesh node Cylinder.274
+17:03:30 | INFO: Blender create Mesh node Cylinder.270
+17:03:30 | INFO: Blender create Mesh node Cylinder.276
+17:03:30 | INFO: Blender create Mesh node Cylinder.277
+17:03:30 | INFO: Blender create Mesh node Cylinder.278
+17:03:30 | INFO: Blender create Mesh node Cylinder.279
+17:03:30 | INFO: Blender create Mesh node Cylinder.275
+17:03:30 | INFO: Blender create Mesh node Cylinder.281
+17:03:30 | INFO: Blender create Mesh node Cylinder.282
+17:03:30 | INFO: Blender create Mesh node Cylinder.283
+17:03:30 | INFO: Blender create Mesh node Cylinder.284
+17:03:30 | INFO: Blender create Mesh node Cylinder.280
+17:03:30 | INFO: Blender create Mesh node Cylinder.286
+17:03:30 | INFO: Blender create Mesh node Cylinder.287
+17:03:30 | INFO: Blender create Mesh node Cylinder.288
+17:03:31 | INFO: Blender create Mesh node Cylinder.289
+17:03:31 | INFO: Blender create Mesh node Cylinder.285
+17:03:31 | INFO: Blender create Mesh node Resistor | bent bare lead to header
+17:03:31 | INFO: Blender create Mesh node Resistor | bent bare lead to header.001
+17:03:31 | INFO: Blender create Mesh node Resistor | bent bare lead to header.002
+17:03:31 | INFO: Blender create Mesh node Resistor | bent bare lead to header.003
+17:03:31 | INFO: Blender create Mesh node Resistor | insulated connection
+17:03:31 | INFO: Blender create Mesh node Resistor | insulated connection.001
+17:03:31 | INFO: Blender create Mesh node Resistor | insulated connection.002
+17:03:31 | INFO: Blender create Mesh node Resistor | insulated connection.003
+17:03:31 | INFO: Blender create Mesh node Sphere.015
+17:03:31 | INFO: Blender create Mesh node Sphere.016
+17:03:31 | INFO: Blender create Mesh node Sphere.017
+17:03:31 | INFO: Blender create Mesh node Sphere.018
+17:03:31 | INFO: Blender create Mesh node Resistor | twisted exposed junction
+17:03:31 | INFO: Blender create Mesh node Resistor | twisted exposed junction.001
+17:03:31 | INFO: Blender create Mesh node Resistor | twisted exposed junction.002
+17:03:31 | INFO: Blender create Mesh node Resistor | twisted exposed junction.003
+17:03:31 | INFO: Blender create Mesh node Probe | black cable
+17:03:31 | INFO: Blender create Mesh node Cylinder.291
+17:03:31 | INFO: Blender create Mesh node Probe | breakout conductor
+17:03:31 | INFO: Blender create Mesh node Probe | breakout conductor.001
+17:03:31 | INFO: Blender create Mesh node Probe | breakout conductor.002
+17:03:31 | INFO: Blender create Mesh node Cylinder.290
+17:03:31 | INFO: Blender create Mesh node Cube.354
+17:03:31 | INFO: Blender create Mesh node USB | power and data cable
+17:03:31 | INFO: glTF import finished in 6.79s
+EXPORT_VALIDATED {"file": "G-one-Phase-1-Strap.glb", "bytes": 37162992, "meshes": 1089, "triangles": 1483516, "materials": 28, "bounds_metres": [[-0.14269547164440155, -0.08386365324258804, 0.011634333990514278], [0.16800004243850708, 0.05668541043996811, 0.15185989439487457]], "board_dimensions_metres": [0.05400000140070915, 0.0020000003278255463, 0.003000006079673767], "roundtrip_max_error_metres": 0.0, "source_sha256": "03db36e9d49fc744384ab85ca090e39987f16705b42500c63aa9658dfd71e2b5", "source_unchanged": true, "self_contained": true, "material_note": "Portable PBR colors, metallic and roughness; procedural micro-bump omitted."}
+PHASE1_EXPORT_VALIDATED
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

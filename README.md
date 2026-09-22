@@ -1,1112 +1,526 @@
 <div align="center">
 
+<img src="Logo.png" alt="G-one logo" width="132" />
+
 # G-one
+### Personal health awareness. Local intelligence. User-controlled sharing.
 
-**A privacy-preserving personal health companion that runs entirely on the device.**
+An Android health companion connecting a wearable prototype, local anomaly detection, on-device AI and optional emergency assistance.
 
-Vitals and environment are monitored continuously, a deterministic rule engine decides
-whether something is wrong, and a local 1.5B language model explains it in plain
-language a family member can act on. No cloud. No account. No network call.
+**Kotlin · Jetpack Compose · ESP32-S3 · Bluetooth LE · llama.cpp · Room**
 
-**SIH 2026 · Problem Statement 26181** — Qualcomm Inc · MedTech / BioTech / HealthTech
-
-`Kotlin` · `Jetpack Compose` · `llama.cpp / ggml` · `Room` · `ML Kit` · `Material 3`
+[Architecture](#architecture) · [Features](#feature-guide) · [Performance](#performance-and-verification) · [Build](#build-and-run) · [Documentation](#documentation)
 
 </div>
 
 ---
 
-> ### Build status — Phase 1 complete
->
-> `gradlew clean assembleDebug testDebugUnitTest` → **BUILD SUCCESSFUL in 8m 37s**
-> **220 unit tests, 0 failures.** APK 1172.7 MB with a 65.25 MB `libinfinity_jni.so`
-> (arm64-v8a) and the 1.04 GB GGUF model packaged uncompressed.
->
-> Phase 1 is the safety-critical spine and needs **no hardware** — it ships a
-> deterministic vitals simulator. The BLE wearable link is Phase 2.
+## At a glance
 
----
+G-one brings physiological readings into one local workflow: **collect → validate → store → detect → alert → explain**. Its Android app monitors a connected wearable, displays trends, records sessions, explains findings and helps users understand text from reports or screenshots without sending those inputs to a cloud language model.
 
-## Table of Contents
+The central design decision is to keep **detection independent of text generation**. A deterministic rule engine creates an alert with a usable explanation first. A local language model can subsequently improve the wording; model loading, timeout or failure must not prevent the original alert.
 
-- [The one thing that matters](#the-one-thing-that-matters)
-- [What Phase 1 delivers](#what-phase-1-delivers)
-- [Pipeline ordering](#pipeline-ordering)
-- [Detection engine](#detection-engine)
-  - [The twelve rules](#the-twelve-rules)
-  - [Risk scores](#risk-scores)
-  - [Heat index](#heat-index)
-  - [Noise control](#noise-control)
-- [Explanation layer](#explanation-layer)
-- [Monitoring service and model ownership](#monitoring-service-and-model-ownership)
-- [Data layer](#data-layer)
-- [Simulation](#simulation)
-- [UI surface](#ui-surface)
-  - [The home screen collapses](#the-home-screen-collapses)
-  - [The History tabs](#the-history-tabs)
-  - [Navigation](#navigation)
-  - [Severity has one meaning](#severity-has-one-meaning)
-  - [Elevation is asymmetric between themes](#elevation-is-asymmetric-between-themes)
-  - [Motion](#motion)
-  - [Charts are hand-drawn](#charts-are-hand-drawn)
-- [Inherited capability](#inherited-capability)
-- [Native layer](#native-layer)
-- [Project structure](#project-structure)
-- [Tech stack](#tech-stack)
+| Area | Current implementation |
+|---|---|
+| Mobile application | Native Android, package `com.gone.ai`; API 24+; ARM64 build |
+| Wearable | ESP32-S3 strap prototype with pulse/SpO₂, skin temperature, motion and EMG inputs |
+| Health analysis | Local validation, aggregation, rules, baselines and risk indicators |
+| Language model | Qwen2.5-1.5B-Instruct, GGUF Q4_K_M, CPU inference through llama.cpp/JNI |
+| Persistence | App-private Room database, preferences and files |
+| Optional connectivity | City AQI, consented emergency snapshots, SMS/calling and Android speech services |
+| Development stage | Prototype with automated tests and recorded bench/phone checks; not a clinically validated medical device |
+
+**Scope matters:** sleep and stress are self-reported journals. AQI is a regional online estimate. NFC opens a saved emergency record. Current wearable firmware is live-only and cannot recover disconnected readings. Later PCB and chest-patch models are design assets, not proof of manufactured or validated hardware.
+
+## Contents
+
+- [Problem and use cases](#problem-and-use-cases)
+- [Architecture](#architecture)
+- [End-to-end workflows](#end-to-end-workflows)
+- [Feature guide](#feature-guide)
+- [Hardware and protocol](#hardware-and-protocol)
+- [Implementation details](#implementation-details)
+- [Privacy and connectivity](#privacy-and-connectivity)
+- [Technology stack](#technology-stack)
+- [Performance and verification](#performance-and-verification)
+- [Engineering comparisons](#engineering-comparisons)
 - [Build and run](#build-and-run)
-- [Testing](#testing)
-- [Mapping to PS26181](#mapping-to-ps26181)
-- [Permissions and the offline claim](#permissions-and-the-offline-claim)
-- [What Phase 1 does not include](#what-phase-1-does-not-include)
-- [Known issues](#known-issues)
-- [Troubleshooting](#troubleshooting)
+- [Repository map](#repository-map)
+- [Limitations and future scope](#limitations-and-future-scope)
+- [Documentation](#documentation)
 
----
+## Problem and use cases
 
-## The one thing that matters
+The project addresses a personal health companion problem: retain useful health awareness when connectivity is unreliable, keep sensitive analysis local and turn raw measurements into understandable information.
 
-Everything else in this document follows from one decision:
-
-```
-Sensor → Deterministic detection → Confirmed event → Local LLM explanation → Alert
-```
-
-never
-
-```
-Sensor → LLM → "diagnosis"
-```
-
-A rule engine with named, reviewable thresholds makes every medical decision. The
-language model makes none. It never decides whether something is wrong, never assigns
-severity, never invents a number, and never chooses what the user should do. Its only
-job is to restate an already-validated finding in language a family member with no
-medical training can understand.
-
-Three properties fall out of that, and each is enforced in code rather than asserted in
-a comment:
-
-**Every alert is traceable to a rule.** `AnomalyEvidence.ruleId` carries the rule that
-fired — `spo2.critical`, `baseline.deviation` — so any alert can be traced to a
-threshold a clinician can review, not to a token sampled from a distribution.
-
-**The alert never waits for the model.** A deterministic explanation is written and
-delivered *before* inference is attempted. On a mid-range phone the model can be tens of
-seconds away; someone whose oxygen is falling cannot wait for it.
-
-**The model can fail in every possible way without degrading the alert.** Not loaded,
-error state, timeout, exception, or output that fails validation — all of it collapses
-to "keep the deterministic text". There is deliberately no code path where a model
-failure makes an alert worse.
-
----
-
-## What Phase 1 delivers
-
-| Layer | Status | Notes |
+| Use case | What G-one provides | Boundary |
 |---|---|---|
-| Vitals ingestion | ✅ | `VitalsSource` interface + deterministic simulator |
-| Byte-level packet parsing | ✅ | `SensorPacketParser`, BLE-fragmentation aware |
-| Local persistence | ✅ | Room v2, real additive migration, both schemas committed |
-| Anomaly detection | ✅ | 12 rules, pure Kotlin, 0 Android dependencies |
-| Risk scoring | ✅ | 0–100 heat / respiratory / cardiovascular, computed continuously |
-| Deterministic explanations | ✅ | Exhaustive over every anomaly type |
-| On-device LLM rewrite | ✅ | Constrained, validated, strictly optional |
-| Local alerting | ✅ | Two notification channels, severity-tiered |
-| Foreground service | ✅ | `connectedDevice` type, owns the model lifecycle |
-| Unit test coverage | ✅ | 220 tests |
-| Health UI screens | ✅ | Dashboard · Live Monitor · History · Alerts, on real pipeline state |
-| BLE / HM-10 wearable | ⬜ | Phase 2 — the interface boundary is in place |
-| Doctor-facing sync | ⬜ | Phase 3 |
+| Daily health awareness | Live readings, trends, baseline deviations and session summaries | Sensor quality and continuous connection determine available data |
+| Heat exposure awareness | Rule-based indicators when required inputs exist; optional AQI context | Does not diagnose dehydration or predict disasters |
+| Motion monitoring | High-impact fall rule and optional automatic SOS | A 5 g gate can miss lower-impact falls; requires physical validation |
+| Understanding documents | OCR, text extraction, local summaries and Assist | Generated explanations may be wrong; not image-based diagnosis |
+| Emergency information | Consented profile snapshot accessed through NFC/QR URL | Internet required for a new online lookup; record may be stale |
+| Wellness reflection | Sleep journal, stress check-ins, seven-day views and reminders | Self-reported rather than sensor-inferred stages or stress |
+| Demonstration/development | Simulated readings, detector tests and protocol emulator | Simulation is distinguished from live data and cannot send automatic SOS |
 
-6,685 lines of health code across 30 files — 2,745 of which are the Compose UI layer —
-plus 3,202 lines of tests across 12 files.
+Disaster-response and public-health deployment are potential applications, not existing institutional integrations. Flood/cyclone advisories and automated disaster feeds are not implemented.
 
----
+## Architecture
 
-## Pipeline ordering
-
-`MonitoringPipeline` is the spine. The order of its five steps is the whole design, and
-none of it is arbitrary.
-
+```mermaid
+flowchart TB
+    subgraph Wearable[Wearable prototype]
+        S[MAX30100 · DS18B20 · MPU6050 · EMG]
+        E[ESP32-S3 firmware]
+        S --> E
+    end
+    subgraph Phone[Android phone — local processing]
+        B[BLE framing and parsing]
+        V[Validation and 5-second aggregation]
+        DB[(Room and local storage)]
+        D[Deterministic anomaly detector]
+        A[Persisted event and template explanation]
+        N[Local notification]
+        Q[Bounded explanation queue]
+        L[Shared local llama.cpp runtime]
+        UI[Health · Monitor · Trails · Tools · Assist]
+        X[OCR and document text]
+        B --> V --> DB
+        V --> D --> A --> DB
+        A --> N
+        A --> Q --> L
+        L -->|Validated rewrite or template fallback| DB
+        DB --> UI
+        X --> L
+        UI <--> L
+    end
+    E -->|BLE notifications| B
+    A -->|Opt-in eligible live events| SMS[Android SMS / optional call]
+    UI -->|Opt-in city query| AQI[Open-Meteo / CAMS AQI]
+    UI -->|Selected fields and consent| WEB[Emergency snapshot service]
+    TAG[NFC / QR stable read URL] --> WEB
 ```
-onSample(patientId, sample)
-  │
-  ├─ 1. PERSIST the reading                          ← durability point
-  │      Nothing downstream can lose data already on disk, even if
-  │      detection throws or the process is killed a millisecond later.
-  │
-  ├─ 2. DETECT deterministically
-  │      In-memory rolling window → 12 rules → candidates + risk scores.
-  │      No model. No network. No I/O.
-  │
-  ├─ 3. PERSIST the event WITH its template explanation
-  │      The row is complete and human-readable at this instant.
-  │      templateExplanation is NON-NULL by schema.
-  │
-  ├─ 4. ALERT immediately, using the template          ← user is warned HERE
-  │      Notification fires. No dependency on network or model.
-  │
-  └─ 5. UPGRADE with the LLM, best-effort
-         45s timeout. Validated. Failure changes nothing.
-```
 
-Steps 1–4 have no dependency on the network **or** the model. That is what satisfies
-*"recognize health risks before they become emergencies"* and *"operate effectively with
-intermittent or no internet connectivity"* at the same time.
+The wearable gathers signals; the **phone** runs the language model. The ESP32 does not run the bundled 1.5B model. BLE acquisition, persistence and anomaly processing are separate from serialized model inference.
 
-**Why the window lives in memory.** Detection needs recent history on every sample.
-Re-reading it from Room each time would be roughly 1,800 rows per second against a
-30-minute window — enough to keep the disk permanently busy for no benefit. Samples are
-already being written for durability, so the pipeline keeps its own trimmed copy
-(`ArrayDeque`, bounded by the trend horizon and a 4,000-sample hard cap) and the database
-is consulted only for slow-moving state.
-
-**Failure isolation.** Every step is wrapped. A failed reading write still lets detection
-run off the in-memory window, so a storage outage degrades history but never stops the
-patient being warned. This is covered by a test.
-
----
-
-## Detection engine
-
-Pure Kotlin. No Android imports anywhere in `health.domain` or `health.detect`, which is
-what makes the safety-critical part directly unit-testable with no emulator, no
-Robolectric, and no device.
-
-`AnomalyDetector.evaluate(samples, baseline, now, lastEventAtByType)` is a pure function —
-`now` is injected rather than read from a clock, so results are reproducible.
-
-### The twelve rules
-
-| Rule id | Fires on | Max severity |
-|---|---|---|
-| `spo2.critical` | SpO₂ below 90%, instantly, no duration needed | CRITICAL |
-| `spo2.sustained` | SpO₂ below 92% held 10+ minutes — the case PS26181 names | MODERATE |
-| `hr.high` | Tachycardia; motion-aware | CRITICAL |
-| `hr.low` | Bradycardia at rest, 3+ samples | CRITICAL |
-| `temp.fever` | Raised body temperature | CRITICAL |
-| `env.heatStress` | Hot conditions **plus** a physiological response | CRITICAL |
-| `env.dehydrationRisk` | Heat + rising HR + rising core temp (explicit proxy) | MODERATE |
-| `resp.distress` | Poor air with low SpO₂, or falling SpO₂ + rising HR | CRITICAL |
-| `cardio.strain` | Cross-signal: HR rising while SpO₂ falls, at rest | MODERATE |
-| `motion.fall` | Impact spike **then** immobility | CRITICAL |
-| `wellness.fatigue` | Elevated resting HR sustained 20+ min | LOW |
-| `baseline.deviation` | Departure from the patient's **own** normal | MODERATE |
-
-Several of these carry deliberate design decisions worth calling out:
-
-**`hr.high` is motion-aware.** At rest the normal threshold applies; while moving, only
-the critical threshold counts. Without that, every brisk walk generates an alert and the
-user learns to dismiss them.
-
-**`env.heatStress` requires the body to actually respond.** Environmental heat alone is
-a weather forecast, not a health event. The rule needs hot conditions *and* a rising core
-temperature or elevated resting heart rate, which is what keeps it from firing on every
-Indian summer afternoon regardless of the wearer's condition.
-
-**`env.dehydrationRisk` is capped at MODERATE on purpose.** There is no hydration sensor
-on this hardware. It infers falling plasma volume from heat plus a rising resting HR plus
-a rising core temperature — a longer inference chain than a directly measured vital — so
-it never claims confidence it has not earned. The explanation text says so explicitly.
-
-**`motion.fall` needs both halves of the signature.** An impact alone could be the device
-being set down on a table. An impact followed by the wearer not moving is what escalates
-to CRITICAL.
-
-**`baseline.deviation` is the early-warning rule.** Every other rule waits for a fixed
-threshold. This one fires while all vitals are still nominally normal — a resting heart
-rate 25% above someone's personal baseline with SpO₂ down three points is invisible to
-fixed thresholds but is exactly the 24–48-hour pre-deterioration signature. It is gated
-on `PatientBaseline.isReliable` and on being at rest, because a baseline built from four
-readings, or a comparison made mid-exercise, would generate confident nonsense.
-
-The baseline itself is built from **at-rest samples only**. Folding exercise heart rates
-into a resting baseline would inflate it until real tachycardia looked normal, and the
-rule would quietly stop working with no error anywhere.
-
-**All thresholds live in one injectable value object.** `AnomalyThresholds` is a data
-class with `init` invariants, not scattered constants — these are clinical decisions, not
-implementation details, and a reviewer should not have to read the rule engine to find
-them. The defaults are widely-cited general adult reference points, documented as such and
-explicitly not presented as clinically validated.
-
-### Risk scores
-
-`RiskScorer` produces 0–100 for heat, respiratory, and cardiovascular stress on **every**
-evaluation, whether or not any rule fires.
-
-That gap between rules and scores is the entire early-warning story. Rules are binary and
-threshold-driven — they answer "alert now?". Scores are continuous, so a heat score
-climbing 20 → 45 → 70 over an afternoon is visible long before anything is crossed. A
-system that showed "fine" until it suddenly said "critical" would be useless for
-prevention.
-
-Three properties, all covered by tests:
-
-- **Bounded** — always 0..100, so no clamp bug reaches the UI as a 137% risk.
-- **Monotonic** — a worse input never lowers a score, which is what makes the number
-  trustworthy as a trend line.
-- **Graceful** — missing signals contribute 0 rather than poisoning the result, so a
-  wearable with no ambient sensor still yields useful vitals-based scores.
-
-### Heat index
-
-`HeatIndex` implements the NWS Rothfusz regression, including both published edge
-corrections and the low-range simple form.
-
-38 °C at 25% humidity and 38 °C at 80% humidity are not the same physiological threat.
-Sweat evaporation is the body's only real cooling mechanism above ~35 °C, and high
-humidity disables it. For a heat-wave feature aimed at India — where coastal humidity
-routinely exceeds 70% — comparing raw air temperature against a fixed threshold would
-badly understate risk in exactly the conditions that kill people. The measured gap
-between those two cases is about 38 °C of apparent temperature.
-
-When humidity is unavailable, `computeOrNull` returns null rather than substituting a
-default, and the engine falls back to air temperature. A fabricated humidity would
-produce a confident-looking heat index no sensor supports, and that number could go on to
-justify an alert.
-
-### Noise control
-
-Two layers, because over-alerting is a worse failure than under-alerting: it trains the
-user to ignore the app.
-
-**Per-type cooldown.** A vital hovering at a threshold would otherwise emit one event per
-sample. Debouncing is structural, not cosmetic — and a test asserts that 20 consecutive
-critically-low samples produce exactly one alert.
-
-**Low-severity shadowing.** When something CRITICAL is firing, informational LOW findings
-alongside it are a distraction. They are recorded as suppressed for the audit trail, not
-surfaced.
-
-**Rule fault isolation.** Each rule runs inside `runCatching`. Monitoring continuing with
-one rule degraded is strictly better than the service dying and the patient going
-unwatched.
-
----
-
-## Explanation layer
-
-Every event gets its explanation from `ExplanationTemplates` first, before the model is
-ever asked. The `when` over `AnomalyType` is **exhaustive with no `else` branch**, so
-adding an anomaly type without writing its explanation is a compile error rather than a
-silent blank alert.
-
-The voice is calm, concrete, hedged, and aimed at a family member with no medical
-training. No template names a disease — that would be a diagnosis — and a test enforces it
-against a list of forbidden terms.
-
-### Three response tiers, and only three
-
-| Tier | Severity | Intent |
-|---|---|---|
-| `MONITOR` | LOW | Not urgent, keep an eye on it |
-| `CONTACT_DOCTOR` | MODERATE | Discuss with a doctor today |
-| `SEEK_IMMEDIATE_CARE` | CRITICAL | Do not wait; names emergency services |
-
-Free-form medical advice from a 1.5B model is the single biggest risk in a product like
-this, so the app does not generate advice at all. It selects from three pre-written tiers,
-chosen deterministically from rule severity. The mapping is severity-to-tier and
-deliberately **not** per-type, so no future rule can quietly downgrade urgency.
-
-The model may rephrase the *description*. It may never touch the recommendation.
-
-### Constraining the model
-
-`HealthPromptBuilder.SYSTEM_PROMPT` carries nine numbered rules — no diagnosis, no
-invented numbers, no severity changes, no advice, no false certainty, under 60 words, plus
-an explicit safe fallback for when it cannot comply. Guardrails sit in the *system* prompt
-rather than a user turn because system framing survives better through a generation.
-
-The user turn includes the deterministic explanation as a worked reference. That is the
-important trick: it gives a small model a correct, safe answer to imitate, so the worst
-realistic outcome is output close to the template we would have shown anyway.
-
-### Validation is defence in depth
-
-Prompt constraints are guidance, not a guarantee. `HealthPromptBuilder.validate` inspects
-the output before anyone sees it and rejects:
-
-- text too short or runaway long
-- meta-commentary and refusals (`as an AI`, `I cannot`, stray chat tokens)
-- prescriptive or diagnostic language (`take a tablet`, `mg of`, `this is caused by`)
-- **any number that was never measured**
-
-That last check is the concrete defence against the most dangerous thing the model can
-do — inventing a vital sign. Every integer in the output must appear in the evidence.
-Anything else is discarded and the deterministic template stands.
-
----
-
-## Monitoring service and model ownership
-
-`HealthMonitoringService` is a foreground service with
-`foregroundServiceType="connectedDevice"` — which describes what it actually does, stream
-vitals from a wearable, and is the type that keeps working with the screen off. BLE needs
-that, because Android power-manages GATT links hard.
-
-**Its most important responsibility is owning the model's lifecycle.**
-
-`AIRepository` is a process-wide singleton shared with every screen. Before this service
-existed, `ChatViewModel.onCleared()` called unload on it, and because `SettingsScreen`
-created its own route-scoped `ChatViewModel`, simply closing the Settings screen freed the
-model. Wiring background health monitoring on top of that would mean a user navigating
-away could silently disable their own monitoring.
-
-Ownership is now explicit:
-
-- This service calls `initialize()` on start and is the **only** component permitted to
-  call `AIRepository.shutdown()`.
-- Screen-level ViewModels may cancel their own generation and nothing more.
-- The contract is documented on `shutdown()` itself, with the regression history, so the
-  bug class cannot quietly return.
-
-Model loading is launched in its own coroutine so a slow load never delays the first
-sample. Sampling defaults to one reading every 5 seconds — 1 Hz would be 86,400 rows a
-day for no clinical gain — with a 7-day retention trim running every 6 hours.
-
-### Notifications
-
-Two channels, split by urgency:
-
-- **Monitoring** — `IMPORTANCE_LOW`, silent, ongoing. A permanent service notification
-  that buzzes gets the app uninstalled.
-- **Alerts** — `IMPORTANCE_HIGH`, vibration, `CATEGORY_ALARM` for critical events.
-
-Separating them also means a user who silences the persistent notification does not
-accidentally silence critical alerts, which on one shared channel they would.
-`BigTextStyle` carries the full explanation so it is readable on a locked screen, which is
-when the person who needs to act is most likely to see it. Every post is wrapped —
-`POST_NOTIFICATIONS` can be revoked at any time, and that must degrade the alert to
-"recorded but not shown", never crash the service.
-
----
-
-## Data layer
-
-One Room database, version 2, `exportSchema = true`, with **both** `1.json` and `2.json`
-committed under `app/schemas/`.
-
-| Table | Holds |
+| Responsibility | Owner |
 |---|---|
-| `patients` | Identity, age, chronic conditions, emergency contact |
-| `devices` | Paired wearables, transport, last seen, battery |
-| `vitals_readings` | Every sample, with provenance (`SIMULATED` / `BLE` / `MANUAL`) |
-| `anomaly_events` | Confirmed events, evidence JSON, both explanations, status |
-| `library_entries` + `_fts` | Inherited from Infinity, untouched |
+| Source identity and valid fields | Sensor source and parser |
+| Aggregation, persistence, detector invocation | Monitoring pipeline |
+| Structured anomalies from windows and thresholds | Detector |
+| Asynchronous wording improvement with fallback | Explanation worker |
+| Shared native model access and lifecycle | AI repository |
+| Reactive presentation and user actions | Compose UI and ViewModels |
+| Explicit, selected data sharing | Optional integration services |
 
-`anomaly_events` carries `templateExplanation` (non-null) **and** `aiExplanation`
-(nullable) rather than one mutable field, so both remain auditable after the fact and the
-UI can render `aiExplanation ?: templateExplanation`.
+## End-to-end workflows
 
-### Why the migration is hand-written
+### A live reading becomes an alert
 
-`fallbackToDestructiveMigration()` silently drops every table on a version bump. In a
-health app that means a user's entire vitals and alert history disappears on upgrade —
-and critically, it is **untestable**: there is no migration to assert against, so a schema
-mistake surfaces as data loss in the field rather than a red test.
+```mermaid
+sequenceDiagram
+    participant W as Wearable
+    participant P as Monitoring pipeline
+    participant R as Room
+    participant D as Detector
+    participant U as User notification
+    participant AI as Local explanation worker
+    W->>P: Newline-framed BLE samples
+    P->>P: Parse, validate, aggregate
+    P->>R: Store reading with provenance
+    P->>D: Evaluate windows, thresholds and cooldowns
+    D-->>P: Structured anomaly if confirmed
+    P->>R: Save event with template explanation
+    P->>U: Show alert without waiting for AI
+    P->>AI: Queue optional explanation
+    alt Acceptable generated explanation
+        AI->>R: Update event wording
+    else Unavailable, timed out or rejected
+        R-->>U: Original explanation remains usable
+    end
+```
 
-Migration 1 → 2 is purely additive. It contains no `DROP`, no `DELETE`, no `ALTER` of any
-pre-existing table, and tests assert that property directly rather than trusting the
-comment. `GoneMigrations.MIGRATION_1_2_STATEMENTS` is exposed as a plain
-`List<String>` precisely so it can be inspected.
+Sensor acquisition, five-second aggregation, rule duration requirements and Android scheduling contribute to total latency. No measured end-to-end latency guarantee is claimed.
 
-**`1.json` had to be recovered.** Version 1 shipped with `exportSchema = false`, so no
-record of the old schema existed and `MigrationTestHelper` could not build a v1 database —
-the upgrade path for existing installs was untestable. It was regenerated by temporarily
-pinning the database class back to version 1, capturing the export, and restoring v2.
+### A document becomes understandable text
 
-Provenance is stored per reading because it is clinically meaningful: a chart built from
-`SIMULATED` data must never be mistaken for real measurements.
+1. Select an image, capture with the camera, import supported document content or use consented screen capture.
+2. Extract text locally. PDF text extraction and OCR are distinct paths; this is not a multimodal diagnostic model.
+3. Review/select extracted text with meaningful symbols, numbers and spacing preserved.
+4. Run a local summary, explanation or quiz within the model's token budget.
+5. Read formatted output; copy, share or save to Memory Vault. Completed tool results can be saved automatically; incomplete output is handled separately.
 
----
+### An NFC record stays updateable
 
-## Simulation
+```mermaid
+flowchart LR
+    APP[Wearer edits profile] --> CONSENT[Select fields and enable sharing]
+    CONSENT --> SYNC[Upload snapshot when connected]
+    SYNC --> STORE[Private server-side storage]
+    NFC[NFC tag holds unique stable URL] --> PAGE[Read-only emergency page]
+    STORE --> PAGE
+    PAGE --> TIME[Display last received timestamp]
+```
 
-`SimulatedVitalsSource` is a first-class component, not a test stub. The wearable does not
-exist yet, but the spine had to be finished and verified before hardware arrives — and
-simulation makes anomalies reproducible on demand, which no real sensor can do. When the
-BLE implementation lands it is a *peer* of this class, so regressions in the detection
-engine stay catchable forever.
+The tag stores an address, **not a live copy of the database**. Updating the record behind that address lets the same tag show newer information without rewriting it. The generic `/e` route is setup entry; personal records use `/e/<read-id>`. An offline/static NFC payload is a separate mode and must be rewritten when its contents change.
 
-| Scenario | Drives |
+## Feature guide
+
+### Health, monitoring and sessions
+
+| Feature | Behavior |
 |---|---|
-| `HEALTHY_BASELINE` | Nothing — the false-positive control |
-| `HEAT_WAVE_EXPOSURE` | Heat stress, dehydration, fever |
-| `DESATURATION_EPISODE` | Sustained then critical low SpO₂ |
-| `TACHYCARDIA_EPISODE` | High heart rate at rest |
-| `BRADYCARDIA_EPISODE` | Low heart rate |
-| `FEVER_ONSET` | Fever |
-| `AIR_QUALITY_EVENT` | Respiratory risk during a pollution event |
-| `FALL_THEN_IMMOBILE` | Fall detection, both halves of the signature |
-| `GRADUAL_DETERIORATION` | Baseline deviation, and *only* that |
+| Live monitoring | BLE connection, validated values, source-aware charts and explicit missing/standby states |
+| Temperature | Skin temperature stays separate from core temperature; DS18B20 skin readings do not become core fever measurements |
+| Trends and baselines | Historical windows, baseline comparisons and internal heat/respiratory/cardiovascular indicators |
+| Sessions | Start/stop monitoring sessions, review recorded data and generate a PDF report |
+| EMG calibration | Calibration workflow; raw ADC magnitude is not universal across users |
+| Simulation | Development/demo sources distinguishable from real input |
+| Wellness journal | Bed/wake times, awake minutes, sleep quality and daily stress ratings; edit/delete entries |
+| AQI | Optional city selection, animated regional US-AQI display and retained last successful reading |
 
-`VitalsScenarioGenerator.sampleAt(index)` is a **pure function of the index**. Jitter is
-derived by hashing `(seed, index, field)` rather than drawing from a sequential PRNG, so
-`sampleAt(500)` returns exactly what it would after 500 sequential calls. Tests jump
-straight to minute 12 of a desaturation episode instead of pumping a flow, and any failure
-reproduces byte-for-byte from the seed alone.
+### Anomaly detection
 
-Timing uses plain `delay`, so `runTest` drives it on virtual time — a 4-hour deterioration
-scenario is exercised in milliseconds.
+The detector implements **13 rule IDs**. Rule presence does not mean the current hardware supplies every required input or that every risk is medically established.
 
-`GRADUAL_DETERIORATION` is the tightest constraint of the set: it must stay inside *every*
-fixed threshold while still drifting away from the patient's own baseline, so that only
-`baseline.deviation` can see it. A test asserts exactly that, per sample.
-
----
-
-## UI surface
-
-Four screens in `health/ui`, all reading the same state the notifications read. There is no
-separate UI copy of the vitals or the risk numbers — `HealthViewModel` bridges the
-service's `isRunning`/`snapshot` `StateFlow`s and the Room flows, and nothing else.
-
-| Screen | Answers | Notable |
-|---|---|---|
-| `HealthDashboardScreen` | "Am I OK right now?" | Collapsing hero ring, sticky monitoring bar, quick actions, 4 vital tiles, 3 radial risk gauges, recent activity |
-| `LiveMonitorScreen` | "What is happening this second?" | One vital per card, live waveform, linear risk meters, orb driven by pipeline state, honest "3s ago" |
-| `HealthHistoryScreen` | "What changed over time?" | Three tabs — Trends, Events, Insights — over 4 ranges |
-| `AlertsScreen` | "What did it find and why?" | Active/Seen/All tabs with live counts, evidence, template + AI explanation, acknowledge |
-
-### The home screen collapses
-
-Start/stop monitoring used to sit at the **bottom** of a four-screen scroll. It is the most
-important control in the app and it was the hardest thing on the page to reach.
-
-It now lives in the hero, above the fold. Because it has to stay reachable once the hero
-scrolls away, a compact bar carrying the same control slides down and pins to the top. So
-the primary action exists at every scroll position, in exactly one of two places, and the
-scroll itself is the transition between them.
-
-The collapse is driven off `rememberScrollState().value` over a 190dp distance. The hero
-fades and scales through `graphicsLayer` and **does not change its layout height** —
-animating height would reflow everything below it on every scroll frame, while fading a
-fixed-size block scrolls away just as convincingly and never jitters.
-
-The hero ring itself carries three signals: an outer sweep for the dominant risk score,
-inner radial ticks for the recent heart-rate series, and a breathing halo bound to the
-monitoring state. The halo **stops** when idle rather than slowing down — an animation that
-keeps moving while nothing is being measured is a lie about the app's state, and a beautiful
-dashboard that is silently not monitoring is worse than a plain one that is.
-
-The scenario picker moved down into a "Data source" section that only appears while stopped.
-It is a setup choice made once, and switching scenario mid-run would silently invalidate the
-baseline the detector has been learning.
-
-### The History tabs
-
-The History tabs exist because one scroll of six charts made every question equally slow.
-Each tab now answers one: **Trends** is the line charts with event markers, **Events** is a
-bar chart of when things fired plus a severity donut, and **Insights** is a min/max/average
-range band and a time-in-range donut.
-
-Buckets for the aggregate views are derived from the data's own span rather than calendar
-units. Reading history is capped at 2,000 samples — about 2.8 hours at the 5 s interval —
-so grouping by day would put everything in a single bar.
-
-`HealthViewModel` exposes severity helpers used only for colouring. They deliberately do
-**not** decide events — the detector does that, weighing motion, duration and trend that a
-single instantaneous reading cannot see. A tile can therefore look amber without an event
-existing, and that is correct rather than a bug.
-
-### Navigation
-
-The bottom bar is health-first, five tabs, because five is the practical ceiling before
-labels truncate:
-
-```
-Health · Monitor · History · Alerts · Assist
-```
-
-Tools and Settings are one tap from the Dashboard header. The Knowledge Vault is reached
-from Tools. The old Infinity hub screen was removed rather than left orphaned — every
-destination it offered is on Tools or the Assist tab, and keeping two tool grids would have
-meant maintaining both.
-
-### Severity has one meaning
-
-`HealthTheme.kt` owns the tokens rather than the shared `ui/theme`, so the app-wide theme
-does not acquire a dependency on the health domain.
-
-Red is reserved for `CRITICAL` only. A system fault — sensor dropout, model failure — uses
-a separate desaturated `SystemFault` tone, because "the app broke" and "you are in danger"
-must never look the same. Vital numbers use tabular figures so a digit change does not
-shift the layout.
-
-There are **two** palettes behind one `HealthPalette` interface, and that is a correctness
-issue rather than a matter of taste. The original colours were tuned against a near-black
-background; on the light theme the same amber sits at roughly 2.1:1 against white, under
-the 4.5:1 WCAG AA threshold and genuinely hard to read in daylight. `HealthColorsLight`
-darkens each role until it clears 4.5:1 while holding the hue, so the colour still means
-the same thing. `severityColor`, `riskColor` and `monitoringStateColor` all take the theme.
-
-The app **defaults to light**: a health companion is read in daylight far more often than
-in bed. Dark is one tap away in Settings and the choice persists.
-
-### Charts are hand-drawn
-
-Sparklines, line charts, radial gauges, bar charts, range bands, donuts and the waveform
-are all `Canvas`, with `PathMeasure` for draw-ins. No charting library: there is exactly
-one render style to support, and the APK already carries a 1 GB model.
-
-Long ranges are stride-sampled, not averaged — an hour at 5 s is 720 points, and averaging
-would erase the transient spikes that are the entire point of looking. SpO₂ and temperature
-charts use pinned axes, since auto-scaling makes a 96 → 95 wobble look like a cliff.
-
-The range-band chart is the one a line graph cannot replace. Averaging a day of heart-rate
-samples into a single point hides the two numbers that matter most — how low it went and
-how high — and a stretch that ran 52–148 looks identical to a flat 95 once averaged.
-
-### Elevation is asymmetric between themes
-
-`ui/theme/Surfaces.kt` holds `goneSurface` and `GoneCard`, and every health surface routes
-through them so elevation cannot drift between screens.
-
-The asymmetry is the point. On light it casts a soft blue-tinted shadow with only a hairline
-border; on dark it draws no shadow at all and relies on a visible border. A shadow over a
-near-black background is invisible work — it costs a render pass and changes nothing — while
-a border on white is what makes a card look like a diagram instead of an object. Every card
-in the app was previously `background + 1dp border` on both themes, which is why the light
-theme read like a wireframe.
-
-Shadows are tinted toward the background hue rather than being neutral black, because pure
-black shadow over a cool background reads as grey sludge.
-
-`GoneRadius` and `GoneElevation` exist so radii and depths are a scale rather than a
-per-call-site guess. Mixed radii on adjacent surfaces is a flaw nobody can name but
-everybody feels.
-
-### Motion
-
-`ui/theme/Motion.kt` holds the shared tokens (`GoneMotion`), a `pressScale` modifier, a
-`shimmer` modifier and `StaggeredEntrance`. It lives in `ui.theme` rather than `health.ui`
-because navigation and the tool screens need it too.
-
-Centralising durations is about consistency: when every surface picks its own 300ms-ish
-number the app feels subtly unsynchronised, and that reads as low quality even when no
-single screen looks wrong.
-
-Navigation uses two different transitions on purpose. Switching bottom-nav tabs is lateral
-movement between peers, so it fades through with a slight scale and no directional slide —
-sliding would imply an ordering the tabs do not have. Opening a detail screen is a push
-deeper, so it slides in and back out the same way, which is what makes the back gesture
-feel like reversal rather than another forward step.
-
----
-
-## Inherited capability
-
-G-one is built on Infinity, a working offline AI assistant, and those features are still
-present and functional. The strategic reason: the hardest, riskiest part of "on-device AI
-health companion" is making local LLM inference reliable on a phone — model loading, JNI
-threading, cancellation, memory. That part already existed, audited and working.
-
-Still shipping, retargetable as medical-document intake per the roadmap:
-
-| Feature | Current behaviour |
+| Rule ID | Purpose |
 |---|---|
-| Chat | Streaming, markdown + code blocks, long-press actions |
-| OCR Scanner | ML Kit text extraction → explain / check ranges / summarize / notes |
-| PDF Summarizer | From-scratch PDF text extractor, no third-party library |
-| Screenshot Explainer | Explains and simplifies a captured report or label, decodes terms |
-| Quiz Generator | 5 MCQs from text or an image |
-| Circle Learn | Floating bubble over any app, drag-select, OCR, 14 actions |
-| Knowledge Vault | Room + FTS4 full-text search |
+| `spo2.critical` | Critical low-oxygen reading |
+| `spo2.sustained` | Sustained low-oxygen pattern |
+| `hr.high` / `hr.low` | Sustained high/low heart-rate patterns |
+| `temp.fever` | Elevated core-temperature input, when available |
+| `env.heatStress` | Combined heat-stress indicators |
+| `env.dehydrationRisk` | Indirect dehydration-risk indicators |
+| `resp.distress` | Combined respiratory-risk pattern |
+| `cardio.strain` | Combined cardiovascular-strain pattern |
+| `motion.fall` | High-impact event with supporting rule conditions |
+| `wellness.fatigue` | Fatigue-related pattern |
+| `emg.sustainedHigh` | Sustained elevated muscle activity |
+| `baseline.deviation` | Departure from a personal baseline |
 
-These share the same `AIRepository` singleton as the health explainer. Inference is
-serialized by a mutex in C++, so a chat generation and an alert explanation cannot
-interleave.
+Thresholds, windows and cooldowns live in [domain configuration](app/src/main/java/com/gone/ai/health/domain/AnomalyThresholds.kt) and [rule implementations](app/src/main/java/com/gone/ai/health/detect/AnomalyRules.kt). Risk scores are engineering indicators, not probabilities of disease. Missing values must not become zeros or evidence of immobility.
 
-### These were retargeted, not just renamed
+### Emergency assistance
 
-Inheriting a working assistant also meant inheriting its *purpose*, and that showed. The
-system prompt opened with "You are Infinity, a helpful assistant" — the model did not know
-it was a health companion at all. Chat offered "Help me write code". Circle Learn shipped
-`EXPLAIN_CODE`, `FIND_BUGS` and `INTERVIEW_QUESTIONS`. `ContentTypeDetector` sniffed for
-`{`, `fun ` and `import `. The screenshot tool had a "Fix Error" action.
+- Automatic SOS is opt-in and requires a saved contact and SMS permission.
+- Every confirmed eligible **live** wearable anomaly, including low/moderate findings, can trigger a message. Motion additionally requires a finite impact of at least **5.0 g**.
+- Events combine for **1.5 seconds** to reduce duplicate messages from a reading. Detector checks and cooldowns still apply; there is no user countdown.
+- Simulated readings, historical replay and AQI do not trigger automatic SOS.
+- Calling is separately permissioned. Manual Tools actions open the SMS composer or dialer.
+- A working SIM and mobile service are required. A send callback does not prove delivery or that the recipient read the message.
 
-All of it now points at health. `PromptFormatter.DEFAULT_SYSTEM_PROMPT` establishes G-one's
-identity and its refusal boundaries: no diagnosis, no naming a medicine or a dose, and an
-explicit instruction to tell the user to seek emergency care when they describe chest pain,
-trouble breathing, fainting, heavy bleeding or signs of a stroke. Naming the red flags beats
-a general "be careful" because it gives a 1.5B model concrete triggers rather than leaving
-the judgement to it.
+See [SOS behavior](docs/SOS_BEHAVIOR.md) for exact semantics and remaining physical tests.
 
-The prompt is deliberately short. Every caller pays for it on every generation, and the
-2048-token context is shared with chat history and up to 800 characters of extracted
-document text — a thorough-sounding 300-token persona would measurably shorten how much
-conversation fits.
+### Assist and AI tools
 
-The detector now looks for clinical signals instead (`mg/dl`, `reference range`,
-`haemoglobin`, `dosage`). Two details worth noting: it matches case-insensitively now,
-because OCR routinely returns lab reports fully capitalised and the old case-sensitive
-`contains` missed every one of them; and bare `mg` and `ml` are deliberately excluded, since
-they appear inside ordinary words like "mgmt" and "html" and a false MEDICAL classification
-would promote the wrong three actions.
+| Tool | Implementation |
+|---|---|
+| Assist | Streaming local chat, formatted headings/lists/code/tables, drafts during generation, stop/retry, history and message actions |
+| Personal context | Explicitly selected health/document context constrained before entering the prompt |
+| OCR | Local ML Kit recognition, selectable results and preserved numeric/symbol content |
+| Screenshot AI | Text-led explanation of captured/imported screen content |
+| Circle to Search | Permission-based screen capture/overlay workflow for selected content |
+| Quiz generator | Questions, answer feedback and score when output parses; raw-output fallback otherwise |
+| Memory Vault | Local saved scans, summaries and quizzes; search and deletion workflows |
+| Voice | Android recognition and text-to-speech; offline recognition preferred but not guaranteed |
+| Wellness tools | General educational guides and reminders, not a treatment service |
 
-The study actions — notes, flashcards, quiz, viva — were **kept**. They are working
-features, and scanning a discharge summary into revision notes is a real use of them. Only
-the developer-specific ones were removed.
+General chat output is not covered by the same constrained health-event rewrite validation. It can hallucinate, omit context or produce misleading advice.
 
-The health prompts repeat "do not diagnose" even though the system prompt already forbids
-it. Redundant on purpose: a small model handed a page of abnormal lab values is strongly
-pulled toward naming a disease, and restating the boundary next to the data it applies to
-holds better than relying on the system turn alone.
+### AQI, sleep and stress
 
----
+AQI is **off by default**. Open-Meteo/CAMS supplies modeled **US AQI**, distinct from India's National AQI and an on-body sensor. Successful refreshes are at least 15 minutes apart while Home is visible; failures are throttled to one minute and requests time out after ten seconds. Values older than three hours are stale. Failure preserves the last good reading and timestamps; changing city invalidates the old cache.
 
-## Native layer
+Sleep uses entered bedtime, wake time, awake minutes and quality (1–5). Stress is a self-reported daily 1–5 scale. Seven-day trends exclude missing days from averages. Each journal allows one entry per date and up to 365 entries. These are longitudinal records, not automatic sleep staging or physiological stress detection.
 
-`app/src/main/cpp/CMakeLists.txt` probes for the vendored sources and picks a target:
+## Hardware and protocol
 
-| Condition | Builds | Result |
+### Current Phase-1 wearable
+
+| Component | Function | Detail |
 |---|---|---|
-| `llama/include/llama.h` present | `infinity_jni.cpp` | Full engine |
-| missing | `infinity_jni_stub.cpp` | App still runs; AI features report a clean error |
+| ESP32-S3 development board | Acquisition and BLE | N16R8 build configuration; 3.3 V logic, 12-bit ADC |
+| MAX30100 breakout | Heart rate and SpO₂ | Board may say “MAX30100/30102”; current firmware uses MAX30100 driver |
+| DS18B20 | Skin temperature | GPIO 4; 1-Wire pull-up unless already present |
+| MPU6050 | Acceleration/motion | Separate I²C bus GPIO 6/7; configured ±8 g |
+| EMG module and contacts | Muscle activity | ADC1 GPIO 1; input must remain within 3.3 V |
+| Strap, wiring, resistors | Physical prototype assembly | Real module-based prototype construction |
 
-Three targets: `ggml_cpu` (static, ARM-only sources, Intel AMX excluded), `llama_core`
-(static, 25 core units plus **all 128** per-architecture files globbed from
-`src/models/*.cpp`), and `infinity_jni` (shared).
+Pulse I²C uses GPIO 8/9. Power arrangements are in the [hardware guide](docs/HARDWARE_SETUP.md); there is no measured battery telemetry without additional hardware. A parts-list battery capacity does not establish measured runtime.
 
-### One compiler flag worth knowing about
+**Current firmware has no SD logging.** The app contains a richer acknowledged/backfill protocol and emulator, but the sketch sends live readings only. Out-of-range samples are lost; firmware does not implement the full ACK/STOP protocol.
 
-```cmake
-set(SAFE_MATH_FLAGS "-O3 -fno-finite-math-only")
-```
+### BLE contract
 
-`-ffast-math` is deliberately **not** used. It implies `-ffinite-math-only`, and ggml
-depends on `INFINITY` / `-INFINITY` throughout its softmax and masking code. Enabling it
-produces silently wrong logits. `-O3` plus explicit non-finite math gives the speed
-without the corruption.
+| Item | Value / behavior |
+|---|---|
+| Advertised name | `G-one Wearable` |
+| Service / characteristic | `FFE0` / `FFE1` |
+| Transport | Notifications and writes without response; requested MTU 185 |
+| Framing | Newline-terminated ASCII; split/coalesced notifications handled |
+| Payload | Comma-separated `KEY:VALUE`; unknown fields ignored |
+| Typical keys | `HR`, `SPO2`, `STEMP`, `MOT`, `EMG`, `EMGPK`, `EMGBITS`, `ST`, `TS` |
+| Clock sync | Phone sends `T:<epoch_ms>` |
+| Temperature | `STEMP` is skin; `TEMP` is core and is not sent by current hardware |
 
-### Thread safety
+See [the protocol](docs/WEARABLE_PROTOCOL.md) for accepted ranges, status flags and replay behavior.
 
-Two mutexes and one atomic guard all shared state: `g_state_mutex` for the model/context
-pointers, `g_gen_mutex` held for a generation's entire lifetime, and an atomic `g_stop`
-for cooperative cancellation. Consequences that were designed for:
+### Hardware design assets
 
-- `loadModel` assigns model **and** context under one lock, so `isModelLoaded()` can never
-  see a half-initialized engine.
-- `unloadModel` takes `g_gen_mutex` first, blocking until any running generation finishes.
-  No use-after-free.
-- Prefill locks per 512-token chunk, so unload can get in between chunks instead of
-  waiting out a multi-second prefill.
-- `onComplete()` fires only on natural termination — a stop-flag exit calls nothing,
-  because the Kotlin channel is already closed and the partial response must survive.
+| Directory | Role |
+|---|---|
+| [Phase-1 strap](hardware/gone-phase1-strap) | Prototype visualization and related assets |
+| [PCB concepts](hardware/gone-pcb-3d) | Later compact-board models |
+| [Jeevan Core](hardware/jeevan-core) | Final-phase chest/arm patch concept and layered presentation assets |
 
----
+Renderings do not establish routing correctness, assembly feasibility, biocompatibility, waterproofing, battery life or certification. Additional ECG/bioimpedance/environmental parts in concepts are not automatically part of current firmware.
 
-## Project structure
+## Implementation details
 
-```
-app/src/main/java/com/infinity/ai/
-├── health/                          ← Phase 1, 23 files / 3,474 lines
-│   ├── domain/                      PURE KOTLIN, no Android imports
-│   │   ├── Vitals.kt                VitalsSample, Trend, slope math
-│   │   ├── Anomaly.kt               AnomalyType, Severity, RiskScores, Evidence + JSON
-│   │   └── AnomalyThresholds.kt     every threshold + PatientBaseline
-│   ├── detect/                      PURE KOTLIN, the safety-critical core
-│   │   ├── Window.kt                VitalsWindow, chronological normalisation
-│   │   ├── HeatIndex.kt             NWS Rothfusz + EnvironmentContext
-│   │   ├── RiskScorer.kt            0–100, always computed
-│   │   ├── AnomalyRules.kt          12 rules + DetectionContext
-│   │   └── AnomalyDetector.kt       orchestration, cooldown, shadowing
-│   ├── explain/
-│   │   ├── Explanation.kt           ResponseTier, Explanation
-│   │   ├── ExplanationTemplates.kt  exhaustive over AnomalyType
-│   │   └── HealthPromptBuilder.kt   constrained prompt + validation
-│   ├── source/
-│   │   ├── VitalsSource.kt          the hardware boundary
-│   │   ├── SensorPacketParser.kt    BLE-fragmentation aware
-│   │   ├── VitalsScenario.kt        9 scenarios, pure generator
-│   │   └── SimulatedVitalsSource.kt
-│   ├── data/
-│   │   ├── HealthEntities.kt        Room entities + mappers
-│   │   ├── HealthDao.kt             4 DAOs
-│   │   ├── HealthRepository.kt      interface + Room impl
-│   │   └── GoneMigrations.kt        testable additive migration
-│   └── service/
-│       ├── MonitoringPipeline.kt    THE SPINE — Android-free, testable
-│       ├── LlamaAiExplainer.kt      optional model rewrite
-│       ├── HealthNotifications.kt   channels + AlertSink
-│       └── HealthMonitoringService.kt  foreground service, model owner
-│   └── ui/
-│       ├── HealthTheme.kt           dark + light severity palettes, vital type
-│       ├── HealthComponents.kt      tiles, sparklines, waveform, tab row
-│       ├── HealthCharts.kt          radial gauge, bars, range band, donut
-│       ├── HealthViewModel.kt       service StateFlows + Room → UI state
-│       ├── HealthDashboardScreen.kt vitals grid, radial risk gauges, run control
-│       ├── LiveMonitorScreen.kt     one-vital-per-card, live strips, risk meters
-│       ├── HealthHistoryScreen.kt   Trends / Events / Insights tabs
-│       └── AlertsScreen.kt          evidence, explanation, acknowledge
-│
-├── ai/                              inherited inference trunk (unchanged design)
-├── circle/                          Circle Learn overlay subsystem
-├── data/library/                    GoneDatabase (v2) + inherited library
-├── ocr/  pdf/  model/               extraction + shared AI text processing
-├── ui/                              Compose screens, theme, navigation
-│   ├── theme/Motion.kt              shared motion tokens + reusable modifiers
-│   └── theme/Surfaces.kt            elevation scale, goneSurface, GoneCard
-└── viewmodel/                       7 ViewModels
+### Local inference lifecycle
 
-app/schemas/com.infinity.ai.data.library.GoneDatabase/
-├── 1.json                           recovered, enables migration testing
-└── 2.json                           canonical v2 schema
-```
+Kotlin accesses a C++ JNI bridge calling vendored llama.cpp/ggml CPU code. The AI repository manages shared ownership so tools and chat do not create independent model copies. Requests are serialized; cancellation and lease tracking control inference and release. The runtime reuses a shared prompt prefix when possible.
 
----
+The model is bundled as an asset and copied to app-private storage. This allows first use without a model download but increases APK and installed storage. An idle model releases after the final lease has been closed for 60 seconds.
 
-## Tech stack
+### Prompt and output boundaries
 
-| Layer | Choice |
+Conversation, selected health context and attachments share a finite token window. Budgets constrain input growth while reserving response space. Document tools use a smaller per-step budget. Health explanations have a timeout and validation; the existing template remains when generated text is unavailable or rejected.
+
+### Persistence and resilience
+
+Room stores records using exported schemas and migrations; the current schema is **version 5**. Preferences hold settings and journal/cache state. Coroutine flows feed the UI. A bounded explanation queue can discard an obsolete rewrite request under pressure without discarding the already-persisted anomaly.
+
+Absent readings, stale AQI, interrupted generation, pending uploads/deletions and missing permissions should remain explicit rather than being replaced with plausible-looking data.
+
+## Privacy and connectivity
+
+“Local AI” does not mean every feature is network-free or that stored data is encrypted.
+
+| Path | Local by default? | What can leave the phone |
+|---|---|---|
+| Detection and language inference | Yes | No cloud LLM request required |
+| OCR and Vault | Yes | User-directed exports/sharing |
+| Sleep/stress journal | Yes | Stored in app-private preferences |
+| AQI, if enabled | No | City search/centre coordinates; request IP is visible to service |
+| Emergency profile, if enabled | No | Selected snapshot fields; optionally dated live vitals |
+| Automatic SOS, if enabled | Carrier service | SMS/call to configured contact |
+| Voice recognition | Depends on Android service | May use online recognition if offline service unavailable |
+
+The local database is app-private SQLite, **not an encrypted-database implementation**. Backup exclusions reduce unintended exposure but do not replace encryption or device security.
+
+### Emergency sharing security model
+
+The companion web application is maintained separately. The phone creates a random edit secret and derives a separate read identifier. Write/delete operations require the edit credential; readers receive a capability URL. Server storage credentials belong on the server, never in the APK.
+
+Anyone possessing the read URL can access its shared record. It is read-only and displays the last-received time. Visible pages poll; uploads are best-effort and depend on connectivity/background scheduling. Revocation completes only after server deletion succeeds. Losing the edit key through uninstall/data clearing can prevent owner management of an existing record.
+
+See [NFC emergency sharing](docs/NFC-EMERGENCY-SHARING.md) for provisioning, refresh, deletion and deployment.
+
+## Technology stack
+
+| Layer | Technology / configured version |
 |---|---|
 | Language | Kotlin 2.0.21 |
-| UI | Jetpack Compose · BOM 2024.09.00 · Material 3 · light-first |
-| Charts | Hand-drawn `Canvas`, no charting dependency |
-| Async | Coroutines · `StateFlow` · `callbackFlow` |
-| Inference | llama.cpp / ggml, CPU backend, ARM NEON |
-| Model | Qwen2.5-1.5B-Instruct, GGUF Q4_K_M, ~1.04 GB |
-| OCR | ML Kit Text Recognition 16.0.1, on-device |
-| Database | Room 2.7.1 + FTS4, KSP |
-| Build | AGP 8.10.1 · Gradle 8.11.1 · NDK 28.2.13676358 · CMake 3.22.1 |
-| Min / Target SDK | 24 / 36 |
-| ABI | `arm64-v8a` |
+| UI | Compose BOM 2024.09.00, Material 3, Navigation 2.8.9 |
+| State | ViewModel, coroutines, Flow/StateFlow |
+| Data | Room 2.7.1, DataStore 1.1.7, app-private files/preferences |
+| Recognition | ML Kit text recognition 16.0.1 |
+| Animation / QR | Lottie 6.6.2 / ZXing 3.5.3 |
+| Model runtime | llama.cpp/ggml, C++17, JNI, CPU/ARM NEON |
+| Android build | AGP 8.10.1, Gradle 8.11.1, compile/target SDK 36 |
+| Native build | NDK 28.2.13676358, CMake 3.22.1 |
+| Firmware | ESP32 Arduino sketch and sensor libraries |
+| Tests | JVM unit tests, Android instrumentation, lint, Python protocol emulator |
+| Companion service | Separate Next.js application and private server-side emergency storage |
 
-### Engine parameters
+Version authority: [catalog](gradle/libs.versions.toml), [Android configuration](app/build.gradle.kts) and [native build](app/src/main/cpp/CMakeLists.txt).
 
-| Parameter | Value |
-|---|---|
-| `n_ctx` | 2048 |
-| `n_batch` / `n_ubatch` | 512 |
-| `n_threads` | 4 |
-| `n_gpu_layers` | 0 (CPU only) |
-| Max output tokens | 512 |
-| Health explanation timeout | 45 s |
-| Sample interval | 5 s |
+## Performance and verification
 
-The 45-second explanation timeout is much shorter than the chat features' 3-minute
-first-token watchdog, on purpose. Chat has a user willing to wait; this is cosmetic polish
-on an alert already delivered, and holding the single serialized inference slot for
-minutes would block the next anomaly's rewrite for no benefit.
+### Evidence, not promises
 
----
+These results distinguish measured artifacts, historical observations and configured limits. They are not a clinical evaluation or a cross-device benchmark.
+
+| Evidence | Result | Scope |
+|---|---|---|
+| Existing JVM test XML inspected | **590 tests**, 66 classes, 0 failures, 0 errors | Local `testDebugUnitTest` reports; not rerun for this documentation edit |
+| Release APK inspected | **1,182,249,970 bytes** / **1,127.48 MiB** | Current local artifact; future builds can change |
+| GGUF inspected | **1,117,320,736 bytes** / **1,065.56 MiB** | Model asset, also stored uncompressed in this APK |
+| Model share of APK | **94.51%** | GGUF ZIP-entry bytes / complete APK bytes |
+| Recorded prompt processing | **28.9 tokens/s** | One historical quiz prefill on Samsung SM-S721B; not generation speed or median |
+| Recorded firmware compile | **672,243 bytes flash**, **36.1 KB RAM** | Historical envelope-EMG build; about 21% of 3 MB app partition and 11% reported RAM |
+| Recorded protocol self-test | **10 scenarios passed** | Simulated sync; not proof of SD support in current firmware |
+
+[VERIFICATION.md](VERIFICATION.md) records historical device/firmware observations and older test counts. It is an evidence log, not a claim that every current screen and sensor has been rechecked.
+
+### Model footprint and compression
+
+![Measured APK footprint and nominal weight storage comparison](docs/assets/model-footprint.svg)
+
+The upper chart uses actual local bytes. Its remainder includes code, native libraries, resources, other assets and archive/signing overhead; it is not a measurement of Kotlin code alone.
+
+The lower chart explains quantization using **nominal 1.5-billion-parameter arithmetic**: FP32 = 6.00 GB, FP16 = 3.00 GB, ideal four-bit packing = 0.75 GB. These are theoretical raw-weight sizes, **not downloaded checkpoints or measured compression benchmarks**. The actual Q4_K_M GGUF is 1.117 GB; mixed tensor precision and metadata mean it is not equivalent to packing every parameter into four bits. No full-precision baseline was measured, so no empirical compression ratio or accuracy-retention claim is made.
+
+Direct GGUF inspection reports `general.name = qwen2.5-1.5b-instruct`, `general.architecture = qwen2`, `general.file_type = 15` (Q4_K_M), but `general.size_label = 1.8B`. The nominal 1.5B chart is educational arithmetic based on the model name, not an asserted exact tensor count; this metadata discrepancy reinforces the need to pin model provenance.
+
+### Configured resource budgets
+
+| Setting | Value | Meaning |
+|---|---|---|
+| Context window | 4,096 tokens | Configured context, not unlimited memory |
+| Prompt budget | 3,568 tokens | Reserves 512 output tokens plus 16-token margin |
+| Maximum response | 512 tokens | Per-generation upper bound |
+| CPU threads / GPU layers | 4 / 0 | CPU execution; no GPU/NPU acceleration claim |
+| Native batch / microbatch | 512 / 512 | Configuration, not throughput |
+| Health / attachment context | 600 / 900 tokens | Chat context budgets |
+| Document step | 640 tokens | Tool document budget per step |
+| Idle model release | 60 seconds | After final lease closes |
+| Live aggregation | 5 seconds | Contributes latency before evaluation |
+
+### Efficiency choices
+
+| Choice | Benefit | Trade-off |
+|---|---|---|
+| Quantized model | Smaller storage than nominal full-precision weights; offline inference | Quality trade-off unbenchmarked; substantial memory/storage remains |
+| Shared model runtime | Avoids independent instances per tool | Requests compete for serialized inference |
+| Prompt-prefix reuse | Can avoid repeated work | Depends on prompt continuity; no measured speedup provided |
+| Bounded explanation queue | Generative backlog does not control alert creation | Some rewrites may be omitted |
+| Template-first alerts | Usable text survives model failure | Less personalized language |
+| Cached AQI | Last-known context during network failure | Not current; timestamps remain essential |
+| Bundled model | No first-use download | Large APK plus separate extracted model copy |
+
+**Not measured:** sustained generation throughput, time-to-first-token percentiles, peak RSS, battery drain, thermal throttling, multi-day wearable runtime, detector sensitivity/specificity or controlled quantization quality. Publish those only after a reproducible device/data evaluation.
+
+## Engineering comparisons
+
+This compares design approaches, not benchmark results against commercial products.
+
+| Dimension | G-one today | Alternative and trade-off |
+|---|---|---|
+| Health event decision | Local deterministic rules | LLM-only decisions are flexible but harder to reproduce and validate |
+| Language assistance | Local quantized model | Cloud models introduce network and data-transfer dependencies |
+| Sensor storage | Phone persistence from live BLE | Wearable buffering improves gap recovery but needs firmware/storage support |
+| Emergency NFC | Stable URL to updateable snapshot | Static payload works without a server but needs rewriting after edits |
+| Environmental context | Optional modeled city AQI | Local air-quality hardware adds measurements but also hardware/calibration needs |
+| Sleep/stress | Transparent user journal | Automatic inference needs suitable signals and independent validation |
 
 ## Build and run
 
-### Requirements
+### Prerequisites
 
-- Android Studio (Ladybug or newer)
-- **NDK 28.2.13676358** and **CMake 3.22.1** via SDK Manager → SDK Tools → *Show Package Details*
-- An `arm64-v8a` device or emulator, Android 7.0+
-- ~4 GB free on device (1 GB APK asset + 1 GB extracted copy + headroom)
-- ~6 GB free RAM on the build machine
+- Android Studio or command-line Android toolchain with JDK 17+.
+- SDK 36, NDK 28.2.13676358 and CMake 3.22.1.
+- ARM64 Android device, API 24+, with room for the APK, extracted model and application data.
+- Vendored native source at `app/src/main/cpp/llama/`.
+- Compatible Qwen2.5-1.5B-Instruct Q4_K_M GGUF at `app/src/main/assets/models/qwen.gguf`.
 
-### Setup
+The model exists in this workspace, but large model files may not be included in a checkout. Its setup note does not yet pin an exact download/revision/checksum; obtain the intended licensed artifact and verify it before distributing a reproducible build. An arbitrary file renamed `qwen.gguf` is not equivalent.
 
-**1 — Add the model.** Not in the repo (`*.gguf` is gitignored). Download
-`Qwen2.5-1.5B-Instruct` in **GGUF Q4_K_M**, rename to `qwen.gguf`, place at:
+### Build and checks
 
-```
-app/src/main/assets/models/qwen.gguf
-```
-
-**2 — Verify llama.cpp sources.** `app/src/main/cpp/llama/` is vendored and must contain
-`include/llama.h`. If it is missing you get the stub build and AI features report
-"engine not set up".
-
-> ⚠️ **Do not run `setup_llama.ps1`.** It targets llama.cpp `b4570`, which used a flat
-> file layout. The vendored tree here uses the modern layout (`src/`, `ggml/src/`,
-> `src/models/`) that `CMakeLists.txt` requires. Running it would overwrite working
-> sources with an incompatible set.
-
-**3 — Build.**
-
-```bash
-./gradlew assembleDebug
-```
-
-A clean build compiles all of ggml plus 128 llama.cpp architecture files — around
-**9 minutes** on a 16-core machine. Later builds are incremental.
-
-### Verify
-
-```bash
-./gradlew clean assembleDebug testDebugUnitTest
-```
-
-Last measured result:
-
-```
-BUILD SUCCESSFUL in 8m 37s
-48 actionable tasks: 48 executed
-220 tests, 0 failures
-```
-
-APK: `app/build/outputs/apk/debug/app-debug.apk` — 1172.7 MB, containing
-`lib/arm64-v8a/libinfinity_jni.so` at 65.25 MB (the size confirms the real engine rather
-than the stub) and `assets/models/qwen.gguf` at 1065.56 MB uncompressed.
-
----
-
-## Testing
-
-**220 unit tests across 22 classes**, plus 3 instrumented migration tests that need a
-device.
-
-| Suite | Tests | Covers |
-|---|---|---|
-| `AnomalyRulesTest` | 39 | Every rule, firing **and** staying silent |
-| `PacketParserTest` | 20 | BLE fragmentation, timestamps, malformed input |
-| `MonitoringPipelineTest` | 17 | Ordering, failure isolation, debounce |
-| `RiskScorerTest` | 16 | Bounded, monotonic, graceful degradation |
-| `VitalsScenarioGeneratorTest` | 16 | Determinism, scenario shapes |
-| `AnomalyDetectorTest` | 15 | Cooldown, shadowing, fault isolation |
-| `HealthPromptBuilderTest` | 14 | Every validation rejection path |
-| `VitalsWindowTest` | 12 | Ordering, sustained-condition null handling |
-| `GoneMigrationsTest` | 10 | DDL vs Room's schema, additivity, idempotency |
-| `ExplanationTemplatesTest` | 9 | Exhaustive, no null leaks, no diagnoses |
-| Domain + others | 52 | JSON, thresholds, baseline, heat index, tiers |
-
-The negative cases matter as much as the positive ones. A monitor that over-alerts is
-worse than useless, so **20 of the 39 rule tests assert that nothing fires** — silent on
-movement artifacts, silent without environmental data, silent when the patient is at their
-own normal, and silent when a more specific rule already owns the reading.
-
-**Three tests worth singling out:**
-
-`healthy baseline never triggers an anomaly` slides a growing window across 30 minutes of
-healthy vitals and asserts zero alerts at every step. This is the false-positive control.
-
-`gradual deterioration stays inside every fixed threshold` asserts per sample that the
-early-warning scenario never crosses a fixed threshold, proving `baseline.deviation` is
-the only rule that can catch it.
-
-`alert fires from the template before the model is ever consulted` records an interleaved
-call log and asserts the alert index precedes the inference index. This is the core safety
-property, verified rather than described.
-
-`migration DDL matches Room's canonical schema exactly` parses `createSql` out of
-`2.json` and compares it against the hand-written migration — catching the drift that
-would otherwise crash on upgrade for users who already have data, the hardest failure to
-notice in development because a fresh install never runs the migration.
-
-### The tests found two real bugs
-
-Both in code written the same day, both caught before shipping:
-
-1. **Templates rendered the literal string `null`.** `"measured at ${e.spo2}%"` produces
-   `"measured at null%"` when a reading is absent. An alert reading that would destroy
-   trust in the whole app. Fixed with formatters that degrade to a neutral phrase.
-2. **`String.format("%.1f")` used the default locale**, rendering 37.4 as `"37,4"` on a
-   German, Hindi or French device — a comma decimal inside a clinical reading. Pinned to
-   `Locale.US`.
-
----
-
-## Mapping to PS26181
-
-| Expected solution area | Implementation |
-|---|---|
-| Continuous health monitoring | `VitalsSource` → Room, 5 s sampling, provenance-tagged |
-| Track baseline changes | `PatientBaseline` from at-rest samples + `baseline.deviation` |
-| AI-based anomaly detection | 12 deterministic rules; edge AI for explanation |
-| Abnormal heart-rate patterns | `hr.high`, `hr.low`, `cardio.strain`, motion-aware |
-| Heat stress / dehydration | `env.heatStress`, `env.dehydrationRisk` + real heat index |
-| Respiratory indicators | `resp.distress` with AQI banding |
-| Fatigue | `wellness.fatigue` |
-| Fall detection | `motion.fall`, impact + immobility |
-| Risk assessments | 0–100 heat / respiratory / cardiovascular, continuous |
-| Disaster-specific alerts | `EnvironmentContext` shifts rule behaviour under heat/AQI |
-| Environmental awareness | Ambient temp, humidity, AQI folded into rules and scores |
-| Privacy-preserving edge AI | All analysis local; no networking code exists |
-| Offline operation | Steps 1–4 of the pipeline have no network dependency |
-| Emergency assistance | `SEEK_IMMEDIATE_CARE` tier, `CATEGORY_ALARM` notifications |
-| Wellness dashboard | `HealthDashboardScreen` — vitals grid, 3 radial risk gauges, trends, alerts |
-| Scalable deployment | `VitalsSource` / `SensorPacketParser` swap without touching detection |
-
----
-
-## Permissions and the offline claim
-
-| Permission | Used for |
-|---|---|
-| `FOREGROUND_SERVICE` + `_CONNECTED_DEVICE` | Continuous monitoring service |
-| `POST_NOTIFICATIONS` | Health alerts (API 33+) |
-| `RECORD_AUDIO` | Voice input |
-| `CAMERA` | OCR capture |
-| `SYSTEM_ALERT_WINDOW` | Circle Learn bubble |
-| `FOREGROUND_SERVICE_MEDIA_PROJECTION` | Circle Learn screen capture |
-
-### On the offline claim — precisely
-
-There is **no networking code anywhere in this codebase**: no HTTP client, no socket, no
-Retrofit/OkHttp/Ktor dependency. Inference, OCR, detection, and storage are all local.
-Verified by grep across every Kotlin source file.
-
-`app/src/main/AndroidManifest.xml` declares no `INTERNET` permission either. However, the
-**merged** manifest that actually ships does request `INTERNET` and `ACCESS_NETWORK_STATE`,
-contributed transitively by ML Kit's Google `datatransport` components (telemetry plumbing,
-not the OCR model — the bundled recognizer runs offline).
-
-So the accurate statement is: *the app makes no network calls*, not *the app cannot*. For
-the stronger, verifiable guarantee, strip them at merge time:
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
-```
-
-That makes the claim checkable with `aapt dump permissions`. Not applied by default
-because it changes third-party SDK behaviour and a future doctor-facing sync would need
-the permission back.
-
----
-
-## What Phase 1 does not include
-
-Stated plainly, because a spine without a surface is easy to oversell.
-
-**No UI tests.** The four health screens exist and are wired to real pipeline state, but
-they are verified by compilation and manual inspection only — there are no Compose UI
-tests. The 220 unit tests cover the domain, detection, explanation and migration layers,
-none of which import Compose. So UI regressions are the one class of defect this build
-cannot catch automatically.
-
-**No real wearable.** `SimulatedVitalsSource` is the only implementation.
-`VitalsSource` and `SensorPacketParser` exist precisely so the BLE layer drops in without
-touching detection, storage, or explanation — but that work is not done.
-
-**BLE, not Bluetooth Classic.** HM-10 is a BLE module, so the eventual implementation is
-`BluetoothGatt` with service/characteristic `FFE0`/`FFE1`, not `BluetoothSocket` with the
-SPP UUID. Confirm the UUIDs against your board; clones vary. Note also that enabling
-notifications requires writing the CCCD descriptor, and that GATT operations must be
-serialized — the Android stack silently drops a second call made while one is in flight.
-
-**No doctor-facing sync.** `anomaly_events.syncedAt` and the `unsynced` query exist as
-the schema hook; the WorkManager job does not.
-
-**Thresholds are not clinically validated.** They are documented general adult reference
-points, injectable so validated values can be dropped in without a code change.
-
-**Fall detection is threshold-based.** No trained classifier. Auditable and needs no
-training data, with obvious failure modes; a learned model is the documented upgrade.
-
-**Explanations are English-only.**
-
----
-
-## Known issues
-
-Fixed during Phase 1:
-
-- ~~`ChatViewModel.onCleared()` unloaded the shared model~~
-- ~~`SettingsScreen` created a second route-scoped `ChatViewModel`~~
-- ~~Duplicate `composable("circle_learn")` route~~
-- ~~`Responding.partialText` never populated~~
-- ~~Every prompt contained the user's message twice~~
-- ~~`QuizViewModel` generation escaped cancellation~~
-- ~~`fallbackToDestructiveMigration()` on a health database~~
-- ~~Templates leaked the literal string `null`~~
-- ~~Locale-dependent temperature formatting~~
-- ~~Tools had a dead "Smart Notes" card with an empty `onClick`~~ (now the Knowledge Vault)
-- ~~`themes.xml` used the old brown `#0D0A08`, flashing brown on every cold start~~
-- ~~Launcher label still read "Infinity"~~ (now G-one)
-- ~~The system prompt told the model it was "Infinity, a helpful assistant"~~
-- ~~Chat, Circle Learn and the screenshot tool offered coding actions in a health app~~
-- ~~`ContentTypeDetector` matched case-sensitively, missing every ALL-CAPS OCR report~~
-- ~~Severity colours were dark-tuned only; amber sat at ~2.1:1 on the light theme~~
-- ~~The light theme's background was a flat fill while dark got a gradient~~
-- ~~Settings reported a fictional engine ("Infinity-X1", "Production Foundation")~~
-- ~~Start/stop monitoring was buried at the bottom of a four-screen scroll~~
-- ~~Every card used `background + 1dp border` on both themes, so light looked like a wireframe~~
-- ~~`LightShadow` and `LightBorderStrong` were defined but never used~~
-- ~~Release build had no signing config and would produce an uninstallable APK~~
-- ~~R8 would have renamed the JNI callback, silently breaking generation in release~~
-
-Still open:
-
-| Issue | Impact | Location |
-|---|---|---|
-| Voice results route through `startFromSuggestion`, which replaces the whole message list | Speaking clears chat history | `ChatViewModel` |
-| `withTimeout` wraps the blocking JNI `loadModel`, so it cannot interrupt; if it trips, `initializationError` is permanent | Requires app restart | `AIRepository.initialize` |
-| No `top_k` and no repetition penalty; `top_p` applied before `temp` | 1.5B model can loop | `infinity_jni.cpp` |
-| 800-character cap on OCR/PDF input | A long PDF is summarized from its first section only | extractors |
-| No token budget on chat history | Long chats can exceed `n_ctx` → `Prompt decode failed` | `PromptFormatter` |
-
----
-
-## Troubleshooting
-
-<details>
-<summary><b>"AI engine not set up. Run setup_llama.ps1"</b></summary>
-
-CMake fell back to the stub because `app/src/main/cpp/llama/include/llama.h` was not
-found. Restore the vendored `llama/` directory — do **not** run `setup_llama.ps1`. Then
-Build → Clean Project and rebuild.
-</details>
-
-<details>
-<summary><b>"Failed to load AI model"</b></summary>
-
-Usually a missing or truncated `qwen.gguf`. Confirm it is at
-`app/src/main/assets/models/qwen.gguf` and roughly 1.04 GB; a valid GGUF starts with the
-ASCII magic `GGUF`. Also check free space — extraction needs ~1 GB beyond the APK.
-</details>
-
-<details>
-<summary><b>Health alerts never appear</b></summary>
-
-Check in order: is `HealthMonitoringService` running (persistent notification visible),
-was `POST_NOTIFICATIONS` granted on API 33+, and has the per-type cooldown already fired
-for this event type in the last 15 minutes? The cooldown is deliberate — a continuous
-anomaly produces one alert, not one per sample.
-</details>
-
-<details>
-<summary><b>Explanations look templated rather than AI-written</b></summary>
-
-That is the designed fallback, not a failure. The deterministic template is always shown
-first and the model only replaces it when inference succeeds *and* output passes
-validation. Check logcat for `LlamaAiExplainer`: "Model not ready", "timed out", or
-"output rejected by validation" each explain why the template stood.
-</details>
-
-<details>
-<summary><b>Cannot lock execution history cache … already been locked by this process</b></summary>
-
-A Gradle daemon has a wedged lock. Restarting Studio does **not** fix it, because Studio
-reconnects to the same surviving daemon.
+Run from the root in PowerShell:
 
 ```powershell
-./gradlew --stop
-Get-CimInstance Win32_Process -Filter "Name='java.exe'" |
-  Where-Object { $_.CommandLine -like "*GradleDaemon*" } |
-  ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
-
-Remove-Item ".gradle\8.11.1\executionHistory" -Recurse -Force
+.\gradlew.bat :app:assembleDebug
+.\gradlew.bat :app:testDebugUnitTest :app:lintDebug
+.\gradlew.bat :app:connectedDebugAndroidTest
+python tools/wearable-emulator/emulate.py --selftest
 ```
 
-Then re-sync. A clean Gradle lock file is 17 bytes; a stale one is larger because it still
-holds an owner record. The usual trigger is memory pressure killing a build mid-write —
-this project's native build spawns many parallel clang processes, so free up RAM first.
-</details>
+Instrumentation requires a compatible connected device. The Python self-test does not require a wearable. Native compilation must use the vendored implementation; a fallback stub is not a working AI runtime. Do not run legacy `setup_llama.ps1` over a working vendored tree.
 
-<details>
-<summary><b>Native build fails with odd or truncated paths</b></summary>
+| Output | Relative path |
+|---|---|
+| Debug APK | `app/build/outputs/apk/debug/app-debug.apk` |
+| Release directory | `app/build/outputs/apk/release/` |
+| JVM test report | `app/build/reports/tests/testDebugUnitTest/index.html` |
+| Lint report | `app/build/reports/lint-results-debug.html` |
 
-This project's path contains parentheses. CMake and Ninja normally handle that, but if a
-mangled path appears in the error, move the project somewhere without parentheses.
-</details>
+For release, provide local signing configuration through the existing `keystore.properties` mechanism, then run `:app:assembleRelease`. Keep credentials/keystores private. Without signing configuration the release can be unsigned and cannot be installed as a signed release.
+
+### First run
+
+1. Install the APK; allow model preparation when first needed.
+2. Select a real wearable or explicitly enable simulation for a demonstration.
+3. Grant requested Bluetooth/notification permissions, select the wearable and start monitoring.
+4. Check readings/contact quality before relying on charts; calibrate EMG for the setup.
+5. Open Assist or a document tool and verify local model loading/streaming.
+6. Configure AQI, emergency sharing and SOS individually. Test device-dependent behavior deliberately before relying on it.
+
+### Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| AI engine not set up | Confirm vendored `llama/include/llama.h` exists and native build did not select stub |
+| Model fails to load | Complete compatible GGUF, free storage and successful asset extraction |
+| Empty pulse chart | MAX30100 driver, bus wiring/pull-ups, contact and status flags; absent data must not produce a fabricated graph |
+| No health alert | Monitoring, valid inputs, rule duration/cooldown and notification permission |
+| Template explanation remains | Model unavailable, timeout or rejected rewrite can intentionally retain fallback |
+| NFC shows old details | Sharing selection, successful upload and snapshot timestamp; scanning does not upload app edits |
+| APK cannot update installed app | Check signing identity and install error; different keys prevent in-place updates |
+
+## Repository map
+
+```text
+app/
+  src/main/java/com/gone/ai/
+    ai/                 Shared inference and runtime lifecycle
+    chat/               Conversation prompt/context handling
+    health/             Sources, detection, storage, SOS and UI
+    ocr/                Text extraction and document AI processing
+    circle/             Screen capture and overlay tools
+    data/library/       Room database and local library
+  src/main/cpp/         JNI and vendored llama.cpp/ggml
+  src/main/assets/      Model and application assets
+  src/test/             JVM regression tests
+  src/androidTest/      Device instrumentation
+firmware/               ESP32 wearable and owner's reference sketch
+hardware/               Strap, PCB and Jeevan Core assets
+tools/                  Emulator and development utilities
+docs/                   Protocol, setup and behavior guides
+VERIFICATION.md         Historical test and bench evidence
+```
+
+## Limitations and future scope
+
+| Current limitation | Next meaningful step |
+|---|---|
+| Prototype signals and engineering thresholds | Controlled signal-quality, false-positive and missed-event evaluation with appropriate oversight |
+| Live-only transport | Implement and physically verify buffering, ACK/resume and gap recovery |
+| Self-reported sleep/stress | Explore suitable sensing and validate inference before labeling automatic |
+| Incomplete environmental inputs | Add calibrated local measurements where needed; keep modeled AQI distinct |
+| Large model bundle | Pin provenance and benchmark smaller models/delivery options against quality and startup costs |
+| CPU-only runtime | Evaluate supported acceleration with memory, thermal and battery measurements |
+| Unencrypted local database | Evaluate encryption, key lifecycle and migration |
+| Public-by-link emergency record | Improve owner recovery, revocation UX and security review |
+| Conceptual later hardware | Electrical review, mechanical tolerances, PCB fabrication and assembly testing |
+| Android-only prototype | Evaluate other platforms and organizational workflows after current behavior is validated |
+
+No claims are made for certification, guaranteed fall detection, diagnostic accuracy, waterproofing, multi-day battery life, continuous offline NFC refresh or universal device compatibility. Review model/dependency licenses and establish the project's distribution license before redistribution; third-party components retain their own terms.
+
+## Documentation
+
+| Guide | Contents |
+|---|---|
+| [Hardware setup](docs/HARDWARE_SETUP.md) | Parts, pins, power and bench checks |
+| [Wearable protocol](docs/WEARABLE_PROTOCOL.md) | Fields, framing, validation and firmware limitations |
+| [Automatic SOS](docs/SOS_BEHAVIOR.md) | Eligibility, permissions and impact gate |
+| [AQI and wellness](docs/OPTIONAL-AQI-WELLNESS.md) | Cache semantics and journal behavior |
+| [NFC emergency sharing](docs/NFC-EMERGENCY-SHARING.md) | Consent, links, storage and lifecycle |
+| [Verification record](VERIFICATION.md) | Historical automated, phone and wearable evidence |
+| [UI audit](docs/UI-VET-2026-09-19.md) | Recorded findings and fixes |
+| [Footprint methodology](docs/assets/README.md) | Chart inputs, arithmetic and reproducibility |
 
 ---
 
 <div align="center">
 
-**G-one** · Phase 1 · SIH 2026 PS26181
-Qwen2.5-1.5B-Instruct · llama.cpp · 100% on-device inference
+**G-one — Sense · Log · Move · Belong**
 
-*Deterministic detection. Generative explanation. Never the other way round.*
+*Deterministic detection. Local explanation. Explicit consent.*
+
+Documentation audited against this workspace on **22 September 2026**. Artifact measurements describe the local build, not every future release.
 
 </div>

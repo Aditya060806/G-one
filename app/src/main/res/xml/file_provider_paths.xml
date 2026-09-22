@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <cache-path name="ocr_images" path="." />
+    <!-- Session report PDFs, shared through the share sheet. -->
+    <files-path name="reports" path="reports/" />
 </paths>

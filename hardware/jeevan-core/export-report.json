@@ -1,0 +1,25 @@
+{
+  "bytes": 19072648,
+  "meshes": 11,
+  "triangles": 333846,
+  "layers": 11,
+  "animations": 1,
+  "units": "metres",
+  "up_axis": "Y",
+  "self_contained": true,
+  "source_sha256": "47461ee14b71033f701e556d61f38899c188c7f9c7642381b88957abd1e8a762",
+  "assembled_bounds_m": [
+    [
+      -0.01535000093281269,
+      -0.029000001028180122,
+      -0.00013600003148894757
+    ],
+    [
+      0.01535000093281269,
+      0.025350000709295273,
+      0.013114625588059425
+    ]
+  ],
+  "source_unchanged": true,
+  "roundtrip_layers_verified": true
+}

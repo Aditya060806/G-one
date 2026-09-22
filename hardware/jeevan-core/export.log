@@ -1,0 +1,48 @@
+00:00.766  blend            | Read blend: "D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP\hardware\jeevan-core\Jeevan-Core.blend"
+Warning: No mesh data to join
+Warning: No mesh data to join
+Warning: No mesh data to join
+INFO Draco is available, use library at D:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at D:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+17:53:12 | INFO: Starting glTF 2.0 export
+17:53:12 | INFO: Extracting primitive: 01_Cover_Mesh
+17:53:12 | INFO: Primitives created: 2
+17:53:12 | INFO: Extracting primitive: 02_LightGuide_Mesh
+17:53:12 | INFO: Primitives created: 1
+17:53:12 | INFO: Extracting primitive: 03_Gasket_Mesh
+17:53:12 | INFO: Primitives created: 1
+17:53:12 | INFO: Extracting primitive: 04_MainPCB_Mesh
+17:53:12 | INFO: Primitives created: 10
+17:53:12 | INFO: Extracting primitive: 05_Battery_Mesh
+17:53:12 | INFO: Primitives created: 6
+17:53:12 | INFO: Extracting primitive: 06_Frame_Mesh
+17:53:12 | INFO: Primitives created: 3
+17:53:12 | INFO: Extracting primitive: 07_SensorFlex_Mesh
+17:53:12 | INFO: Primitives created: 7
+17:53:12 | INFO: Extracting primitive: 08_Spacer_Mesh
+17:53:12 | INFO: Primitives created: 1
+17:53:12 | INFO: Extracting primitive: 09_Contacts_Mesh
+17:53:12 | INFO: Primitives created: 4
+17:53:12 | INFO: Extracting primitive: 10_Adhesive_Mesh
+17:53:12 | INFO: Primitives created: 1
+17:53:12 | INFO: Extracting primitive: 11_Liner_Mesh
+17:53:12 | INFO: Primitives created: 2
+17:53:13 | INFO: Finished glTF 2.0 export in 0.6296494007110596 s
+
+17:53:13 | INFO: Data are loaded, start creating Blender stuff
+17:53:13 | INFO: Blender create Mesh node 01_Cover_Mesh
+17:53:13 | INFO: Blender create Mesh node 02_LightGuide_Mesh
+17:53:13 | INFO: Blender create Mesh node 03_Gasket_Mesh
+17:53:13 | INFO: Blender create Mesh node 04_MainPCB_Mesh
+17:53:13 | INFO: Blender create Mesh node 05_Battery_Mesh
+17:53:13 | INFO: Blender create Mesh node 06_Frame_Mesh
+17:53:13 | INFO: Blender create Mesh node 07_SensorFlex_Mesh
+17:53:14 | INFO: Blender create Mesh node 08_Spacer_Mesh
+17:53:14 | INFO: Blender create Mesh node 09_Contacts_Mesh
+17:53:14 | INFO: Blender create Mesh node 10_Adhesive_Mesh
+17:53:14 | INFO: Blender create Mesh node 11_Liner_Mesh
+17:53:14 | INFO: glTF import finished in 1.23s
+CORE_EXPORT_VERIFIED {"bytes": 19072648, "meshes": 11, "triangles": 333846, "layers": 11, "animations": 1, "units": "metres", "up_axis": "Y", "self_contained": true, "source_sha256": "47461ee14b71033f701e556d61f38899c188c7f9c7642381b88957abd1e8a762", "assembled_bounds_m": [[-0.01535000093281269, -0.029000001028180122, -0.00013600003148894757], [0.01535000093281269, 0.025350000709295273, 0.013114625588059425]], "source_unchanged": true, "roundtrip_layers_verified": true}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

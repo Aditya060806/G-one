@@ -1,0 +1,132 @@
+Picked up JAVA_TOOL_OPTIONS: -Djdk.net.unixdomain.tmpdir=D:\tmp
+Starting a Gradle Daemon, 3 busy and 2 incompatible and 1 stopped Daemons could not be reused, use --status for details
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues
+> Task :app:extractProguardFiles
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :app:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:buildKotlinToolingMetadata
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseNativeLibs
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:kspDebugKotlin
+> Task :app:expandReleaseL8ArtProfileWildcards
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:checkReleaseAarMetadata
+> Task :app:stripReleaseDebugSymbols
+> Task :app:mergeReleaseResources
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:packageReleaseResources
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:mergeReleaseStartupProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:javaPreCompileRelease
+> Task :app:processReleaseManifestForPackage
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:collectReleaseDependencies
+> Task :app:compileDebugKotlin
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:compressReleaseAssets
+> Task :app:processReleaseResources
+> Task :app:kspReleaseKotlin
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:generateDebugLintReportModel
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:compileReleaseKotlin
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:generateDebugUnitTestLintModel
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:lintAnalyzeDebug
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugUnitTest
+
+> Task :app:testDebugUnitTest
+Picked up JAVA_TOOL_OPTIONS: -Djdk.net.unixdomain.tmpdir=D:\tmp
+
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:mergeReleaseGeneratedProguardFiles
+> Task :app:processReleaseJavaRes
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:expandReleaseArtProfileWildcards
+> Task :app:mergeReleaseJavaResource
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:minifyReleaseWithR8
+
+The message received from the daemon indicates that the daemon has disappeared.
+Build request sent: Build{id=c0144154-7cef-44fe-abb9-0456361f19ba, currentDir=D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP}
+Attempting to read last messages from the daemon log...
+Daemon pid: 31224
+  log file: D:\.gradle\daemon\8.11.1\daemon-31224.out.log
+----- Last 20 lines from daemon log file - daemon-31224.out.log -----
+2026-09-19T18:25:45.625+0530 [DEBUG] [org.gradle.launcher.daemon.server.DefaultDaemonConnection] thread 30: Received non-IO message from client: Build{id=c0144154-7cef-44fe-abb9-0456361f19ba, currentDir=D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP}
+2026-09-19T18:25:45.626+0530 [INFO] [org.gradle.launcher.daemon.server.DefaultIncomingConnectionHandler] Received command: Build{id=c0144154-7cef-44fe-abb9-0456361f19ba, currentDir=D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP}.
+2026-09-19T18:25:45.626+0530 [DEBUG] [org.gradle.launcher.daemon.server.DefaultIncomingConnectionHandler] Starting executing command: Build{id=c0144154-7cef-44fe-abb9-0456361f19ba, currentDir=D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP} with connection: socket connection from /127.0.0.1:62786 to /127.0.0.1:62787.
+2026-09-19T18:25:45.629+0530 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] Command execution: started DaemonCommandExecution[command = Build{id=c0144154-7cef-44fe-abb9-0456361f19ba, currentDir=D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP}, connection = DefaultDaemonConnection: socket connection from /127.0.0.1:62786 to /127.0.0.1:62787] after 0.004083333333333333 minutes of idle
+2026-09-19T18:25:45.629+0530 [INFO] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Marking the daemon as busy, address: [b20f80c6-89e8-425f-8d2b-9d5ce3e39ab0 port:62786, addresses:[localhost/127.0.0.1]]
+2026-09-19T18:25:45.629+0530 [DEBUG] [org.gradle.launcher.daemon.registry.PersistentDaemonRegistry] Marking busy by address: [b20f80c6-89e8-425f-8d2b-9d5ce3e39ab0 port:62786, addresses:[localhost/127.0.0.1]]
+2026-09-19T18:25:45.630+0530 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Waiting to acquire exclusive lock on daemon addresses registry.
+2026-09-19T18:25:45.630+0530 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Lock acquired on daemon addresses registry.
+2026-09-19T18:25:45.631+0530 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on daemon addresses registry.
+2026-09-19T18:25:45.631+0530 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] resetting idle timer
+2026-09-19T18:25:45.631+0530 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] daemon is running. Sleeping until state changes.
+2026-09-19T18:25:45.632+0530 [INFO] [org.gradle.launcher.daemon.server.exec.StartBuildOrRespondWithBusy] Daemon is about to start building Build{id=c0144154-7cef-44fe-abb9-0456361f19ba, currentDir=D:\Endeavors\Coding\Projects\G(one) -\G(one) - APP}. Dispatching build started information...
+2026-09-19T18:25:45.632+0530 [DEBUG] [org.gradle.launcher.daemon.server.SynchronizedDispatchConnection] thread 32: dispatching org.gradle.launcher.daemon.protocol.BuildStarted@268b3637
+2026-09-19T18:25:45.633+0530 [DEBUG] [org.gradle.launcher.daemon.server.exec.EstablishBuildEnvironment] Configuring env variables: [ALLUSERSPROFILE, INTEL_DEV_REDIST, HF_HOME, SystemDrive, XDG_CACHE_HOME, GH_PAGER, COLORTERM, DIRNAME, USERNAME, CARGO_HOME, ProgramFiles(x86), RELAY_JWT_SECRET, DEFAULT_JVM_OPTS, PATHEXT, DriverData, PAGER, HF_DATASETS_CACHE, CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY, HOMEPATH, LC_ALL, PROCESSOR_IDENTIFIER, PIP_CACHE_DIR, ProgramFiles, PUBLIC, ZSH_TMUX_AUTOSTARTED, windir, LC_CTYPE, CODEX_SESSION_ID, ZES_ENABLE_SYSMAN, IntelliJ IDEA, JAVA_HOME, PROMPT, RUST_LOG, TERM, OneDrive, APPDATA, GRADLE_USER_HOME, JAVA_TOOL_OPTIONS, JAVA_EXE, ChocolateyInstall, CODEX_THREAD_ID, Path, DISABLE_AUTO_UPDATE, OLLAMA_MODELS, COMPUTERNAME, GEMINI_API_KEY, TRANSFORMERS_CACHE, ComSpec, APP_BASE_NAME, ZSH_TMUX_AUTOSTART, =D:, HOMEDRIVE, NUMBER_OF_PROCESSORS, USERDOMAIN_ROAMINGPROFILE, PROCESSOR_LEVEL, GIT_PAGER, CODEX_MCP_NODE_PATH, CODEX_SHELL, PROCESSOR_ARCHITECTURE, MIC_LD_LIBRARY_PATH, PSModulePath, CODEX_APP_TOOLS_PIPE_PATH, LEVEL_ZERO_V1_SDK_PATH, CODEX_INTERNAL_ORIGINATOR_OVERRIDE, APP_HOME, CODEX_SAGE_BACKFILL_TRACKER_TAB_REUSE, SHELL, OneDriveConsumer, CODEX_PERMISSION_PROFILE, RELAY_SIGNALING_URL, LOG_FORMAT, ProgramData, TORCH_HOME, CARGO_TARGET_DIR, ProgramW6432, DATAGOV_API_KEY, IGCCSVC_DB, LOCALAPPDATA, ChocolateyLastPathUpdate, USERDOMAIN, LOGONSERVER, LANG, NO_COLOR, CODEX_CI, CommonProgramFiles, OS, PROCESSOR_REVISION, CLASSPATH, CommonProgramW6432, SystemRoot, TEMP, USERPROFILE, TMP, CommonProgramFiles(x86), CODEX_VERSION, ANDROID_AVD_HOME]
+2026-09-19T18:25:45.640+0530 [DEBUG] [org.gradle.launcher.daemon.server.exec.LogToClient] About to start relaying all logs to the client via the connection.
+2026-09-19T18:25:45.641+0530 [INFO] [org.gradle.launcher.daemon.server.exec.LogToClient] The client will now receive all logging from the daemon (pid: 31224). The daemon log file: D:\.gradle\daemon\8.11.1\daemon-31224.out.log
+2026-09-19T18:25:45.642+0530 [INFO] [org.gradle.launcher.daemon.server.exec.LogAndCheckHealth] Starting build in new daemon [memory: 4 GiB]
+2026-09-19T18:25:45.644+0530 [DEBUG] [org.gradle.launcher.daemon.server.exec.ExecuteBuild] The daemon has started executing the build.
+2026-09-19T18:25:45.644+0530 [DEBUG] [org.gradle.launcher.daemon.server.exec.ExecuteBuild] Executing build with daemon context: DefaultDaemonContext[uid=0b5dccb0-9e9f-4629-8a17-a36f9b3bf925,javaHome=C:\Program Files\Eclipse Adoptium\jdk-17.0.18.8-hotspot,javaVersion=17,javaVendor=Eclipse Adoptium,daemonRegistryDir=D:\.gradle\daemon,pid=31224,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-XX:MaxMetaspaceSize=1024m,-Xmx4096m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]
+Picked up JAVA_TOOL_OPTIONS: -Djdk.net.unixdomain.tmpdir=D:\tmp----- End of the daemon log -----
+
+JVM crash log found: file:///D:/Endeavors/Coding/Projects/G(one)%20-/G(one)%20-%20APP/hs_err_pid31224.log
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon disappeared unexpectedly (it may have been killed or may have crashed)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.

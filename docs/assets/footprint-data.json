@@ -1,0 +1,16 @@
+{
+  "inspected_on": "2026-09-22",
+  "apk_path": "app/build/outputs/apk/release/app-release.apk",
+  "apk_bytes": 1182249970,
+  "gguf_bytes": 1117320736,
+  "gguf_archive_bytes": 1117320736,
+  "gguf_zip_method": 0,
+  "remainder_bytes": 64929234,
+  "nominal_parameter_count": 1500000000,
+  "theoretical_raw_weight_bytes": {
+    "FP32": 6000000000,
+    "FP16": 3000000000,
+    "ideal_4bit": 750000000
+  },
+  "warning": "Theoretical raw weights are not measured full precision checkpoints. No empirical compression ratio or quality benchmark."
+}

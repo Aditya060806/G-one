@@ -1,0 +1,79 @@
+[
+  {
+    "id": "01_Cover",
+    "title": "Protective enclosure",
+    "description": "Pearl polymer shell, recessed identity panel and USB-C service opening.",
+    "index": 0,
+    "explodeDistanceM": 0.07
+  },
+  {
+    "id": "02_LightGuide",
+    "title": "Status light guide",
+    "description": "Translucent guide carries the PCB status LED to the front indicator.",
+    "index": 1,
+    "explodeDistanceM": 0.063
+  },
+  {
+    "id": "03_Gasket",
+    "title": "Perimeter gasket",
+    "description": "Elastomer seal between the reusable cover and structural frame; sealing performance untested.",
+    "index": 2,
+    "explodeDistanceM": 0.056
+  },
+  {
+    "id": "04_MainPCB",
+    "title": "Main electronics",
+    "description": "ESP32-S3 N16R8, ECG and EMG front ends, MPU6050, BME280, charging, conversion and local microSD storage.",
+    "index": 3,
+    "explodeDistanceM": 0.049
+  },
+  {
+    "id": "05_Battery",
+    "title": "Rechargeable cell",
+    "description": "Protected pouch-cell envelope and keyed connection. Capacity awaits cell selection.",
+    "index": 4,
+    "explodeDistanceM": 0.042
+  },
+  {
+    "id": "06_Frame",
+    "title": "Inner support frame",
+    "description": "Battery pocket, board supports, screw bosses and routed flex passage.",
+    "index": 5,
+    "explodeDistanceM": 0.035
+  },
+  {
+    "id": "07_SensorFlex",
+    "title": "Flexible sensor interface",
+    "description": "Polyimide substrate, copper routes, optical sensing and temperature interface. Contact placement is provisional.",
+    "index": 6,
+    "explodeDistanceM": 0.028
+  },
+  {
+    "id": "08_Spacer",
+    "title": "Skin-side spacer",
+    "description": "Compliant silicone carrier with optical and electrode apertures.",
+    "index": 7,
+    "explodeDistanceM": 0.021
+  },
+  {
+    "id": "09_Contacts",
+    "title": "Electrodes and optical interface",
+    "description": "Two ECG contacts, two EMG contacts, a BioZ contact and a temperature contact around the PPG window.",
+    "index": 8,
+    "explodeDistanceM": 0.014
+  },
+  {
+    "id": "10_Adhesive",
+    "title": "Replaceable adhesive",
+    "description": "Die-cut attachment layer with sensing apertures. Material qualification is pending.",
+    "index": 9,
+    "explodeDistanceM": 0.007
+  },
+  {
+    "id": "11_Liner",
+    "title": "Peel-away release liner",
+    "description": "Protects the adhesive before application. Remove before wear.",
+    "index": 10,
+    "explodeDistanceM": 0.0
+  }
+]

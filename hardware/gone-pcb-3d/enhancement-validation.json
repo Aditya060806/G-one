@@ -1,0 +1,88 @@
+{
+  "revision": "B",
+  "source": "G-one-PCB.blend (existing Rev A)",
+  "original_objects": 905,
+  "original_objects_preserved": 875,
+  "objects": 1176,
+  "mesh_objects": 1030,
+  "board_mm": [
+    44.0,
+    64.0,
+    1.0
+  ],
+  "required_parts_present": [
+    "ESP32-S3-WROOM-1-N16R8",
+    "MAX30102EFD+",
+    "MPU6050",
+    "DS18B20",
+    "INA333",
+    "TP4056",
+    "DW01A",
+    "FS8205A",
+    "TPS63070"
+  ],
+  "scope": "Mechanical visualization. Electrical design unvalidated.",
+  "final_object_count": 1177,
+  "final_mesh_count": 1031,
+  "camera_count": 7,
+  "renders_verified": [
+    {
+      "file": "assembled.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "isometric.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "top.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "bottom.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "side.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "sensors.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "esp32-power.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    },
+    {
+      "file": "detail.png",
+      "pixels": [
+        1800,
+        1800
+      ]
+    }
+  ],
+  "body_and_sampled_wire_clearance": "PASS",
+  "original_backup": "G-one-PCB-before-enhancement.blend"
+}

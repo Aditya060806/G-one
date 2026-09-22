@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Optional, opt-in city AQI only. Physiological analysis stays on-device. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- OCR can also read images from files, so the app installs on devices without a camera. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <!--
@@ -19,10 +23,62 @@
         android:name="android.permission.BLUETOOTH_SCAN"
         android:usesPermissionFlags="neverForLocation"
         tools:targetApi="31" />
+    <!--
+      Android 11 and older return no BLE scan results without location permission (and
+      Location switched on), so finding the wearable needs it there. Capped at API 30:
+      from Android 12 BLUETOOTH_SCAN with neverForLocation replaces it, and G-one never
+      reads the device's location.
+    -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Wellness reminders are alarms, which Android clears on restart; this re-schedules them. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--
+      Wearable sync in the background. Asking to ignore battery optimisation opens Android's
+      own confirmation; the companion-device permissions let Android watch for the wearable
+      and let monitoring start when it comes into range. All three are normal permissions.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE" />
+    <uses-permission android:name="android.permission.REQUEST_COMPANION_START_FOREGROUND_SERVICES_FROM_BACKGROUND" />
+    <uses-feature android:name="android.software.companion_device_setup" android:required="false" />
+    <!--
+      Automatic SOS: texts, then calls, the emergency contact when the wearable reports an
+      emergency. Off until the wearer turns it on in Settings, where Android asks once. Both go
+      over the mobile network, not the internet. The app still installs on devices with no SIM.
+    -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <!-- Emergency Medical ID: writes NDEF payload to NFC tag. App installs on phones without NFC. -->
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+    <!--
+      No SEND_SMS or CALL_PHONE. SOS actions open the dialer or the messaging app with
+      the contact and message filled in (ACTION_DIAL / ACTION_SENDTO), so the person
+      confirms before anything is sent. Those two permissions are also restricted on
+      Google Play.
+    -->
+
+    <!--
+      Android 11+ hides other apps' services unless they are declared here. Without these,
+      the phone's speech recogniser looks absent (voice chat could never listen) and the
+      text-to-speech voice cannot be reached.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -35,15 +91,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gone"
         tools:targetApi="31">
+        <service android:name=".health.emergency.EmergencySyncJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Gone"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Share into G-one: a PDF opens PDF Summary, an image opens OCR, text opens a chat. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
 
@@ -75,9 +140,32 @@
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
 
+        <!--
+          "Sync automatically when nearby" (Android 12+): Android binds this when the associated
+          wearable comes into range, and it starts monitoring. See WearableAutoSync.
+        -->
+        <service
+            android:name=".health.service.WearablePresenceService"
+            android:exported="true"
+            android:permission="android.permission.BIND_COMPANION_DEVICE_SERVICE"
+            tools:targetApi="31">
+            <intent-filter>
+                <action android:name="android.companion.CompanionDeviceService" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".health.service.MakeMeHealthyReminderReceiver"
             android:exported="false" />
+
+        <receiver
+            android:name=".health.service.MakeMeHealthyBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"

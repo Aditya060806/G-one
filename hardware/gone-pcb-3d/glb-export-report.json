@@ -1,0 +1,60 @@
+{
+  "G-one-PCB": {
+    "file": "G-one-PCB.glb",
+    "bytes": 15862116,
+    "meshes": 1157,
+    "triangles": 324162,
+    "materials": 24,
+    "bounds_metres": [
+      [
+        -0.02200000174343586,
+        -0.034727543592453,
+        -0.002243500202894211
+      ],
+      [
+        0.025801533833146095,
+        0.03800000250339508,
+        0.011079501360654831
+      ]
+    ],
+    "board_dimensions_metres": [
+      0.04400000348687172,
+      0.06400000303983688,
+      0.0010000000474974513
+    ],
+    "roundtrip_max_error_metres": 0.0,
+    "source_sha256": "3e51bedac9ad29e2ff86ded4a9039b26c30eafacaeabf3c8c885bfebd4d668ce",
+    "source_unchanged": true,
+    "self_contained": true,
+    "material_note": "Portable PBR colors, metallic and roughness; procedural micro-bump omitted."
+  },
+  "G-one-PCB-before-enhancement": {
+    "file": "G-one-PCB-before-enhancement.glb",
+    "bytes": 11352108,
+    "meshes": 892,
+    "triangles": 233574,
+    "materials": 15,
+    "bounds_metres": [
+      [
+        -0.02200000174343586,
+        -0.033890027552843094,
+        -0.002243500202894211
+      ],
+      [
+        0.02200000174343586,
+        0.03800000250339508,
+        0.0037500003818422556
+      ]
+    ],
+    "board_dimensions_metres": [
+      0.04400000348687172,
+      0.06400000303983688,
+      0.0010000000474974513
+    ],
+    "roundtrip_max_error_metres": 0.0,
+    "source_sha256": "683d34985e1beea9d81c644c28a194e30e60bf3a7ea2bb9b2590073ada37c5d2",
+    "source_unchanged": true,
+    "self_contained": true,
+    "material_note": "Portable PBR colors, metallic and roughness; procedural micro-bump omitted."
+  }
+}

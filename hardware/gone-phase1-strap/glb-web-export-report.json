@@ -1,0 +1,27 @@
+{
+  "G-one-Phase-1-Strap": {
+    "file": "G-one-Phase-1-Strap-web.glb",
+    "bytes": 21084380,
+    "meshes": 9,
+    "triangles": 694586,
+    "materials": 28,
+    "bounds_metres": [
+      [
+        -0.14269468188285828,
+        -0.08386365324258804,
+        0.011634333990514278
+      ],
+      [
+        0.16800004243850708,
+        0.05668541043996811,
+        0.15185989439487457
+      ]
+    ],
+    "geometry_optimized": true,
+    "roundtrip_max_error_metres": 0.0,
+    "source_sha256": "03db36e9d49fc744384ab85ca090e39987f16705b42500c63aa9658dfd71e2b5",
+    "source_unchanged": true,
+    "self_contained": true,
+    "material_note": "Portable PBR colors, metallic and roughness; procedural micro-bump omitted."
+  }
+}
