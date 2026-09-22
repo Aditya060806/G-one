@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="410" viewBox="0 0 1280 410" role="img" aria-labelledby="title desc">
+<title id="title">G-one — Sense. Understand. Act.</title><desc id="desc">Personal health companion. Wearable sensing, Android monitoring, local intelligence and optional emergency sharing.</desc>
+<rect width="1280" height="410" rx="24" fill="#20221f"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<rect x="52" y="52" width="7" height="42" rx="3" fill="#f4ce60"/>
+<text x="78" y="82" fill="#f6f5ef" font-size="30" font-weight="700">G-one</text>
+<text x="1178" y="79" text-anchor="end" fill="#aeb7aa" font-size="13" letter-spacing="2">PERSONAL HEALTH COMPANION</text>
+<text x="52" y="158" fill="#f6f5ef" font-size="54" font-weight="700">Sense. Understand. Act.</text>
+<text x="54" y="201" fill="#bdc4b8" font-size="21">Wearable signals. Local intelligence. Information you control.</text>
+<path d="M54 239 H1226" stroke="#464a42"/>
+<g fill="#f4ce60" font-size="13" letter-spacing="2"><text x="54" y="280">01 / SENSE</text><text x="363" y="280">02 / MONITOR</text><text x="672" y="280">03 / EXPLAIN</text><text x="981" y="280">04 / SHARE</text></g>
+<g fill="#f6f5ef" font-size="22" font-weight="700"><text x="54" y="315">ESP32-S3 + BLE</text><text x="363" y="315">Native Android</text><text x="672" y="315">On-device AI</text><text x="981" y="315">Optional SOS / NFC</text></g>
+<g fill="#aeb7aa" font-size="15"><text x="54" y="345">Physiological inputs</text><text x="363" y="345">Trends and rule-based alerts</text><text x="672" y="345">Local language assistance</text><text x="981" y="345">Consent-driven assistance</text></g>
+</g></svg>

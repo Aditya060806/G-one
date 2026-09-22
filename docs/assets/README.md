@@ -40,3 +40,25 @@ The README test count was independently summed from `app/build/test-results/test
 ## Embedded model metadata
 
 Direct header inspection found `general.name: qwen2.5-1.5b-instruct`, `general.architecture: qwen2`, `general.file_type: 15` (Q4_K_M), and `general.size_label: 1.8B`. The nominal 1.5B figure in the theoretical bars is not a verified exact parameter count. Resolve provenance before using this artifact for model-to-model comparisons.
+
+## Visual gallery provenance
+
+The README gallery uses local files so it does not depend on remote image hosting. Screenshots and source renders were copied without changing their contents.
+
+| Asset | Source | Interpretation |
+|---|---|---|
+| `readme-banner.svg` | Original editable vector banner created for the README | Architecture overview, not a product screenshot |
+| `website-home.png` | `https://g--one.vercel.app/` | Public landing page captured 22 September 2026 |
+| `website-demo.png` | `https://g--one.vercel.app/demo` | Public browser demonstration, not live patient data |
+| `website-hardware.png` | `https://g--one.vercel.app/hardware` | Public interactive hardware viewer |
+| `website-emergency.png` | `https://g--one.vercel.app/e` | Generic setup page; no private capability URL or wearer record captured |
+| `phase1-worn.png` | `hardware/gone-phase1-strap/phase1-worn.png` | Existing Blender reconstruction |
+| `pcb-concept.png` | `hardware/gone-pcb-3d/isometric.png` | Existing compact-PCB concept render |
+| `core-exploded.png` | `hardware/jeevan-core/core-exploded.png` | Existing Jeevan Core concept render |
+| `app-aqi.png` | `artifacts/companion-visuals/aqi.png` | Earlier Android capture; not current AQI |
+| `app-wellness.png` | `artifacts/companion-visuals/wellness.png` | Earlier Android sleep journal empty state |
+| `app-stress.png` | `artifacts/companion-visuals/stress.png` | Earlier Android stress journal empty state |
+
+Public-site presentation labels are not implementation evidence. In particular, 250 Hz streaming, 72-hour buffering and encryption claims visible on the website must not override the audited Android/firmware description. Updating the website itself was outside this README task.
+
+The gallery uses GitHub-supported tables, image links and collapsible details. It does not rely on JavaScript, hover-only content or custom CSS, which repository README renderers commonly strip.

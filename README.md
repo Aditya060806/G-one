@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="Logo.png" alt="G-one logo" width="132" />
+<img src="docs/assets/readme-banner.svg" alt="G-one: Sense. Understand. Act. — wearable signals, local intelligence, information you control" width="100%" />
 
 # G-one
 ### Personal health awareness. Local intelligence. User-controlled sharing.
@@ -9,9 +9,16 @@ An Android health companion connecting a wearable prototype, local anomaly detec
 
 **Kotlin · Jetpack Compose · ESP32-S3 · Bluetooth LE · llama.cpp · Room**
 
-[Architecture](#architecture) · [Features](#feature-guide) · [Performance](#performance-and-verification) · [Build](#build-and-run) · [Documentation](#documentation)
+[Visual tour](#visual-tour) · [Architecture](#architecture) · [Features](#feature-guide) · [Performance](#performance-and-verification) · [Build](#build-and-run) · [Documentation](#documentation)
+
+
+[Explore the website](https://g--one.vercel.app/) · [Try the web demo](https://g--one.vercel.app/demo) · [Explore hardware](https://g--one.vercel.app/hardware)
 
 </div>
+
+<table>
+<tr><td align="center"><strong>LOCAL ANALYSIS</strong><br/>Rules first, AI explanations second</td><td align="center"><strong>ANDROID + WEARABLE</strong><br/>ESP32-S3 · Bluetooth LE · Compose</td><td align="center"><strong>USER CONTROL</strong><br/>Optional sharing and emergency assistance</td></tr>
+</table>
 
 ---
 
@@ -35,6 +42,7 @@ The central design decision is to keep **detection independent of text generatio
 
 ## Contents
 
+- [Visual tour](#visual-tour)
 - [Problem and use cases](#problem-and-use-cases)
 - [Architecture](#architecture)
 - [End-to-end workflows](#end-to-end-workflows)
@@ -49,6 +57,64 @@ The central design decision is to keep **detection independent of text generatio
 - [Repository map](#repository-map)
 - [Limitations and future scope](#limitations-and-future-scope)
 - [Documentation](#documentation)
+
+## Visual tour
+
+### Explore the web experience
+
+Actual captures of the public website, taken on **22 September 2026**. Click a preview to open the corresponding page.
+
+<table>
+<tr>
+<td width="50%"><a href="https://g--one.vercel.app/"><img src="docs/assets/website-home.png" alt="G-one website landing page with physical strap prototype" width="100%" /></a><br/><strong>01 / Project gateway</strong><br/>The wearable, project identity and platform entry points.</td>
+<td width="50%"><a href="https://g--one.vercel.app/demo"><img src="docs/assets/website-demo.png" alt="G-one interactive patient companion web demo" width="100%" /></a><br/><strong>02 / Patient companion demo</strong><br/>A browser presentation of the mobile experience.</td>
+</tr>
+<tr>
+<td width="50%"><a href="https://g--one.vercel.app/hardware"><img src="docs/assets/website-hardware.png" alt="G-one hardware page showing its interactive PCB model" width="100%" /></a><br/><strong>03 / Hardware explorer</strong><br/>Interactive 3D board presentation and component details.</td>
+<td width="50%"><a href="https://g--one.vercel.app/e"><img src="docs/assets/website-emergency.png" alt="Public emergency ID setup page with no wearer record linked" width="100%" /></a><br/><strong>04 / Emergency ID entry</strong><br/>Public setup state; no personal emergency record is exposed here.</td>
+</tr>
+</table>
+
+> **Preview versus implementation:** website copy includes presentation claims such as 250 Hz streaming and a 72-hour buffer. These screenshots show the website as published; they do not verify those claims for this Android build. The audited feature descriptions, live-only firmware limitations and performance evidence below remain authoritative. The browser demo is not a live patient feed.
+
+### From prototype to form-factor exploration
+
+<table>
+<tr>
+<td width="50%"><a href="docs/assets/phase1-worn.png"><img src="docs/assets/phase1-worn.png" alt="Blender reconstruction of the Phase-1 wired strap on a closed-fist forearm" width="100%" /></a><br/><strong>Phase 1 / Strap reconstruction</strong><br/>Blender visualization of the module-based prototype, wiring and worn fit.</td>
+<td width="50%"><a href="docs/assets/pcb-concept.png"><img src="docs/assets/pcb-concept.png" alt="Isometric Blender render of the later compact G-one PCB concept" width="100%" /></a><br/><strong>Later phase / Compact PCB</strong><br/>Component placement and board presentation concept.</td>
+</tr>
+</table>
+
+<details>
+<summary><strong>Open the Jeevan Core exploded-view render</strong> — enclosure, electronics and skin interface</summary>
+
+<p align="center"><a href="docs/assets/core-exploded.png"><img src="docs/assets/core-exploded.png" alt="Jeevan Core concept exploded into enclosure, PCB, battery, frame and skin-facing layers" width="620" /></a></p>
+
+An existing Blender concept render, not a manufacturing drawing or a claim that all depicted parts are present in the Phase-1 wearable. [Explore the design assets](hardware/jeevan-core).
+
+</details>
+
+### Android interface gallery
+
+<details>
+<summary><strong>Open the Android screenshots</strong> — AQI, sleep and stress</summary>
+
+<table>
+<tr>
+<td width="33%" align="center"><a href="docs/assets/app-aqi.png"><img src="docs/assets/app-aqi.png" alt="Android regional AQI card with timestamp and source attribution" width="250" /></a><br/><strong>Environmental context</strong><br/>Regional US AQI with source and model time.</td>
+<td width="33%" align="center"><a href="docs/assets/app-wellness.png"><img src="docs/assets/app-wellness.png" alt="Android self-reported sleep journal in its empty state" width="250" /></a><br/><strong>Sleep journal</strong><br/>Seven-day view with honest unlogged states.</td>
+<td width="33%" align="center"><a href="docs/assets/app-stress.png"><img src="docs/assets/app-stress.png" alt="Android stress check-in with five-level self-reported scale" width="250" /></a><br/><strong>Stress check-in</strong><br/>Self-reported levels and weekly reflection.</td>
+</tr>
+</table>
+
+Existing phone captures from the repository's companion-visuals artifacts. These show earlier captured UI states, not a new device test or current AQI. No values were fabricated to fill the empty journals.
+
+</details>
+
+All gallery images are stored in this repository. Captions distinguish website captures, Android screenshots and Blender renders. [Asset sources and capture notes](docs/assets/README.md#visual-gallery-provenance).
+
+[Back to contents](#contents)
 
 ## Problem and use cases
 
