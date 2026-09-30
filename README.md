@@ -570,6 +570,7 @@ No claims are made for certification, guaranteed fall detection, diagnostic accu
 
 | Guide | Contents |
 |---|---|
+| [Complete project description](docs/G-ONE-COMPLETE-DESCRIPTION.md) | The whole project in one read: architecture, wearable, app, all three hardware prototypes and every 3D file |
 | [Hardware setup](docs/HARDWARE_SETUP.md) | Parts, pins, power and bench checks |
 | [Wearable protocol](docs/WEARABLE_PROTOCOL.md) | Fields, framing, validation and firmware limitations |
 | [Automatic SOS](docs/SOS_BEHAVIOR.md) | Eligibility, permissions and impact gate |
