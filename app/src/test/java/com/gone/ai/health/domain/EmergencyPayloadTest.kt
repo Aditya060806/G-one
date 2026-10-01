@@ -163,7 +163,7 @@ class EmergencyPayloadTest {
         assertTrue(text.contains("Medications: Albuterol"))
         assertTrue(text.contains("⚡ Implants: Pacemaker"))
         assertTrue(text.contains("📞 Emergency Contact: +919876543210"))
-        assertTrue(text.contains("Last Vitals: 74 BPM | SpO2 98% | 36.8°C | normal"))
+        assertTrue(text.contains("Last Vitals: 74 BPM | SpO2 98% | 98.2°F | normal"))
     }
 
     @Test

@@ -9,6 +9,7 @@ import com.gone.ai.health.data.VitalsReadingEntity
 import com.gone.ai.health.data.severityEnum
 import com.gone.ai.health.data.statusEnum
 import com.gone.ai.health.domain.AnomalyType
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.explain.ResponseTier
 import com.gone.ai.health.session.SessionReportBuilder
 import java.text.NumberFormat
@@ -71,8 +72,8 @@ object HealthContextBuilder {
                 val values = listOfNotNull(
                     reading.heartRate?.let { "heart rate $it bpm" },
                     reading.spo2?.let { "SpO2 $it%" },
-                    reading.bodyTempC?.let { "body temperature ${one(it)} °C" },
-                    reading.skinTempC?.let { "skin temperature ${one(it)} °C (skin, not body temperature)" },
+                    reading.bodyTempC?.let { "body temperature ${Temperature.fahrenheitText(it)}" },
+                    reading.skinTempC?.let { "skin temperature ${Temperature.fahrenheitText(it)} (skin, not body temperature)" },
                     reading.motionMagnitudeG?.let { "motion ${two(it)} g" },
                     reading.emgMean?.let { "muscle sensor level $it (uncalibrated)" }
                 )

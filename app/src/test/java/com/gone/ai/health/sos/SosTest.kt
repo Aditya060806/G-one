@@ -46,7 +46,7 @@ class SosPolicyTest {
         assertNull(reason(AnomalyType.FALL_DETECTED, Severity.MODERATE, sample(motion = 5.4f), 5.4f))
         assertNull(reason(AnomalyType.FALL_DETECTED, Severity.CRITICAL, sample(motion = 1.0f), 2.9f))
         assertEquals(
-            "Very hard impact (9.5 g), followed by no movement; a possible fall",
+            "Very hard impact (9.5 g); a possible fall",
             reason(AnomalyType.FALL_DETECTED, Severity.CRITICAL, sample(motion = 1.0f), 9.47f)
         )
         assertNotNull(reason(AnomalyType.FALL_DETECTED, Severity.CRITICAL, sample(motion = 1.0f), SosPolicy.SEVERE_IMPACT_G))

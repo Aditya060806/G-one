@@ -3,6 +3,7 @@ package com.gone.ai.health.explain
 import com.gone.ai.health.domain.AnomalyEvidence
 import com.gone.ai.health.domain.AnomalyType
 import com.gone.ai.health.domain.Trend
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.domain.VitalsSample
 
 /**
@@ -82,7 +83,7 @@ object ExplanationTemplates {
             AnomalyType.FEVER -> Explanation(
                 headline = "Body temperature is raised",
                 detail = buildString {
-                    append("Body temperature is ${temp(e)} °C")
+                    append("Body temperature is ${bodyTemp(e)}")
                     append(durationClause(e))
                     append(". A raised temperature is usually the body responding to an ")
                     append("infection, and can also happen after long exposure to heat.")
@@ -90,10 +91,20 @@ object ExplanationTemplates {
                 tier = tier, ruleId = e.ruleId
             )
 
+            AnomalyType.HIGH_SKIN_TEMPERATURE -> Explanation(
+                headline = "Skin temperature is unusually high",
+                detail = buildString {
+                    append("The wearable measured skin temperature at ${skinTemp(e)}")
+                    append(". This is a skin-contact reading, not a core fever reading. ")
+                    append("Check the wearer, the sensor fit, and heat exposure now.")
+                },
+                tier = tier, ruleId = e.ruleId
+            )
+
             AnomalyType.HEAT_STRESS -> Explanation(
                 headline = "Signs of heat stress",
                 detail = buildString {
-                    append("It currently feels like around ${feelsLike(e)} °C outside")
+                    append("It currently feels like around ${feelsLike(e)} outside")
                     append(humidityClause(e))
                     append(", and the body is showing signs of struggling with it")
                     append(bodyResponseClause(e))
@@ -146,12 +157,9 @@ object ExplanationTemplates {
             AnomalyType.FALL_DETECTED -> Explanation(
                 headline = "A fall may have happened",
                 detail = buildString {
-                    append("A sudden hard movement was detected, of the kind that happens ")
-                    append("in a fall")
-                    if ((e.durationMinutes ?: 0) > 0) {
-                        append(", and there has been almost no movement since — about ")
-                        append("${e.durationMinutes} minutes of stillness")
-                    }
+                    append("A very high-impact movement was detected")
+                    e.fallImpactG?.let { append(" (${String.format(java.util.Locale.US, "%.1f", it)} g)") }
+                    append(", of the kind that can happen in a fall")
                     append(". Someone should check on the person straight away. If this ")
                     append("was not a fall, the alert can simply be dismissed.")
                 },
@@ -245,7 +253,7 @@ object ExplanationTemplates {
 
     private fun bodyResponseClause(e: AnomalyEvidence): String {
         val parts = mutableListOf<String>()
-        e.bodyTempC?.let { parts += "body temperature ${temp(e)} °C" }
+        e.bodyTempC?.let { parts += "body temperature ${bodyTemp(e)}" }
         e.heartRate?.let { parts += "heart rate $it a minute" }
         if (parts.isEmpty()) return ""
         return " (${parts.joinToString(", ")})"
@@ -271,13 +279,14 @@ object ExplanationTemplates {
      * inside a clinical reading is at best confusing and at worst reads as a
      * different number.
      */
-    private fun temp(e: AnomalyEvidence): String {
-        val t = e.bodyTempC ?: return "—"
-        return String.format(java.util.Locale.US, "%.1f", t)
-    }
+    private fun bodyTemp(e: AnomalyEvidence): String =
+        e.bodyTempC?.let { Temperature.fahrenheitText(it) } ?: "an elevated level"
+
+    private fun skinTemp(e: AnomalyEvidence): String =
+        e.skinTempC?.let { Temperature.fahrenheitText(it) } ?: "an elevated level"
 
     private fun feelsLike(e: AnomalyEvidence): String {
         val t = e.ambientTempC ?: return "—"
-        return t.toInt().toString()
+        return Temperature.fahrenheitText(t, decimals = 0)
     }
 }

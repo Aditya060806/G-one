@@ -14,6 +14,7 @@ enum class AnomalyType(val wireName: String, val label: String) {
     HIGH_HEART_RATE      ("high_heart_rate",       "Elevated heart rate"),
     LOW_HEART_RATE       ("low_heart_rate",        "Low heart rate"),
     FEVER                ("fever",                 "Raised body temperature"),
+    HIGH_SKIN_TEMPERATURE("high_skin_temperature", "High skin temperature"),
     HEAT_STRESS          ("heat_stress",           "Heat stress risk"),
     DEHYDRATION_RISK     ("dehydration_risk",      "Dehydration risk"),
     RESPIRATORY_DISTRESS ("respiratory_distress",  "Breathing difficulty signs"),
@@ -94,13 +95,14 @@ data class AnomalyEvidence(
     val heartRate: Int? = null,
     val spo2: Int? = null,
     val bodyTempC: Float? = null,
+    val skinTempC: Float? = null,
     val ambientTempC: Float? = null,
     val ambientHumidityPct: Float? = null,
     val aqi: Int? = null,
     val durationMinutes: Int? = null,
     val trend: Trend? = null,
     val baselineDeltaPct: Float? = null,
-    /** Original impact peak; the newest sample is the later stillness confirmation. */
+    /** Original impact peak from the packet that triggered the immediate fall alert. */
     val fallImpactG: Float? = null,
     val motionDetected: Boolean? = null,
     val sampleCount: Int = 0,
@@ -108,8 +110,8 @@ data class AnomalyEvidence(
      * Mean EMG envelope of the newest sample, 12-bit ADC counts. Uncalibrated. Only set
      * for muscle findings, so no other prompt carries a number it does not explain.
      *
-     * Skin temperature is deliberately absent from evidence altogether: next to a fever
-     * or heat finding, a model could cite 33 °C of skin as the body's temperature.
+     * Skin temperature is only populated for its dedicated alert type, so it cannot be
+     * confused with core body temperature in fever or heat-stress explanations.
      */
     val emgLevel: Int? = null
 ) {
@@ -131,6 +133,7 @@ data class AnomalyEvidence(
         heartRate?.let          { parts += "\"heart_rate\":$it" }
         spo2?.let               { parts += "\"spo2\":$it" }
         bodyTempC?.let          { parts += "\"body_temp_c\":${jsonFloat(it)}" }
+        skinTempC?.let          { parts += "\"skin_temp_c\":${jsonFloat(it)}" }
         durationMinutes?.let    { parts += "\"duration_minutes\":$it" }
         trend?.let              { parts += "\"trend\":${jsonString(it.name.lowercase())}" }
         baselineDeltaPct?.let   { parts += "\"baseline_delta_pct\":${jsonFloat(it)}" }

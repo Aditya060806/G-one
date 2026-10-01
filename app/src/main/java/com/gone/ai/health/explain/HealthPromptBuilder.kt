@@ -2,6 +2,7 @@ package com.gone.ai.health.explain
 
 import com.gone.ai.health.domain.AnomalyEvidence
 import com.gone.ai.health.domain.VitalsSample
+import com.gone.ai.health.domain.Temperature
 
 /**
  * Builds the constrained prompt that turns a confirmed anomaly into plain language.
@@ -68,7 +69,8 @@ object HealthPromptBuilder {
             append(template.detail)
             append("\n\n")
             append("Rewrite that summary so it sounds natural and reassuring, ")
-            append("keeping every number exactly as given. Do not add advice.")
+            append("keeping every number exactly as given. Temperature must use the Fahrenheit value ")
+            append("shown in the summary; JSON fields ending in _c are internal sensor values. Do not add advice.")
         }
 
     /**
@@ -117,6 +119,10 @@ object HealthPromptBuilder {
             evidence.ambientTempC?.let { add(it.toInt()) }
             evidence.ambientHumidityPct?.let { add(it.toInt()) }
             evidence.bodyTempC?.let { add(it.toInt()) }
+            evidence.skinTempC?.let { add(it.toInt()) }
+            listOfNotNull(evidence.ambientTempC, evidence.bodyTempC, evidence.skinTempC).forEach {
+                add(Temperature.fahrenheit(it).toInt())
+            }
             evidence.emgLevel?.let {
                 add(it)
                 // The template states the scale the level is on; repeating it is not invention.
@@ -132,9 +138,15 @@ object HealthPromptBuilder {
             .filter { it > 5 }   // ignore small ordinals like "2 to 3 sentences"
             .toList()
 
-        // A body temperature such as 37.4 appears as 37 and 4; allow the decimal part.
+        // A temperature such as 101.3 appears as 101 and 3; allow the exact decimal part
+        // in both internal Celsius and presented Fahrenheit forms.
         val decimalParts = buildSet {
-            evidence.bodyTempC?.let { add(((it * 10).toInt() % 10)) }
+            evidence.bodyTempC?.let { add((Math.round(it * 10) % 10)) }
+            evidence.skinTempC?.let { add((Math.round(it * 10) % 10)) }
+            evidence.ambientTempC?.let { add((Math.round(it * 10) % 10)) }
+            listOfNotNull(evidence.ambientTempC, evidence.bodyTempC, evidence.skinTempC).forEach {
+                add((Math.round(Temperature.fahrenheit(it) * 10) % 10))
+            }
         }
 
         if (quoted.any { it !in allowed && it !in decimalParts }) return null

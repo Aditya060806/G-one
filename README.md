@@ -124,7 +124,7 @@ The project addresses a personal health companion problem: retain useful health 
 |---|---|---|
 | Daily health awareness | Live readings, trends, baseline deviations and session summaries | Sensor quality and continuous connection determine available data |
 | Heat exposure awareness | Rule-based indicators when required inputs exist; optional AQI context | Does not diagnose dehydration or predict disasters |
-| Motion monitoring | High-impact fall rule and optional automatic SOS | A 5 g gate can miss lower-impact falls; requires physical validation |
+| Motion monitoring | Immediate high-impact fall rule and optional automatic SOS | A 5 g gate limits false alarms but can miss lower-impact falls; requires physical validation |
 | Understanding documents | OCR, text extraction, local summaries and Assist | Generated explanations may be wrong; not image-based diagnosis |
 | Emergency information | Consented profile snapshot accessed through NFC/QR URL | Internet required for a new online lookup; record may be stale |
 | Wellness reflection | Sleep journal, stress check-ins, seven-day views and reminders | Self-reported rather than sensor-inferred stages or stress |

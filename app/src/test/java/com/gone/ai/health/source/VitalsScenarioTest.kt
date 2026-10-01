@@ -240,7 +240,7 @@ class VitalsScenarioGeneratorTest {
         // the scenario the impact is older than the fall rule's lookback, and a fall that
         // was already reported must not be reported again.
         val detector = AnomalyDetector(AnomalyThresholds.DEFAULT)
-        val soonAfter = samples.take(impactIdx + 4)
+        val soonAfter = samples.take(impactIdx + 1)
         val result = detector.evaluate(soonAfter, now = soonAfter.last().timestamp)
         assertTrue(result.candidates.any { it.type == AnomalyType.FALL_DETECTED })
 

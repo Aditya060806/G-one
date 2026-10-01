@@ -719,8 +719,8 @@ private fun SosSettingsSection(
         SettingsDivider(isDarkTheme)
         Text(
             "Every confirmed live anomaly sends an SMS automatically, without waiting for you. " +
-                "Motion requires a high impact of at least 5 g; smaller knocks do not send an SOS, even " +
-                "if followed by stillness. Alerts from the same reading are combined for 1.5 seconds. " +
+                "Motion requires a high impact of at least 5 g and alerts immediately; smaller knocks do not send an SOS. " +
+                "Alerts from the same reading are combined for 1.5 seconds. " +
                 "Existing alert cooldowns limit repeats. Simulated and historical readings never send. " +
                 "A working SIM and mobile signal are required.",
             style = MaterialTheme.typography.bodySmall,

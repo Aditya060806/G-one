@@ -35,6 +35,11 @@ data class AnomalyThresholds(
     val tempFeverC: Float = 38.0f,
     val tempCriticalFeverC: Float = 39.5f,
 
+    // ── Skin temperature (°C, wearable contact sensor) ───────────────────────
+    /** Kept separate from core temperature: this is an overheating/contact warning, not fever. */
+    val skinTempHighC: Float = 37.5f,
+    val skinTempCriticalC: Float = 39.0f,
+
     // ── Fall detection (g) ────────────────────────────────────────────────────
     /**
      * Peak accelerometer magnitude treated as an impact. Threshold-based by design
@@ -119,6 +124,7 @@ data class AnomalyThresholds(
         require(hrLowBpm < hrHighBpm) { "hrLowBpm must be below hrHighBpm" }
         require(hrHighBpm < hrCriticalHighBpm) { "hrHighBpm must be below hrCriticalHighBpm" }
         require(tempFeverC < tempCriticalFeverC) { "tempFeverC must be below tempCriticalFeverC" }
+        require(skinTempHighC < skinTempCriticalC) { "skinTempHighC must be below skinTempCriticalC" }
         require(heatIndexWarningC < heatIndexCriticalC) {
             "heatIndexWarningC must be below heatIndexCriticalC"
         }

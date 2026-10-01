@@ -80,6 +80,7 @@ import com.gone.ai.health.service.WearableLiveState
 import com.gone.ai.health.source.SourceStatus
 import com.gone.ai.health.source.VitalsScenario
 import com.gone.ai.health.domain.VitalsSample
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.data.AnomalyEventEntity
 import com.gone.ai.health.data.severityEnum
 import com.gone.ai.health.domain.Severity
@@ -199,7 +200,7 @@ fun LiveMonitorScreen(
         history.mapNotNull { r -> r.motionMagnitudeG?.let { ChartPoint(r.timestamp, it) } }.takeLast(40)
     }
     val tempHistory = remember(history) {
-        history.mapNotNull { r -> r.bodyTempC?.let { ChartPoint(r.timestamp, it) } }.takeLast(40)
+        history.mapNotNull { r -> r.bodyTempC?.let { ChartPoint(r.timestamp, Temperature.fahrenheit(it)) } }.takeLast(40)
     }
     val spo2History = remember(history) {
         history.mapNotNull { r -> r.spo2?.let { ChartPoint(r.timestamp, it.toFloat()) } }.takeLast(40)
@@ -208,7 +209,7 @@ fun LiveMonitorScreen(
         history.mapNotNull { r -> r.emgMean?.let { ChartPoint(r.timestamp, it.toFloat()) } }.takeLast(48)
     }
     val skinHistory = remember(history) {
-        history.mapNotNull { r -> r.skinTempC?.let { ChartPoint(r.timestamp, it) } }.takeLast(40)
+        history.mapNotNull { r -> r.skinTempC?.let { ChartPoint(r.timestamp, Temperature.fahrenheit(it)) } }.takeLast(40)
     }
 
     val bgModifier = if (isDarkTheme) {
@@ -347,7 +348,7 @@ fun LiveMonitorScreen(
                 MotionLevel.IMPACT -> HumanStatus("Impact", "Hard jolt detected", Color(0xFFEF4444))
             }
 
-            val currentTemp = latest?.bodyTempC ?: tempHistory.lastOrNull()?.value
+            val currentTemp = latest?.bodyTempC ?: history.lastOrNull { it.bodyTempC != null }?.bodyTempC
             val tempStatus = when {
                 // The wearable measures skin, not core, temperature; its absence here is expected.
                 currentTemp == null && usingWearable -> HumanStatus("None", "The wearable has no core temperature sensor", if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B))
@@ -383,7 +384,7 @@ fun LiveMonitorScreen(
                 )
 
             // 4e. Skin temperature: shown and trended, never read as a fever
-            val currentSkin = latest?.skinTempC ?: skinHistory.lastOrNull()?.value
+            val currentSkin = latest?.skinTempC ?: history.lastOrNull { it.skinTempC != null }?.skinTempC
             val skinStatus = when {
                 currentSkin == null -> HumanStatus("Standby", "No skin temperature readings yet", if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B))
                 currentSkin < SkinTempBand.TYPICAL_MIN_C -> HumanStatus("Cool", "Often the room or a loose fit", Color(0xFF38BDF8))
@@ -393,18 +394,18 @@ fun LiveMonitorScreen(
             BentoCompactTile(
                 title = "Skin Temp",
                 subtitle = "Skin, not core temperature",
-                value = currentSkin?.let { String.format(Locale.US, "%.1f°C", it) } ?: "--°C",
+                value = currentSkin?.let { Temperature.fahrenheitText(it).replace(" ", "") } ?: "--°F",
                 valueColor = VitalOrange,
                 statusWord = skinStatus.word,
                 statusColor = skinStatus.color,
                 takeawayText = skinStatus.takeaway,
-                safeRangeLabel = "Typical skin: 30–35.5°C",
-                safeMin = SkinTempBand.TYPICAL_MIN_C,
-                safeMax = SkinTempBand.TYPICAL_MAX_C,
+                safeRangeLabel = "Typical skin: 86.0–95.9°F",
+                safeMin = Temperature.fahrenheit(SkinTempBand.TYPICAL_MIN_C),
+                safeMax = Temperature.fahrenheit(SkinTempBand.TYPICAL_MAX_C),
                 points = if (hasData) skinHistory else emptyList(),
                 color = VitalOrange,
-                yMin = 26f,
-                yMax = 38f,
+                yMin = Temperature.fahrenheit(26f),
+                yMax = Temperature.fahrenheit(42f),
                 darkTheme = isDarkTheme,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -417,18 +418,18 @@ fun LiveMonitorScreen(
                 BentoCompactTile(
                     title = "Body Temp",
                     subtitle = "Core temperature",
-                    value = if (currentTemp != null) String.format(Locale.US, "%.1f°C", currentTemp) else "--°C",
+                    value = currentTemp?.let { Temperature.fahrenheitText(it).replace(" ", "") } ?: "--°F",
                     valueColor = VitalOrange,
                     statusWord = tempStatus.word,
                     statusColor = tempStatus.color,
                     takeawayText = tempStatus.takeaway,
-                    safeRangeLabel = "Safe: 36.5–37.2°C",
-                    safeMin = 36.5f,
-                    safeMax = 37.2f,
+                    safeRangeLabel = "Safe: 97.7–99.0°F",
+                    safeMin = Temperature.fahrenheit(36.5f),
+                    safeMax = Temperature.fahrenheit(37.2f),
                     points = if (hasData) tempHistory else emptyList(),
                     color = VitalOrange,
-                    yMin = 35.0f,
-                    yMax = 39.5f,
+                    yMin = Temperature.fahrenheit(35.0f),
+                    yMax = Temperature.fahrenheit(39.5f),
                     darkTheme = isDarkTheme,
                     modifier = Modifier.fillMaxWidth()
                 )

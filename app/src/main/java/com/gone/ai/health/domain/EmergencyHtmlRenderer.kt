@@ -99,7 +99,7 @@ object EmergencyHtmlRenderer {
             }
             payload.bodyTempC?.let {
                 val cls = if (it >= 38.0) "vital-value warn" else "vital-value"
-                append(vitalRow("Temperature", "${String.format(java.util.Locale.US, "%.1f", it)} °C", valueClass = cls))
+                append(vitalRow("Temperature", Temperature.fahrenheitText(it), valueClass = cls))
             }
             payload.motionStatus?.let {
                 val displayStatus = if (it == "fall_detected") "⚠️ Fall detected" else it.replaceFirstChar { c -> c.uppercase() }

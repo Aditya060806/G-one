@@ -112,6 +112,7 @@ import com.gone.ai.ui.theme.pressScale
 import java.text.SimpleDateFormat
 import java.util.Date
 import com.gone.ai.health.domain.VitalsSample
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.service.WearablePreferences
 import java.util.Locale
 
@@ -664,13 +665,13 @@ private fun TrendsAndInsightsTabView(
         windowed.mapNotNull { r -> r.motionMagnitudeG?.let { ChartPoint(r.timestamp, it) } }.downsample(target)
     }
     val tempPoints = remember(windowed) {
-        windowed.mapNotNull { r -> r.bodyTempC?.let { ChartPoint(r.timestamp, it) } }.downsample(target)
+        windowed.mapNotNull { r -> r.bodyTempC?.let { ChartPoint(r.timestamp, Temperature.fahrenheit(it)) } }.downsample(target)
     }
     val spo2Points = remember(windowed) {
         windowed.mapNotNull { r -> r.spo2?.let { ChartPoint(r.timestamp, it.toFloat()) } }.downsample(target)
     }
     val skinPoints = remember(windowed) {
-        windowed.mapNotNull { r -> r.skinTempC?.let { ChartPoint(r.timestamp, it) } }.downsample(target)
+        windowed.mapNotNull { r -> r.skinTempC?.let { ChartPoint(r.timestamp, Temperature.fahrenheit(it)) } }.downsample(target)
     }
     val emgPoints = remember(windowed) {
         windowed.mapNotNull { r -> r.emgMean?.let { ChartPoint(r.timestamp, it.toFloat()) } }.downsample(target)
@@ -756,7 +757,7 @@ private fun TrendsAndInsightsTabView(
                     id = "temp",
                     title = "Body Temperature",
                     subtitle = "Core heat",
-                    value = String.format(Locale.US, "%.1f°C", temp),
+                    value = Temperature.fahrenheitText(temp).replace(" ", ""),
                     valueColor = VitalOrange,
                     icon = Icons.Default.Thermostat,
                     statusWord = when {
@@ -775,13 +776,13 @@ private fun TrendsAndInsightsTabView(
                         temp > 37.3f -> "Elevated temperature recorded"
                         else -> "Slightly low body temperature"
                     },
-                    safeRangeLabel = "Safe: 36.1°–37.2°C",
-                    safeMin = 36.1f,
-                    safeMax = 37.2f,
+                    safeRangeLabel = "Safe: 97.0–99.0°F",
+                    safeMin = Temperature.fahrenheit(36.1f),
+                    safeMax = Temperature.fahrenheit(37.2f),
                     points = tempPoints,
                     color = VitalOrange,
-                    yMin = 34.0f,
-                    yMax = 41.0f,
+                    yMin = Temperature.fahrenheit(34.0f),
+                    yMax = Temperature.fahrenheit(41.0f),
                     relaxednessScore = 70f,
                     activityScore = ((temp - 36.6f).coerceAtLeast(0f) * 40f)
                 )
@@ -867,7 +868,7 @@ private fun TrendsAndInsightsTabView(
                     id = "skin",
                     title = "Skin Temperature",
                     subtitle = "Skin, not core temperature",
-                    value = String.format(Locale.US, "%.1f°C", skin),
+                    value = Temperature.fahrenheitText(skin).replace(" ", ""),
                     valueColor = VitalOrange,
                     icon = Icons.Default.Thermostat,
                     statusWord = when {
@@ -881,13 +882,13 @@ private fun TrendsAndInsightsTabView(
                         else -> Color(0xFFF59E0B)
                     },
                     takeawayText = "Skin follows the room; this is not a fever reading",
-                    safeRangeLabel = "Typical skin: 30–35.5°C",
-                    safeMin = 30f,
-                    safeMax = 35.5f,
+                    safeRangeLabel = "Typical skin: 86.0–95.9°F",
+                    safeMin = Temperature.fahrenheit(30f),
+                    safeMax = Temperature.fahrenheit(35.5f),
                     points = skinPoints,
                     color = VitalOrange,
-                    yMin = 26f,
-                    yMax = 38f,
+                    yMin = Temperature.fahrenheit(26f),
+                    yMax = Temperature.fahrenheit(42f),
                     relaxednessScore = 70f,
                     activityScore = 0f
                 )

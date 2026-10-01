@@ -148,7 +148,7 @@ data class EmergencyPayload(
         val vitals = buildList {
             heartRate?.let { add("$it BPM") }
             spo2?.let { add("SpO2 $it%") }
-            bodyTempC?.let { add(String.format(java.util.Locale.US, "%.1f°C", it)) }
+            bodyTempC?.let { add(Temperature.fahrenheitText(it).replace(" ", "")) }
             motionStatus?.let { add(if (it == "fall_detected") "⚠️ FALL DETECTED" else it) }
         }
         if (vitals.isNotEmpty()) {

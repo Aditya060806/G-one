@@ -2,6 +2,7 @@ package com.gone.ai.health.session
 
 import com.gone.ai.health.data.SessionReportEntity
 import com.gone.ai.health.explain.ResponseTier
+import com.gone.ai.health.domain.Temperature
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -44,8 +45,8 @@ object ReportText {
                     val values = listOfNotNull(
                         p.heartRate?.let { "HR ${it.toInt()}" },
                         p.spo2?.let { "SpO2 ${it.toInt()}%" },
-                        p.bodyTempC?.let { "core ${one(it)} °C" },
-                        p.skinTempC?.let { "skin ${one(it)} °C" },
+                        p.bodyTempC?.let { "core ${Temperature.fahrenheitText(it)}" },
+                        p.skinTempC?.let { "skin ${Temperature.fahrenheitText(it)}" },
                         p.motionPeakG?.let { "motion ${one(it)} g" },
                         p.emgMean?.let { "EMG ${it.toInt()}" }
                     )

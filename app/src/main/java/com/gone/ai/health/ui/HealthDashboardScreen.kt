@@ -112,6 +112,7 @@ import com.gone.ai.health.data.EventStatus
 import com.gone.ai.health.data.severityEnum
 import com.gone.ai.health.domain.Severity
 import com.gone.ai.health.domain.VitalsSample
+import com.gone.ai.health.domain.Temperature
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Info
@@ -527,8 +528,8 @@ private fun ModernVitalsRow(
             icon = Icons.Default.Thermostat,
             iconColor = VitalOrange,
             iconBg = if (darkTheme) Color(0xFF38291A) else VitalOrangeSubtle,
-            value = if (shownTemp != null) String.format(Locale.US, "%.1f°", shownTemp) else "--°",
-            unit = "C",
+            value = shownTemp?.let { "${Temperature.fahrenheitNumber(it)}°" } ?: "--°",
+            unit = "F",
             name = if (showSkin) "Skin" else "Temp",
             statusWord = when {
                 shownTemp == null -> "Standby"
@@ -2019,7 +2020,7 @@ private fun HistoricalTelemetrySummaryBento(
                     )
                     CompactMetricBar(
                         label = if (avgSkin != null) "Skin" else "Temp",
-                        value = (avgTemp ?: avgSkin)?.let { String.format(Locale.US, "%.1f°", it) } ?: "--",
+                        value = (avgTemp ?: avgSkin)?.let { "${Temperature.fahrenheitNumber(it)}°F" } ?: "--",
                         progress = avgTemp?.let { ((it - 35f) / 3f).coerceIn(0.1f, 1f) }
                             ?: avgSkin?.let { ((it - 26f) / 12f).coerceIn(0.1f, 1f) }   // the Live Monitor's 26–38 °C skin scale
                             ?: 0f,

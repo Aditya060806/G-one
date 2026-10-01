@@ -58,7 +58,7 @@ class EmergencyHtmlRendererTest {
         assertTrue(html.contains("href=\"tel:112\""))
         assertTrue(html.contains("84 BPM"))
         assertTrue(html.contains("97%"))
-        assertTrue(html.contains("37.1 °C"))
+        assertTrue(html.contains("98.8 °F"))
     }
 
     @Test

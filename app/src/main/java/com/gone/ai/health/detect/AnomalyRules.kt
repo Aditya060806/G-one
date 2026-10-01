@@ -55,6 +55,7 @@ data class DetectionContext(
             heartRate          = l?.heartRate,
             spo2               = l?.spo2,
             bodyTempC          = l?.bodyTempC,
+            skinTempC          = if (type == AnomalyType.HIGH_SKIN_TEMPERATURE) l?.skinTempC else null,
             ambientTempC       = l?.ambientTempC,
             ambientHumidityPct = l?.ambientHumidityPct,
             aqi                = l?.aqi,
@@ -207,6 +208,22 @@ object FeverRule : AnomalyRule {
     }
 }
 
+/**
+ * High contact-sensor temperature from the Phase-1 wearable's STEMP channel.
+ * This is deliberately distinct from fever because wrist/skin temperature is not
+ * core body temperature and can also rise because of fit or external heat.
+ */
+object HighSkinTemperatureRule : AnomalyRule {
+    override val id = "temp.skinHigh"
+
+    override fun evaluate(ctx: DetectionContext): AnomalyCandidate? {
+        val value = ctx.latest?.skinTempC ?: return null
+        if (!value.isFinite() || value < ctx.thresholds.skinTempHighC) return null
+        val severity = if (value >= ctx.thresholds.skinTempCriticalC) Severity.CRITICAL else Severity.MODERATE
+        return ctx.candidate(AnomalyType.HIGH_SKIN_TEMPERATURE, severity, id)
+    }
+}
+
 // ── Environment-coupled ───────────────────────────────────────────────────────
 
 /**
@@ -340,11 +357,11 @@ object CardiovascularStrainRule : AnomalyRule {
 // ── Motion ────────────────────────────────────────────────────────────────────
 
 /**
- * Fall detection: an impact spike followed by immobility.
+ * Immediate high-impact fall detection.
  *
- * The two-part signature matters. An impact alone could be the wearable being set
- * down on a table. An impact followed by the wearer not moving is the pattern that
- * warrants an emergency response. Neither part alone creates a fall event.
+ * The user explicitly wants a very high gyroscope/accelerometer spike to alert at
+ * once. Restricting this to the newest packet prevents an old impact in the trend
+ * window from being raised again after the cooldown expires.
  *
  * Threshold-based for Phase 1 rather than a learned classifier: it needs no training
  * data, it is auditable, and its failure modes are obvious. A trained model is the
@@ -353,38 +370,14 @@ object CardiovascularStrainRule : AnomalyRule {
 object FallDetectionRule : AnomalyRule {
     override val id = "motion.fall"
 
-    /** Motion at or below this after an impact counts as immobile. */
-    private const val IMMOBILE_G = 1.05f
-    /** Continuous measured immobility required before reporting a fall. */
-    private const val IMMOBILE_MILLIS = 20_000L
-
     override fun evaluate(ctx: DetectionContext): AnomalyCandidate? {
-        val t = ctx.thresholds
-        val samples = ctx.window.samples
-        if (samples.isEmpty()) return null
-
-        // Measured from the newest SAMPLE rather than the clock, so a replayed SD-card
-        // backlog is judged against its own timeline.
-        val lookbackStart = samples.last().timestamp - t.fallImpactLookbackMinutes * 60_000L
-        val impactIdx = samples.indexOfLast {
-            it.timestamp >= lookbackStart && it.motionMagnitudeG?.let { g -> g.isFinite() && g >= t.fallImpactG } == true
-        }
-        if (impactIdx < 0) return null
-
-        val impact = samples[impactIdx]
-        val after = samples.drop(impactIdx + 1)
-
-        // An isolated spike is not a fall. Wait for measured stillness; continuing
-        // movement or missing motion data must not create a "Possible fall" alert.
-        if (after.isEmpty()) return null
-        val allStill = after.all { it.motionMagnitudeG?.let { g -> g.isFinite() && g >= 0f && g <= IMMOBILE_G } == true }
-        val stillFor = after.last().timestamp - impact.timestamp
-        if (!allStill || stillFor < IMMOBILE_MILLIS) return null
+        val impact = ctx.latest ?: return null
+        val magnitude = impact.motionMagnitudeG ?: return null
+        if (!magnitude.isFinite() || magnitude < ctx.thresholds.fallImpactG) return null
 
         return ctx.candidate(
             AnomalyType.FALL_DETECTED, Severity.CRITICAL, id,
-            durationMinutes = (stillFor / 60_000L).toInt().takeIf { it > 0 },
-            fallImpactG = impact.motionMagnitudeG
+            fallImpactG = magnitude
         )
     }
 }
@@ -540,6 +533,7 @@ object AnomalyRules {
         HighHeartRateRule,
         LowHeartRateRule,
         FeverRule,
+        HighSkinTemperatureRule,
         HeatStressRule,
         DehydrationRiskRule,
         RespiratoryDistressRule,

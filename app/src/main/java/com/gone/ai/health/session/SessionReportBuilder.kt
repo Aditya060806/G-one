@@ -2,6 +2,7 @@ package com.gone.ai.health.session
 
 import com.gone.ai.health.data.ReadingSource
 import com.gone.ai.health.domain.AnomalyThresholds
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.explain.ResponseTier
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -152,11 +153,11 @@ object SessionReportBuilder {
             } ?: "No blood-oxygen readings were received."
         )
         r.bodyTempC?.let {
-            add("Core body temperature ranged from ${one(it.min)} to ${one(it.max)} °C.")
+            add("Core body temperature ranged from ${Temperature.fahrenheitText(it.min)} to ${Temperature.fahrenheitText(it.max)}.")
         }
         r.skinTempC?.let {
             add(
-                "Skin temperature ranged from ${one(it.min)} to ${one(it.max)} °C. Skin runs " +
+                "Skin temperature ranged from ${Temperature.fahrenheitText(it.min)} to ${Temperature.fahrenheitText(it.max)}. Skin runs " +
                     "cooler than the body's core, so this is not a fever reading."
             )
         }

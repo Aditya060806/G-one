@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.gone.ai.health.data.EmergencyProfileEntity
 import com.gone.ai.health.domain.EmergencyPayload
 import com.gone.ai.health.domain.Staleness
+import com.gone.ai.health.domain.Temperature
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -174,7 +175,7 @@ fun EmergencyPagePreview(
             PreviewSection(title = "❤️ Last Known Vitals") {
                 payload.heartRate?.let  { VitalRow("Heart Rate", "$it BPM") }
                 payload.spo2?.let       { VitalRow("SpO₂", "$it%", warn = it < 92) }
-                payload.bodyTempC?.let  { VitalRow("Temperature", "${"%.1f".format(it)} °C", warn = it >= 38.0f) }
+                payload.bodyTempC?.let  { VitalRow("Temperature", Temperature.fahrenheitText(it), warn = it >= 38.0f) }
                 payload.motionStatus?.let {
                     VitalRow("Motion Status",
                         if (it == "fall_detected") "⚠️ Fall detected" else it.replaceFirstChar { c -> c.uppercase() },

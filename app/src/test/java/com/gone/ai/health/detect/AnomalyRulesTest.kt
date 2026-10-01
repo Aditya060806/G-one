@@ -284,15 +284,13 @@ class AnomalyRulesTest {
 
     // ── Motion ────────────────────────────────────────────────────────────────
 
-    /** Impact followed by stillness is the signature that warrants escalation. */
+    /** A very high impact raises the alert on that packet, without waiting for stillness. */
     @Test
-    fun `fall detection escalates to critical when the impact is followed by immobility`() {
-        val samples = mutableListOf<VitalsSample>()
-        samples += TestVitals.sample(0.0, hr = 84, motion = 1.05f)
-        samples += TestVitals.sample(0.2, hr = 84, motion = 5.4f)      // impact
-        for (i in 1..5) {
-            samples += TestVitals.sample(0.2 + i * 0.2, hr = 100, motion = 0.99f)
-        }
+    fun `fall detection raises a critical alert immediately on a high impact`() {
+        val samples = listOf(
+            TestVitals.sample(0.0, hr = 84, motion = 1.05f),
+            TestVitals.sample(0.2, hr = 84, motion = 5.4f)
+        )
         val c = FallDetectionRule.evaluate(ctx(samples))
         assertNotNull(c)
         assertEquals(AnomalyType.FALL_DETECTED, c!!.type)
@@ -300,9 +298,9 @@ class AnomalyRulesTest {
         assertEquals(5.4f, c.evidence.fallImpactG)
     }
 
-    /** An impact while still moving could be the device being put down. */
+    /** Only the newest packet can trigger, so an old impact cannot repeat later. */
     @Test
-    fun `fall detection stays silent when movement continues`() {
+    fun `fall detection does not repeat an earlier impact on a later motion packet`() {
         val samples = listOf(
             TestVitals.sample(0.0, hr = 84, motion = 1.05f),
             TestVitals.sample(0.2, hr = 84, motion = 5.4f),
@@ -332,14 +330,11 @@ class AnomalyRulesTest {
     }
 
     @Test
-    fun `impact alone or brief stillness does not raise a fall`() {
+    fun `impact alone raises immediately and a later still packet does not repeat it`() {
         val impact = TestVitals.sample(0.0, motion = 5.4f)
-        assertNull(FallDetectionRule.evaluate(ctx(listOf(impact))))
+        assertEquals(Severity.CRITICAL, FallDetectionRule.evaluate(ctx(listOf(impact)))?.severity)
         assertNull(FallDetectionRule.evaluate(ctx(listOf(impact, TestVitals.sample(0.25, motion = 1.0f)))))
-        assertEquals(
-            Severity.CRITICAL,
-            FallDetectionRule.evaluate(ctx(listOf(impact, TestVitals.sample(0.5, motion = 1.0f))))?.severity
-        )
+        assertNull(FallDetectionRule.evaluate(ctx(listOf(impact, TestVitals.sample(0.5, motion = 1.0f)))))
     }
 
     /**
@@ -439,7 +434,7 @@ class AnomalyRulesTest {
     fun `rule ids are unique and stable`() {
         val ids = AnomalyRules.ALL.map { it.id }
         assertEquals(ids.size, ids.toSet().size)
-        assertEquals(13, AnomalyRules.ALL.size)
+        assertEquals(14, AnomalyRules.ALL.size)
     }
 
     /** Every rule must tolerate a window with nothing in it. */
@@ -536,6 +531,31 @@ class AnomalyRulesTest {
         val detector = AnomalyDetector(t)
         val result = detector.evaluate(samples, now = samples.last().timestamp)
         assertTrue(result.candidates.none { it.type == AnomalyType.FEVER || it.type == AnomalyType.HEAT_STRESS })
+        assertTrue(result.candidates.any { it.type == AnomalyType.HIGH_SKIN_TEMPERATURE })
+    }
+
+    @Test
+    fun `high skin temperature alerts from the latest wearable packet`() {
+        val moderate = HighSkinTemperatureRule.evaluate(
+            ctx(listOf(TestVitals.sample(0.0).copy(skinTempC = 37.5f)))
+        )
+        assertEquals(AnomalyType.HIGH_SKIN_TEMPERATURE, moderate?.type)
+        assertEquals(Severity.MODERATE, moderate?.severity)
+        assertEquals(37.5f, moderate?.evidence?.skinTempC)
+
+        val critical = HighSkinTemperatureRule.evaluate(
+            ctx(listOf(TestVitals.sample(0.0).copy(skinTempC = 39.0f)))
+        )
+        assertEquals(Severity.CRITICAL, critical?.severity)
+    }
+
+    @Test
+    fun `normal skin temperature stays silent`() {
+        assertNull(
+            HighSkinTemperatureRule.evaluate(
+                ctx(listOf(TestVitals.sample(0.0).copy(skinTempC = 35.5f)))
+            )
+        )
     }
 
     /** And a sample where every field is absent. */

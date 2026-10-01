@@ -67,7 +67,7 @@ class HealthContextBuilderTest {
         val text = build(empty().copy(age = 34, latestReading = reading(3 * minute)))
         assertTrue(text.contains("Age: 34."))
         assertTrue(text, text.contains("Latest reading (3 minutes ago, from the wearable): heart rate 72 bpm, SpO2 97%, " +
-            "skin temperature 33.4 °C (skin, not body temperature), motion 1.02 g, muscle sensor level 520 (uncalibrated)."))
+            "skin temperature 92.1 °F (skin, not body temperature), motion 1.02 g, muscle sensor level 520 (uncalibrated)."))
     }
 
     @Test

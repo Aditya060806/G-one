@@ -7,6 +7,7 @@ import com.gone.ai.health.data.VitalsReadingEntity
 import com.gone.ai.health.data.severityEnum
 import com.gone.ai.health.domain.AnomalyType
 import com.gone.ai.health.domain.Severity
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.explain.ResponseTier
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -89,8 +90,8 @@ data class ReportPdfContent(
                 val values = listOfNotNull(
                     p.heartRate?.let { "HR ${it.toInt()}" },
                     p.spo2?.let { "SpO₂ ${it.toInt()}%" },
-                    p.bodyTempC?.let { "core ${one(it)} °C" },
-                    p.skinTempC?.let { "skin ${one(it)} °C" },
+                    p.bodyTempC?.let { "core ${Temperature.fahrenheitText(it)}" },
+                    p.skinTempC?.let { "skin ${Temperature.fahrenheitText(it)}" },
                     p.motionPeakG?.let { "motion ${one(it)} g" },
                     p.emgMean?.let { "EMG ${it.toInt()}" }
                 )
@@ -101,8 +102,8 @@ data class ReportPdfContent(
             val charts = listOfNotNull(
                 series("Heart rate", "bpm", 0, ordered) { it.heartRate?.toFloat() },
                 series("SpO₂", "%", 0, ordered) { it.spo2?.toFloat() },
-                series("Body temperature", "°C", 1, ordered) { it.bodyTempC },
-                series("Skin temperature", "°C", 1, ordered) { it.skinTempC },
+                series("Body temperature", "°F", 1, ordered) { it.bodyTempC?.let(Temperature::fahrenheit) },
+                series("Skin temperature", "°F", 1, ordered) { it.skinTempC?.let(Temperature::fahrenheit) },
                 series("Motion", "g", 2, ordered) { it.motionMagnitudeG },
                 series("Muscle activity (EMG level)", "", 0, ordered) { it.emgMean?.toFloat() }
             )

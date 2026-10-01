@@ -61,6 +61,7 @@ import androidx.compose.ui.zIndex
 import com.gone.ai.health.data.ReadingSource
 import com.gone.ai.health.data.SessionReportEntity
 import com.gone.ai.health.explain.ResponseTier
+import com.gone.ai.health.domain.Temperature
 import com.gone.ai.health.session.RepresentativePointCodec
 import com.gone.ai.health.session.ReportText
 import com.gone.ai.health.session.SessionReportBuilder
@@ -267,8 +268,8 @@ fun ReportScreen(
                             val values = listOfNotNull(
                                 p.heartRate?.let { "HR ${it.toInt()}" },
                                 p.spo2?.let { "SpO₂ ${it.toInt()}%" },
-                                p.bodyTempC?.let { "core ${oneDecimal(it)} °C" },
-                                p.skinTempC?.let { "skin ${oneDecimal(it)} °C" },
+                                p.bodyTempC?.let { "core ${Temperature.fahrenheitText(it)}" },
+                                p.skinTempC?.let { "skin ${Temperature.fahrenheitText(it)}" },
                                 p.motionPeakG?.let { "${oneDecimal(it)} g" },
                                 p.emgMean?.let { "EMG ${it.toInt()}" }
                             )

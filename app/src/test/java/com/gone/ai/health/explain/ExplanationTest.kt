@@ -50,6 +50,7 @@ class ExplanationTemplatesTest {
         spo2: Int? = 91,
         hr: Int? = 108,
         temp: Float? = 37.6f,
+        skinTemp: Float? = 38.2f,
         duration: Int? = 12,
         trend: Trend? = Trend.FALLING,
         ambientTemp: Float? = 41f,
@@ -66,6 +67,7 @@ class ExplanationTemplatesTest {
         heartRate = hr,
         spo2 = spo2,
         bodyTempC = temp,
+        skinTempC = skinTemp,
         ambientTempC = ambientTemp,
         ambientHumidityPct = humidity,
         aqi = aqi,
@@ -153,7 +155,7 @@ class ExplanationTemplatesTest {
 
     /**
      * Locale pinning. With the default-locale overload a device set to German would
-     * render 37.6 as "37,6" — a comma decimal inside a clinical reading.
+     * render 101.7 as "101,7" — a comma decimal inside a clinical reading.
      */
     @Test
     fun `body temperature always uses a decimal point regardless of locale`() {
@@ -161,8 +163,8 @@ class ExplanationTemplatesTest {
         try {
             java.util.Locale.setDefault(java.util.Locale.GERMANY)
             val e = ExplanationTemplates.render(evidence(AnomalyType.FEVER, temp = 38.7f))
-            assertTrue("expected '38.7' in '${e.detail}'", e.detail.contains("38.7"))
-            assertFalse("comma decimal leaked", e.detail.contains("38,7"))
+            assertTrue("expected Fahrenheit value in '${e.detail}'", e.detail.contains("101.7 °F"))
+            assertFalse("comma decimal leaked", e.detail.contains("101,7"))
         } finally {
             java.util.Locale.setDefault(original)
         }

@@ -44,7 +44,7 @@ class ReportTextTest {
         assertTrue(text, text.contains("Status: CRITICAL — Get help now"))
         r.observationLines.forEach { assertTrue("missing: $it", text.contains(it)) }
         listOf("Start", "25%", "50%", "75%", "End").forEach { assertTrue("missing point $it", text.contains("- $it (")) }
-        assertTrue(text.contains("skin 33.4 °C"))
+        assertTrue(text.contains("skin 92.1 °F"))
     }
 
     @Test

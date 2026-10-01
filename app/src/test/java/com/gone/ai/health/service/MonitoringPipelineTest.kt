@@ -496,11 +496,11 @@ class MonitoringPipelineTest {
     }
 
     /**
-     * End to end on the simulator's fall scenario: the impact alone stays quiet,
-     * and confirmed immobility raises one CRITICAL event.
+     * End to end on the simulator's fall scenario: the impact immediately raises one
+     * CRITICAL event, and later packets cannot repeat the same impact.
      */
     @Test
-    fun `a confirmed fall alerts once after immobility`() = runTest {
+    fun `a high impact fall alerts immediately and only once`() = runTest {
         val repo = FakeHealthRepository()
         val sink = FakeAlertSink(mutableListOf())
         var clock = TestVitals.T0
@@ -733,5 +733,18 @@ class MonitoringPipelineTest {
         assertEquals(812, stored.emgMean)
         assertEquals(1400, stored.emgMax)
         assertEquals(ReadingSource.BLE.wireName, stored.source)
+    }
+
+    @Test
+    fun `high wearable skin temperature creates and delivers an alert`() = runTest {
+        val repo = FakeHealthRepository()
+        val sink = FakeAlertSink(mutableListOf())
+        val p = pipeline(repo, sink)
+
+        p.onSample(patient, VitalsSample(TestVitals.T0, skinTempC = 39.1f), ReadingSource.BLE)
+
+        assertEquals(AnomalyType.HIGH_SKIN_TEMPERATURE.wireName, repo.events.single().eventType)
+        assertEquals("CRITICAL", repo.events.single().severity)
+        assertEquals(1, sink.alerts.size)
     }
 }

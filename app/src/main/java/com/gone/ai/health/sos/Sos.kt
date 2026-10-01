@@ -31,7 +31,7 @@ object SosPolicy {
      * Why an alert warrants an SOS, in words for the message; null when it does not.
      *
      * @param latest the reading the alert was raised on: its values go in the message.
-     * @param fallImpactG the original peak recorded before post-impact stillness.
+     * @param fallImpactG the original peak from the packet that triggered the fall alert.
      */
     fun reasonFor(
         type: AnomalyType,
@@ -42,7 +42,7 @@ object SosPolicy {
         return when {
             type == AnomalyType.FALL_DETECTED ->
                 if (severity == Severity.CRITICAL && fallImpactG != null && fallImpactG.isFinite() && fallImpactG >= SEVERE_IMPACT_G)
-                    "Very hard impact (${oneDecimal(fallImpactG)} g), followed by no movement; a possible fall"
+                    "Very hard impact (${oneDecimal(fallImpactG)} g); a possible fall"
                 else null
             severity != Severity.CRITICAL -> type.label
             type == AnomalyType.LOW_SPO2 || type == AnomalyType.SUSTAINED_LOW_SPO2 ->

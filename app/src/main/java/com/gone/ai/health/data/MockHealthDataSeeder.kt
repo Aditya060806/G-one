@@ -274,8 +274,8 @@ object MockHealthDataSeeder {
                     ambientTempC = 35.0f, ambientHumidityPct = 50f, aqi = 118,
                     trend = Trend.RISING, motionDetected = false
                 ),
-                aiRewrite = "It is around 35 °C outside with humidity at 50%, and body temperature " +
-                    "has risen to 37.5 °C with the heart beating 112 times a minute.",
+                aiRewrite = "It is around 95.0 °F outside with humidity at 50%, and body temperature " +
+                    "has risen to 99.5 °F with the heart beating 112 times a minute.",
                 acknowledgedAfterMinutes = null
             ),
 
@@ -313,7 +313,7 @@ object MockHealthDataSeeder {
                     trend = Trend.RISING, motionDetected = false
                 ),
                 aiRewrite = "In this heat the heart rate has climbed to 108 a minute while body " +
-                    "temperature rose to 37.5 °C, a pattern that often appears when the body is short of fluids.",
+                    "temperature rose to 99.5 °F, a pattern that often appears when the body is short of fluids.",
                 acknowledgedAfterMinutes = 30
             ),
             DemoEvent(
@@ -324,7 +324,7 @@ object MockHealthDataSeeder {
                     heartRate = 98, spo2 = 96, bodyTempC = 38.5f,
                     durationMinutes = 40, trend = Trend.RISING, motionDetected = false
                 ),
-                aiRewrite = "Body temperature has stayed raised at 38.5 °C for about 40 minutes.",
+                aiRewrite = "Body temperature has stayed raised at 101.3 °F for about 40 minutes.",
                 acknowledgedAfterMinutes = 30
             ),
             DemoEvent(
