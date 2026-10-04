@@ -47,12 +47,6 @@ data class AnomalyThresholds(
      * is the documented Phase 2 path.
      */
     val fallImpactG: Float = 5.0f,
-    /**
-     * How recent an impact must be, relative to the newest sample, for the fall rule to
-     * consider it. Without a limit one fall stayed inside the 30-minute trend window and
-     * was reported again as a new fall the moment the 15-minute cooldown expired.
-     */
-    val fallImpactLookbackMinutes: Int = 5,
 
     // ── Muscle activity (EMG envelope, 12-bit ADC counts) ─────────────────────
     /*
@@ -132,7 +126,6 @@ data class AnomalyThresholds(
         require(minSamplesForTrend >= 2) { "trend needs at least 2 samples" }
         require(perTypeCooldownMinutes >= 0) { "cooldown cannot be negative" }
         require(fallImpactG.isFinite() && fallImpactG > 1f) { "impact threshold must be finite and above gravity" }
-        require(fallImpactLookbackMinutes > 0) { "fall impact lookback must be positive" }
         require(emgActiveLevel in 1 until emgHighLevel) { "emgActiveLevel must be positive and below emgHighLevel" }
         require(emgHighLevel < emgVeryHighLevel) { "emgHighLevel must be below emgVeryHighLevel" }
         require(emgVeryHighLevel < VitalsSample.EMG_RAIL) {

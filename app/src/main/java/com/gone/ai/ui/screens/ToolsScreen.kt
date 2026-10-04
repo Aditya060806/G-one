@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.PhotoCamera
@@ -114,6 +115,7 @@ fun ToolsScreen(
     onNavigateToQuiz       : () -> Unit = {},
     onNavigateToCircle     : () -> Unit = {},
     onNavigateToLibrary    : () -> Unit = {},
+    onNavigateToModelLab   : () -> Unit = {},
     onNavigateToSettings   : () -> Unit = {},
     onAskAssistant         : (title: String, text: String) -> Unit = { _, _ -> }
 ) {
@@ -379,6 +381,16 @@ fun ToolsScreen(
                     badge = if (remindersEnabled) "On" else "Off",
                     darkTheme = dark,
                     onClick = { showHealthyDialog = true }
+                )
+
+                // On-device trained models: what they are, how they tested, and a try-it for each
+                SoberBentoListTile(
+                    icon = Icons.Default.Memory,
+                    title = "Model Lab",
+                    subtitle = "The trained models G-one runs on this phone",
+                    badge = "Edge AI",
+                    darkTheme = dark,
+                    onClick = onNavigateToModelLab
                 )
 
                 // 6. Memory Vault

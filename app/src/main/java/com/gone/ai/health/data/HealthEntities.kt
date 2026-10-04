@@ -40,19 +40,7 @@ data class PatientEntity(
     indices = [Index(value = ["patientId"])]
 )
 data class DeviceEntity(
-    /** Stable device identifier —    val aqi: Int? = null,
-    /** SIMULATED | BLE | MANUAL — provenance matters for clinical trust. */
-    val source: String,
-
-    // ── Added in version 3 by ALTER TABLE, which appends columns, so declared last ──
-
-    /** Skin temperature, °C. Never core temperature — see [VitalsSample.skinTempC]. */
-    val skinTempC: Float? = null,
-    /** Mean EMG envelope over the stored interval, 12-bit ADC counts. */
-    val emgMean: Int? = null,
-    /** Highest EMG envelope value within the stored interval, 12-bit ADC counts. */
-    val emgMax: Int? = null
-)MAC address, or a synthetic id when simulated. */
+    /** Stable device identifier — MAC address, or a synthetic id when simulated. */
     @PrimaryKey val id: String,
     val patientId: String,
     val displayName: String,

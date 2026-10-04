@@ -1,0 +1,256 @@
+{
+  "model": "fall_v1",
+  "data": {
+    "recordings": 3078,
+    "people": 44,
+    "positions": [
+      "wrist",
+      "pocket",
+      "waist"
+    ],
+    "impacts_scored": 5334,
+    "falls": 948,
+    "sample_rate_hz": 25,
+    "window_samples": 100
+  },
+  "threshold": 0.6474,
+  "cross_validation": {
+    "folds": 5,
+    "split": "by person",
+    "model": {
+      "falls": 955,
+      "daily": 2123,
+      "sensitivity": 0.9623,
+      "specificity": 0.9585,
+      "f1": 0.9368,
+      "false_alarms_per_hour": 11.5991,
+      "daily_hours": 8.449
+    },
+    "model_auc": 0.988,
+    "rule_peak_5g": {
+      "falls": 955,
+      "daily": 2123,
+      "sensitivity": 0.5068,
+      "specificity": 0.8964,
+      "f1": 0.5835,
+      "false_alarms_per_hour": 67.464,
+      "daily_hours": 8.449
+    },
+    "best_peak_threshold_g": 2.69,
+    "rule_best_peak_threshold": {
+      "falls": 955,
+      "daily": 2123,
+      "sensitivity": 0.9361,
+      "specificity": 0.667,
+      "f1": 0.6995,
+      "false_alarms_per_hour": 424.5495,
+      "daily_hours": 8.449
+    },
+    "peak_auc": 0.8601,
+    "per_fold": [
+      {
+        "falls": 43,
+        "daily": 45,
+        "sensitivity": 0.9535,
+        "specificity": 1.0,
+        "f1": 0.9762,
+        "false_alarms_per_hour": 0.0,
+        "daily_hours": 0.1755
+      },
+      {
+        "falls": 261,
+        "daily": 631,
+        "sensitivity": 0.9693,
+        "specificity": 0.9525,
+        "f1": 0.9301,
+        "false_alarms_per_hour": 13.9894,
+        "daily_hours": 2.5019
+      },
+      {
+        "falls": 191,
+        "daily": 429,
+        "sensitivity": 0.9267,
+        "specificity": 0.9814,
+        "f1": 0.9415,
+        "false_alarms_per_hour": 4.8344,
+        "daily_hours": 1.6548
+      },
+      {
+        "falls": 234,
+        "daily": 521,
+        "sensitivity": 0.9744,
+        "specificity": 0.9616,
+        "f1": 0.9461,
+        "false_alarms_per_hour": 10.5254,
+        "daily_hours": 2.0902
+      },
+      {
+        "falls": 226,
+        "daily": 497,
+        "sensitivity": 0.9735,
+        "specificity": 0.9396,
+        "f1": 0.9244,
+        "false_alarms_per_hour": 16.2841,
+        "daily_hours": 2.0265
+      }
+    ],
+    "sensitivity_spread": 0.018,
+    "specificity_spread": 0.0214,
+    "by_dataset_and_position": {
+      "umafall/pocket": {
+        "falls": 208,
+        "daily": 538,
+        "sensitivity": 0.9615,
+        "specificity": 0.9777,
+        "f1": 0.9524,
+        "false_alarms_per_hour": 5.399,
+        "daily_hours": 2.2226
+      },
+      "umafall/waist": {
+        "falls": 189,
+        "daily": 428,
+        "sensitivity": 0.9418,
+        "specificity": 0.9883,
+        "f1": 0.957,
+        "false_alarms_per_hour": 3.9684,
+        "daily_hours": 1.764
+      },
+      "umafall/wrist": {
+        "falls": 208,
+        "daily": 538,
+        "sensitivity": 0.9375,
+        "specificity": 0.9517,
+        "f1": 0.9091,
+        "false_alarms_per_hour": 14.4442,
+        "daily_hours": 2.2154
+      },
+      "weda/wrist": {
+        "falls": 350,
+        "daily": 619,
+        "sensitivity": 0.9886,
+        "specificity": 0.9273,
+        "f1": 0.9339,
+        "false_alarms_per_hour": 20.9172,
+        "daily_hours": 2.247
+      },
+      "weda/wrist, people aged 77 to 95 (daily activities only)": {
+        "falls": 0,
+        "daily": 157,
+        "sensitivity": null,
+        "specificity": 1.0,
+        "f1": null,
+        "false_alarms_per_hour": 0.0,
+        "daily_hours": 0.4753
+      }
+    },
+    "rule_5g_by_dataset_and_position": {
+      "umafall/pocket": {
+        "falls": 208,
+        "daily": 538,
+        "sensitivity": 0.2933,
+        "specificity": 0.9424,
+        "f1": 0.4067,
+        "false_alarms_per_hour": 58.9394,
+        "daily_hours": 2.2226
+      },
+      "umafall/waist": {
+        "falls": 189,
+        "daily": 428,
+        "sensitivity": 0.2328,
+        "specificity": 0.9346,
+        "f1": 0.3372,
+        "false_alarms_per_hour": 57.2577,
+        "daily_hours": 1.764
+      },
+      "umafall/wrist": {
+        "falls": 208,
+        "daily": 538,
+        "sensitivity": 0.5913,
+        "specificity": 0.868,
+        "f1": 0.6119,
+        "false_alarms_per_hour": 74.4779,
+        "daily_hours": 2.2154
+      },
+      "weda/wrist": {
+        "falls": 350,
+        "daily": 619,
+        "sensitivity": 0.7314,
+        "specificity": 0.8546,
+        "f1": 0.7356,
+        "false_alarms_per_hour": 76.9931,
+        "daily_hours": 2.247
+      },
+      "weda/wrist, people aged 77 to 95 (daily activities only)": {
+        "falls": 0,
+        "daily": 157,
+        "sensitivity": null,
+        "specificity": 0.828,
+        "f1": null,
+        "false_alarms_per_hour": 107.3082,
+        "daily_hours": 0.4753
+      }
+    }
+  },
+  "cross_dataset": {
+    "trained_on": "weda (wrist only)",
+    "tested_on": "umafall (never seen)",
+    "threshold": 0.6474,
+    "model": {
+      "falls": 605,
+      "daily": 1504,
+      "sensitivity": 0.6479,
+      "specificity": 0.9814,
+      "f1": 0.7649,
+      "false_alarms_per_hour": 5.3209,
+      "daily_hours": 6.202
+    },
+    "model_auc": 0.9639,
+    "rule_peak_5g": {
+      "falls": 605,
+      "daily": 1504,
+      "sensitivity": 0.3769,
+      "specificity": 0.9136,
+      "f1": 0.4735,
+      "false_alarms_per_hour": 64.0116,
+      "daily_hours": 6.202
+    },
+    "by_position": {
+      "umafall/pocket": {
+        "falls": 208,
+        "daily": 538,
+        "sensitivity": 0.5577,
+        "specificity": 0.9888,
+        "f1": 0.703,
+        "false_alarms_per_hour": 2.6995,
+        "daily_hours": 2.2226
+      },
+      "umafall/waist": {
+        "falls": 189,
+        "daily": 428,
+        "sensitivity": 0.5661,
+        "specificity": 0.986,
+        "f1": 0.7086,
+        "false_alarms_per_hour": 3.9684,
+        "daily_hours": 1.764
+      },
+      "umafall/wrist": {
+        "falls": 208,
+        "daily": 538,
+        "sensitivity": 0.8125,
+        "specificity": 0.9703,
+        "f1": 0.8601,
+        "false_alarms_per_hour": 9.0276,
+        "daily_hours": 2.2154
+      }
+    }
+  },
+  "export": {
+    "file": "app/src/main/assets/ml/fall_v1.tflite",
+    "bytes": 15408,
+    "parameters": 4185,
+    "largest_difference_from_float": 0.1215,
+    "mean_difference_from_float": 0.0031,
+    "decisions_changed_by_8bit": 7,
+    "of_impacts": 5334
+  }
+}

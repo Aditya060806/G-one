@@ -1,0 +1,239 @@
+{
+  "execution_summary": {
+    "estimated_inference_time": 52,
+    "estimated_inference_peak_memory": 121253888,
+    "first_load_time": 304304,
+    "first_load_peak_memory": 128520192,
+    "warm_load_time": 169812,
+    "warm_load_peak_memory": 121593856,
+    "compile_time": 0,
+    "compile_peak_memory": 0,
+    "compile_memory_increase_range": [
+      0,
+      0
+    ],
+    "compile_memory_peak_range": [
+      0,
+      0
+    ],
+    "first_load_memory_increase_range": [
+      24138944,
+      31101344
+    ],
+    "first_load_memory_peak_range": [
+      32862208,
+      39824608
+    ],
+    "warm_load_memory_increase_range": [
+      0,
+      1682032
+    ],
+    "warm_load_memory_peak_range": [
+      0,
+      30807200
+    ],
+    "inference_memory_increase_range": [
+      0,
+      102528
+    ],
+    "inference_memory_peak_range": [
+      40960,
+      29888512
+    ],
+    "all_compile_times": [],
+    "all_first_load_times": [
+      304304
+    ],
+    "all_warm_load_times": [
+      169812
+    ],
+    "all_inference_times": [
+      2479,
+      103,
+      74,
+      52,
+      62,
+      67,
+      57,
+      62,
+      61,
+      63,
+      62,
+      247,
+      68,
+      55,
+      58,
+      62,
+      61,
+      62,
+      85,
+      66,
+      62,
+      62,
+      61,
+      62,
+      62,
+      61,
+      63,
+      62,
+      61,
+      79,
+      72,
+      63,
+      62,
+      62,
+      62,
+      62,
+      62,
+      63,
+      62,
+      62,
+      63,
+      63,
+      62,
+      62,
+      62,
+      62,
+      63,
+      62,
+      62,
+      62,
+      62,
+      62,
+      63,
+      63,
+      62,
+      63,
+      61,
+      63,
+      63,
+      62,
+      62,
+      63,
+      62,
+      62,
+      62,
+      62,
+      63,
+      63,
+      61,
+      62,
+      63,
+      62,
+      63,
+      63,
+      62,
+      62,
+      64,
+      63,
+      63,
+      62,
+      63,
+      64,
+      80,
+      97,
+      62,
+      61,
+      64,
+      63,
+      63,
+      63,
+      63,
+      62,
+      64,
+      63,
+      62,
+      64,
+      61,
+      63,
+      63,
+      63
+    ]
+  },
+  "execution_detail": [
+    {
+      "name": "tfl.quantize",
+      "type": "QUANTIZE",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 0
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_42_1/batchnorm/sub1",
+      "type": "CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 8,
+      "execution_cycles": 13866
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_43_1/batchnorm/sub",
+      "type": "DEPTHWISE_CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 2,
+      "execution_cycles": 3733
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_44_1/batchnorm/sub",
+      "type": "CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 897
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_45_1/batchnorm/sub",
+      "type": "DEPTHWISE_CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 1,
+      "execution_cycles": 2070
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_46_1/batchnorm/sub",
+      "type": "CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 544
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_47_1/batchnorm/sub",
+      "type": "DEPTHWISE_CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 893
+    },
+    {
+      "name": "fall_v1_1/batch_normalization_48_1/batchnorm/sub",
+      "type": "CONV_2D",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 643
+    },
+    {
+      "name": "fall_v1_1/global_average_pooling2d_6_1/Mean",
+      "type": "MEAN",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 747
+    },
+    {
+      "name": "fall_v1_1/fall_1/Add",
+      "type": "FULLY_CONNECTED",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 649
+    },
+    {
+      "name": "StatefulPartitionedCall_1:01",
+      "type": "LOGISTIC",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 83
+    },
+    {
+      "name": "StatefulPartitionedCall_1:0",
+      "type": "DEQUANTIZE",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 0
+    }
+  ]
+}

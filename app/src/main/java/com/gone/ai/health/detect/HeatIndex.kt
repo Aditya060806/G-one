@@ -87,7 +87,9 @@ data class EnvironmentContext(
     val ambientTempC: Float? = null,
     val humidityPct: Float? = null,
     val heatIndexC: Float? = null,
-    val aqi: Int? = null
+    val aqi: Int? = null,
+    /** CITY when the temperature is the wearer's city's weather rather than a sensor on the wrist. */
+    val source: EnvironmentSource = EnvironmentSource.WEARABLE
 ) {
     fun isHeatWave(t: AnomalyThresholds): Boolean =
         (heatIndexC ?: ambientTempC)?.let { it >= t.heatIndexWarningC } == true
@@ -111,12 +113,14 @@ data class EnvironmentContext(
         fun from(
             ambientTempC: Float?,
             humidityPct: Float?,
-            aqi: Int?
+            aqi: Int?,
+            source: EnvironmentSource = EnvironmentSource.WEARABLE
         ) = EnvironmentContext(
             ambientTempC = ambientTempC,
             humidityPct  = humidityPct,
             heatIndexC   = HeatIndex.computeOrNull(ambientTempC, humidityPct),
-            aqi          = aqi
+            aqi          = aqi,
+            source       = source
         )
     }
 }

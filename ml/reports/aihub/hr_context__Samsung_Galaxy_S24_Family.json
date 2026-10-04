@@ -1,0 +1,190 @@
+{
+  "execution_summary": {
+    "estimated_inference_time": 48,
+    "estimated_inference_peak_memory": 121794560,
+    "first_load_time": 298781,
+    "first_load_peak_memory": 115765248,
+    "warm_load_time": 153181,
+    "warm_load_peak_memory": 121131008,
+    "compile_time": 0,
+    "compile_peak_memory": 0,
+    "compile_memory_increase_range": [
+      0,
+      0
+    ],
+    "compile_memory_peak_range": [
+      0,
+      0
+    ],
+    "first_load_memory_increase_range": [
+      39269760,
+      46746032
+    ],
+    "first_load_memory_peak_range": [
+      38834176,
+      46310448
+    ],
+    "warm_load_memory_increase_range": [
+      0,
+      1266944
+    ],
+    "warm_load_memory_peak_range": [
+      393216,
+      31021184
+    ],
+    "inference_memory_increase_range": [
+      0,
+      29248
+    ],
+    "inference_memory_peak_range": [
+      12288,
+      30034496
+    ],
+    "all_compile_times": [],
+    "all_first_load_times": [
+      298781
+    ],
+    "all_warm_load_times": [
+      153181
+    ],
+    "all_inference_times": [
+      5814,
+      100,
+      79,
+      54,
+      56,
+      58,
+      56,
+      57,
+      56,
+      57,
+      57,
+      210,
+      68,
+      51,
+      55,
+      56,
+      55,
+      56,
+      48,
+      57,
+      56,
+      56,
+      55,
+      57,
+      105,
+      62,
+      58,
+      58,
+      57,
+      59,
+      58,
+      58,
+      58,
+      59,
+      57,
+      58,
+      56,
+      60,
+      57,
+      58,
+      59,
+      58,
+      58,
+      58,
+      59,
+      58,
+      56,
+      58,
+      57,
+      59,
+      57,
+      57,
+      58,
+      58,
+      57,
+      58,
+      57,
+      58,
+      57,
+      59,
+      56,
+      58,
+      57,
+      58,
+      58,
+      58,
+      57,
+      58,
+      58,
+      58,
+      58,
+      57,
+      57,
+      58,
+      58,
+      58,
+      58,
+      58,
+      57,
+      59,
+      56,
+      58,
+      57,
+      57,
+      57,
+      59,
+      48,
+      57,
+      57,
+      57,
+      58,
+      57,
+      57,
+      57,
+      58,
+      59,
+      57,
+      58,
+      57,
+      59
+    ]
+  },
+  "execution_detail": [
+    {
+      "name": "tfl.quantize",
+      "type": "QUANTIZE",
+      "compute_unit": "NPU",
+      "execution_time": 1,
+      "execution_cycles": 996
+    },
+    {
+      "name": "hr_context_v1_1/dense_18_1/BiasAdd",
+      "type": "FULLY_CONNECTED",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 631
+    },
+    {
+      "name": "hr_context_v1_1/dense_19_1/BiasAdd",
+      "type": "FULLY_CONNECTED",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 440
+    },
+    {
+      "name": "StatefulPartitionedCall_1:01",
+      "type": "FULLY_CONNECTED",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 582
+    },
+    {
+      "name": "StatefulPartitionedCall_1:0",
+      "type": "DEQUANTIZE",
+      "compute_unit": "NPU",
+      "execution_time": 0,
+      "execution_cycles": 0
+    }
+  ]
+}

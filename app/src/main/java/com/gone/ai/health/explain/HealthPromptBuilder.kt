@@ -116,6 +116,7 @@ object HealthPromptBuilder {
             evidence.heartRate?.let { add(it) }
             evidence.aqi?.let { add(it) }
             evidence.durationMinutes?.let { add(it) }
+            evidence.expectedHeartRate?.let { add(it) }
             evidence.ambientTempC?.let { add(it.toInt()) }
             evidence.ambientHumidityPct?.let { add(it.toInt()) }
             evidence.bodyTempC?.let { add(it.toInt()) }
@@ -128,6 +129,8 @@ object HealthPromptBuilder {
                 // The template states the scale the level is on; repeating it is not invention.
                 add(VitalsSample.EMG_ADC_MAX)
             }
+            // The template prints the impact to one decimal ("5.4 g"); repeating it is not invention.
+            evidence.fallImpactG?.takeIf { it.isFinite() }?.let { add((Math.round(it * 10) / 10)) }
             evidence.riskScores.heat.let { add(it) }
             evidence.riskScores.respiratory.let { add(it) }
             evidence.riskScores.cardiovascular.let { add(it) }
@@ -144,6 +147,7 @@ object HealthPromptBuilder {
             evidence.bodyTempC?.let { add((Math.round(it * 10) % 10)) }
             evidence.skinTempC?.let { add((Math.round(it * 10) % 10)) }
             evidence.ambientTempC?.let { add((Math.round(it * 10) % 10)) }
+            evidence.fallImpactG?.takeIf { it.isFinite() }?.let { add((Math.round(it * 10) % 10)) }
             listOfNotNull(evidence.ambientTempC, evidence.bodyTempC, evidence.skinTempC).forEach {
                 add((Math.round(Temperature.fahrenheit(it) * 10) % 10))
             }

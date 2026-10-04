@@ -203,7 +203,7 @@ The app refuses levels it cannot trust: too few readings, relaxed and clenched l
 | Lift the finger off the MAX30100 | Within about 5 seconds `HR` and `SPO2` disappear from `SENT:`, `ST` loses bit 0x02, and the app shows "not touching skin" |
 | Compare `HR` with a manual pulse count over 60 s at rest | Within a few bpm. If not, adjust placement or the IR LED current (`setIRLedCurrent`) |
 | Hold the DS18B20 against the wrist | `STEMP` settles around 32–35 °C. The app labels it skin temperature and raises no fever alert |
-| Drop the wearable onto a cushion from 30 cm | `MOT` peak above 2.5 g for one line |
+| Drop the wearable onto a cushion from 30 cm | `MOT` peak well above 1 g for one line (the app raises a fall only at 5 g or more) |
 | Leave it still on a table | `MOT` about 1.0 |
 | Disconnect the phone for a minute, then reconnect | Live readings resume; Trails shows a gap for that minute (nothing is kept on the board) |
 | Power-cycle the wearable while the app monitors | App shows "Reconnecting", then "Connected and receiving"; clock set again |

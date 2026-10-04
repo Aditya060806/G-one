@@ -1,21 +1,25 @@
-# Model Setup
+# Language model
 
-The AI model file is NOT included in this repository due to its size (1.04 GB).
+The model file is not in the repository: it is 1.1 GB. Fetch it with
 
-## Download Instructions
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\fetch_model.ps1
+```
 
-1. Download the model from HuggingFace:
-   - Model: `qwen.gguf`
-   - URL: https://huggingface.co/  (add your exact model link here)
+which downloads it to `app/src/main/assets/models/qwen.gguf` and checks it against the values below.
+A different file renamed to `qwen.gguf` is not the same build.
 
-2. Place the downloaded file here:
-   ```
-   app/src/main/assets/models/qwen.gguf
-   ```
+| | |
+|---|---|
+| Model | Qwen2.5-1.5B-Instruct, GGUF, Q4_K_M |
+| Source | `Qwen/Qwen2.5-1.5B-Instruct-GGUF` on Hugging Face |
+| File | `qwen2.5-1.5b-instruct-q4_k_m.gguf` |
+| Revision | `91cad51170dc346986eccefdc2dd33a9da36ead9` |
+| Size | 1,117,320,736 bytes |
+| SHA-256 | `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e` |
+| Licence | Apache-2.0 |
 
-3. The app will load it automatically at runtime.
+The file in the author's workspace was hashed on 2 October 2026 and matches this entry byte for byte.
 
-## Model Info
-- Format: GGUF (llama.cpp compatible)
-- Size: ~1.04 GB
-- Engine: Infinity-X1 via llama.cpp JNI bridge
+The small sensor models the app also ships are in `app/src/main/assets/ml/`, are in the repository,
+and are rebuilt by the scripts in `ml/`.

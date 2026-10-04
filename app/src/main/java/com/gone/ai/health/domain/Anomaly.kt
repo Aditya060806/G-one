@@ -22,7 +22,9 @@ enum class AnomalyType(val wireName: String, val label: String) {
     FALL_DETECTED        ("fall_detected",         "Possible fall"),
     FATIGUE              ("fatigue",               "Fatigue indicators"),
     BASELINE_DEVIATION   ("baseline_deviation",    "Change from your normal"),
-    SUSTAINED_MUSCLE_ACTIVITY("sustained_muscle_activity", "Sustained high muscle activity");
+    SUSTAINED_MUSCLE_ACTIVITY("sustained_muscle_activity", "Sustained high muscle activity"),
+    /** From the heart-rate-in-context model. Early warning only: never above MODERATE, never an SOS. */
+    HEART_RATE_CONTEXT   ("heart_rate_context",    "Heart rate high for the activity");
 
     companion object {
         fun fromWireName(name: String): AnomalyType? =
@@ -113,7 +115,15 @@ data class AnomalyEvidence(
      * Skin temperature is only populated for its dedicated alert type, so it cannot be
      * confused with core body temperature in fever or heat-stress explanations.
      */
-    val emgLevel: Int? = null
+    val emgLevel: Int? = null,
+    /** Upper end of the heart rate expected for the recent movement, bpm. Model findings only. */
+    val expectedHeartRate: Int? = null,
+    /** Which trained model's output the rule read, e.g. "hr_context_v1". */
+    val modelId: String? = null,
+    /** The model-derived quantity the rule thresholded (here: bpm above the expected band). */
+    val modelScore: Float? = null,
+    /** "city" when a heat finding rests on the city's weather rather than a sensor on the wrist. */
+    val environmentSource: String? = null
 ) {
     /**
      * Serialise to JSON for the LLM prompt and for storage.
@@ -143,6 +153,10 @@ data class AnomalyEvidence(
         ambientTempC?.let       { parts += "\"ambient_temp_c\":${jsonFloat(it)}" }
         ambientHumidityPct?.let { parts += "\"ambient_humidity_pct\":${jsonFloat(it)}" }
         aqi?.let                { parts += "\"aqi\":$it" }
+        environmentSource?.let  { parts += "\"environment_source\":${jsonString(it)}" }
+        expectedHeartRate?.let  { parts += "\"expected_heart_rate\":$it" }
+        modelId?.let            { parts += "\"model\":${jsonString(it)}" }
+        modelScore?.let         { parts += "\"model_score\":${jsonFloat(it)}" }
         parts += "\"risk\":{" +
             "\"heat\":${riskScores.heat}," +
             "\"respiratory\":${riskScores.respiratory}," +

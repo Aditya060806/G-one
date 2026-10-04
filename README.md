@@ -3,591 +3,610 @@
 <img src="docs/assets/Readme%20-%20logo.png" alt="G-one — Private. Local. Always." width="240" />
 
 # G-one
-### Personal health awareness. Local intelligence. User-controlled sharing.
+### A personal health companion that thinks on the phone
 
-An Android health companion connecting a wearable prototype, local anomaly detection, on-device AI and optional emergency assistance.
+A wrist-worn sensor, an Android app, fifteen deterministic health rules, three small trained models
+and a 1.5-billion-parameter language model, all running on the phone. Official disaster alerts,
+city weather and India's air-quality index around it. Emergency help when it matters.
 
-**Kotlin · Jetpack Compose · ESP32-S3 · Bluetooth LE · llama.cpp · Room**
+**Kotlin · Jetpack Compose · ESP32-S3 · Bluetooth LE · LiteRT · llama.cpp · Room · TensorFlow**
 
-[Visual tour](#visual-tour) · [Architecture](#architecture) · [Features](#feature-guide) · [Performance](#performance-and-verification) · [Build](#build-and-run) · [Documentation](#documentation)
+[What's new](#whats-new-october-2026) · [How it works](#how-it-works) · [Features](#features) · [Trained models](#trained-models) · [Performance](#performance-and-evidence) · [Build](#build-and-run) · [Docs](#documentation)
 
-
-[Explore the website](https://g--one.vercel.app/) · [Try the web demo](https://g--one.vercel.app/demo) · [Explore hardware](https://g--one.vercel.app/hardware)
+[Website](https://g--one.vercel.app/) · [Web demo](https://g--one.vercel.app/demo) · [Hardware explorer](https://g--one.vercel.app/hardware)
 
 </div>
 
 <table>
-<tr><td align="center"><strong>LOCAL ANALYSIS</strong><br/>Rules first, AI explanations second</td><td align="center"><strong>ANDROID + WEARABLE</strong><br/>ESP32-S3 · Bluetooth LE · Compose</td><td align="center"><strong>USER CONTROL</strong><br/>Optional sharing and emergency assistance</td></tr>
+<tr>
+<td align="center" width="25%"><strong>RULES DECIDE</strong><br/>15 named, tested rules raise every alert</td>
+<td align="center" width="25%"><strong>MODELS ARE SENSORS</strong><br/>3 trained INT8 models, 5–15 KB each</td>
+<td align="center" width="25%"><strong>AI ONLY REWORDS</strong><br/>On-phone LLM; alerts never wait for it</td>
+<td align="center" width="25%"><strong>NOTHING LEAVES UNASKED</strong><br/>Every network feature is opt-in</td>
+</tr>
 </table>
 
 ---
 
 ## At a glance
 
-G-one brings physiological readings into one local workflow: **collect → validate → store → detect → alert → explain**. Its Android app monitors a connected wearable, displays trends, records sessions, explains findings and helps users understand text from reports or screenshots without sending those inputs to a cloud language model.
-
-The central design decision is to keep **detection independent of text generation**. A deterministic rule engine creates an alert with a usable explanation first. A local language model can subsequently improve the wording; model loading, timeout or failure must not prevent the original alert.
-
-| Area | Current implementation |
+| | |
 |---|---|
-| Mobile application | Native Android, package `com.gone.ai`; API 24+; ARM64 build |
-| Wearable | ESP32-S3 strap prototype with pulse/SpO₂, skin temperature, motion and EMG inputs |
-| Health analysis | Local validation, aggregation, rules, baselines and risk indicators |
-| Language model | Qwen2.5-1.5B-Instruct, GGUF Q4_K_M, CPU inference through llama.cpp/JNI |
-| Persistence | App-private Room database, preferences and files |
-| Optional connectivity | City AQI, consented emergency snapshots, SMS/calling and Android speech services |
-| Development stage | Prototype with automated tests and recorded bench/phone checks; not a clinically validated medical device |
-
-**Scope matters:** sleep and stress are self-reported journals. AQI is a regional online estimate. NFC opens a saved emergency record. Current wearable firmware is live-only and cannot recover disconnected readings. Later PCB and chest-patch models are design assets, not proof of manufactured or validated hardware.
+| **App** | Native Android, package `com.gone.ai`, API 24+, ARM64 |
+| **Wearable** | ESP32-S3 strap: pulse/SpO₂ (MAX30100), skin temperature (DS18B20), motion (MPU6050, ±8 g), muscle activity (EMG) |
+| **Detection** | 15 deterministic rules with duration windows, cooldowns, a personal baseline and 0–100 risk scores |
+| **Trained models** | Fall detector, heart rate in context, sleep or awake: INT8 TensorFlow Lite through LiteRT, tested on held-out people |
+| **Language model** | Qwen2.5-1.5B-Instruct Q4_K_M via llama.cpp on the CPU; pinned by SHA-256 |
+| **Around you** | NDMA SACHET disaster alerts for your district, city weather for the heat rules, India AQI (CPCB) |
+| **Emergency** | Automatic SMS (+ optional call) on live anomalies, a 20-second "I'm OK" window for falls, NFC/QR emergency ID |
+| **Storage** | App-private Room database (schema 5), preferences, files |
+| **Evidence** | 659 JVM tests and 32 on-device tests passing; Python spec tests; protocol self-test; bench sessions on the real strap ([VERIFICATION.md](VERIFICATION.md)) |
+| **Stage** | Working prototype. Not a medical device and not clinically validated |
 
 ## Contents
 
+- [What's new (October 2026)](#whats-new-october-2026)
 - [Visual tour](#visual-tour)
-- [Problem and use cases](#problem-and-use-cases)
-- [Architecture](#architecture)
-- [End-to-end workflows](#end-to-end-workflows)
-- [Feature guide](#feature-guide)
+- [The problem and who it is for](#the-problem-and-who-it-is-for)
+- [How it works](#how-it-works)
+- [Features](#features)
+- [Trained models](#trained-models)
+- [Your area: disaster alerts, weather, India AQI](#your-area-disaster-alerts-weather-india-aqi)
 - [Hardware and protocol](#hardware-and-protocol)
 - [Implementation details](#implementation-details)
-- [Privacy and connectivity](#privacy-and-connectivity)
+- [Privacy and what leaves the phone](#privacy-and-what-leaves-the-phone)
 - [Technology stack](#technology-stack)
-- [Performance and verification](#performance-and-verification)
-- [Engineering comparisons](#engineering-comparisons)
+- [Performance and evidence](#performance-and-evidence)
+- [Footprint and compression](#footprint-and-compression)
+- [Design comparisons](#design-comparisons)
 - [Build and run](#build-and-run)
 - [Repository map](#repository-map)
-- [Limitations and future scope](#limitations-and-future-scope)
+- [Advantages, limits and next steps](#advantages-limits-and-next-steps)
 - [Documentation](#documentation)
 
-## Visual tour
+---
 
-### Explore the web experience
+## What's new (October 2026)
 
-Actual captures of the public website, taken on **22 September 2026**. Click a preview to open the corresponding page.
+An outside review of public SIH26181 projects ranked G-one's app among the best but named its gaps:
+no trained model, no disaster feed, no real environment input, no way to cancel a fall SOS, no
+Qualcomm angle, and a repository that could not be rebuilt or reused. This release answers each.
 
-<table>
-<tr>
-<td width="50%"><a href="https://g--one.vercel.app/"><img src="docs/assets/website-home.png" alt="G-one website landing page with physical strap prototype" width="100%" /></a><br/><strong>01 / Project gateway</strong><br/>The wearable, project identity and platform entry points.</td>
-<td width="50%"><a href="https://g--one.vercel.app/demo"><img src="docs/assets/website-demo.png" alt="G-one interactive patient companion web demo" width="100%" /></a><br/><strong>02 / Patient companion demo</strong><br/>A browser presentation of the mobile experience.</td>
-</tr>
-<tr>
-<td width="50%"><a href="https://g--one.vercel.app/hardware"><img src="docs/assets/website-hardware.png" alt="G-one hardware page showing its interactive PCB model" width="100%" /></a><br/><strong>03 / Hardware explorer</strong><br/>Interactive 3D board presentation and component details.</td>
-<td width="50%"><a href="https://g--one.vercel.app/e"><img src="docs/assets/website-emergency.png" alt="Public emergency ID setup page with no wearer record linked" width="100%" /></a><br/><strong>04 / Emergency ID entry</strong><br/>Public setup state; no personal emergency record is exposed here.</td>
-</tr>
-</table>
-
-> **Preview versus implementation:** website copy includes presentation claims such as 250 Hz streaming and a 72-hour buffer. These screenshots show the website as published; they do not verify those claims for this Android build. The audited feature descriptions, live-only firmware limitations and performance evidence below remain authoritative. The browser demo is not a live patient feed.
-
-### From prototype to form-factor exploration
-
-<table>
-<tr>
-<td width="50%"><a href="docs/assets/phase1-worn.png"><img src="docs/assets/phase1-worn.png" alt="Blender reconstruction of the Phase-1 wired strap on a closed-fist forearm" width="100%" /></a><br/><strong>Phase 1 / Strap reconstruction</strong><br/>Blender visualization of the module-based prototype, wiring and worn fit.</td>
-<td width="50%"><a href="docs/assets/pcb-concept.png"><img src="docs/assets/pcb-concept.png" alt="Isometric Blender render of the later compact G-one PCB concept" width="100%" /></a><br/><strong>Later phase / Compact PCB</strong><br/>Component placement and board presentation concept.</td>
-</tr>
-</table>
-
-<details>
-<summary><strong>Open the Jeevan Core exploded-view render</strong> — enclosure, electronics and skin interface</summary>
-
-<p align="center"><a href="docs/assets/core-exploded.png"><img src="docs/assets/core-exploded.png" alt="Jeevan Core concept exploded into enclosure, PCB, battery, frame and skin-facing layers" width="620" /></a></p>
-
-An existing Blender concept render, not a manufacturing drawing or a claim that all depicted parts are present in the Phase-1 wearable. [Explore the design assets](hardware/jeevan-core).
-
-</details>
-
-### Android interface gallery
-
-<details>
-<summary><strong>Open the Android screenshots</strong> — AQI, sleep and stress</summary>
-
-<table>
-<tr>
-<td width="33%" align="center"><a href="docs/assets/app-aqi.png"><img src="docs/assets/app-aqi.png" alt="Android regional AQI card with timestamp and source attribution" width="250" /></a><br/><strong>Environmental context</strong><br/>Regional US AQI with source and model time.</td>
-<td width="33%" align="center"><a href="docs/assets/app-wellness.png"><img src="docs/assets/app-wellness.png" alt="Android self-reported sleep journal in its empty state" width="250" /></a><br/><strong>Sleep journal</strong><br/>Seven-day view with honest unlogged states.</td>
-<td width="33%" align="center"><a href="docs/assets/app-stress.png"><img src="docs/assets/app-stress.png" alt="Android stress check-in with five-level self-reported scale" width="250" /></a><br/><strong>Stress check-in</strong><br/>Self-reported levels and weekly reflection.</td>
-</tr>
-</table>
-
-Existing phone captures from the repository's companion-visuals artifacts. These show earlier captured UI states, not a new device test or current AQI. No values were fabricated to fill the empty journals.
-
-</details>
-
-All gallery images are stored in this repository. Captions distinguish website captures, Android screenshots and Blender renders. [Asset sources and capture notes](docs/assets/README.md#visual-gallery-provenance).
+| Gap named | What changed | Where |
+|---|---|---|
+| No trained model | **Three trained models**, each tested on people it never saw, with honest baselines. The heart-rate model drives a new rule, `ml.hrContext`, in live monitoring | [`ml/`](ml/README.md), [`docs/MODELS.md`](docs/MODELS.md), `app/.../ml/` |
+| No disaster alerts | **Official NDMA SACHET alerts** for the wearer's district, notified once, cached offline, with what-to-do guidance | [`docs/DISASTER-ALERTS.md`](docs/DISASTER-ALERTS.md), `health/disaster/` |
+| Heat rules had no environment; AQI on the US scale only | **City weather feeds the heat rules** when the strap has no sensor (capped, labelled, never an SOS); **India AQI** computed by CPCB's method; forecast hints in IMD's terms | `health/environment/` |
+| No "I'm OK" before the SOS | **Falls only** wait 20 s (10/20/30 s or "at once") with an alarm and an "I'm OK" button; every other alert still sends at once | [`docs/SOS_BEHAVIOR.md`](docs/SOS_BEHAVIOR.md) |
+| Sleep typed, not sensed | **Estimated sleep** from wrist movement on the Sleep card, offered as a pre-filled diary entry | `com.gone.ai.ml.SleepEstimator` |
+| No Qualcomm angle | **All three models profiled on real Snapdragon phones through Qualcomm AI Hub: every layer runs on the NPU**, 41–55 µs per run on 8 Gen 3 and 8 Elite. The vendored llama.cpp already carries the Adreno OpenCL and Hexagon backends for the language model (not yet used) | [`ml/aihub/profile.py`](ml/aihub/profile.py), [`ml/reports/aihub/`](ml/reports/aihub) |
+| Model not reproducible | **`tools/fetch_model.ps1`** downloads the exact language model (pinned revision, size, SHA-256); the workspace copy matches byte for byte | [`app/src/main/assets/models/README.md`](app/src/main/assets/models/README.md) |
+| No licence; logs committed | **MIT licence**, `NOTICE` for every dataset and dependency, logs ignored, **CI** for tests, lint and model specs | `LICENSE`, `NOTICE`, `.github/workflows/ci.yml` |
+| — | **Model Lab** screen: each model's tests, timing on this phone, and something to try (replay, live phone sensor, a recorded session, a recorded night) | Tools → Model Lab |
+| — | Fixes from a code audit: emergency page escapes typed fields; fall rewrites no longer rejected; stale fall wording, comments and test names corrected | — |
 
 [Back to contents](#contents)
 
-## Problem and use cases
+## Visual tour
 
-The project addresses a personal health companion problem: retain useful health awareness when connectivity is unreliable, keep sensitive analysis local and turn raw measurements into understandable information.
+<table>
+<tr>
+<td width="50%"><a href="https://g--one.vercel.app/"><img src="docs/assets/website-home.png" alt="G-one website landing page with the strap prototype" width="100%" /></a><br/><strong>Project website</strong></td>
+<td width="50%"><a href="https://g--one.vercel.app/demo"><img src="docs/assets/website-demo.png" alt="G-one web demo of the patient companion" width="100%" /></a><br/><strong>Patient companion demo (browser)</strong></td>
+</tr>
+<tr>
+<td width="50%"><a href="docs/assets/phase1-worn.png"><img src="docs/assets/phase1-worn.png" alt="Blender reconstruction of the Phase-1 strap" width="100%" /></a><br/><strong>Phase 1 strap</strong> — Blender reconstruction of the real prototype</td>
+<td width="50%"><a href="docs/assets/pcb-concept.png"><img src="docs/assets/pcb-concept.png" alt="Render of the compact PCB concept" width="100%" /></a><br/><strong>Compact PCB concept</strong> — a design study, not fabricated</td>
+</tr>
+</table>
 
-| Use case | What G-one provides | Boundary |
+<details>
+<summary><strong>More: Android screens, hardware explorer, Jeevan Core concept</strong></summary>
+
+<table>
+<tr>
+<td width="33%" align="center"><img src="docs/assets/app-aqi.png" alt="Air quality card" width="230" /><br/>Air quality card</td>
+<td width="33%" align="center"><img src="docs/assets/app-wellness.png" alt="Sleep journal" width="230" /><br/>Sleep journal</td>
+<td width="33%" align="center"><img src="docs/assets/app-stress.png" alt="Stress check-in" width="230" /><br/>Stress check-in</td>
+</tr>
+</table>
+
+<p align="center"><a href="https://g--one.vercel.app/hardware"><img src="docs/assets/website-hardware.png" alt="Hardware explorer page" width="48%" /></a> <a href="docs/assets/core-exploded.png"><img src="docs/assets/core-exploded.png" alt="Jeevan Core exploded view" width="48%" /></a></p>
+
+Website captures are from 22 September 2026; app screenshots are earlier captures from the
+repository's artifacts; renders are Blender concepts. The website describes an intended product
+(for example "72-hour buffer"); this README describes the build. [Image sources](docs/assets/README.md#visual-gallery-provenance).
+
+</details>
+
+## The problem and who it is for
+
+Health care goes quiet after a hospital visit, and in much of India the network does too. G-one
+keeps watching when nobody else is: it measures, decides and explains **on the phone**, and only
+reaches out (a text to family, an alert feed, the weather) when the wearer has switched that on.
+
+| Who | What G-one gives them | Boundary |
 |---|---|---|
-| Daily health awareness | Live readings, trends, baseline deviations and session summaries | Sensor quality and continuous connection determine available data |
-| Heat exposure awareness | Rule-based indicators when required inputs exist; optional AQI context | Does not diagnose dehydration or predict disasters |
-| Motion monitoring | Immediate high-impact fall rule and optional automatic SOS | A 5 g gate limits false alarms but can miss lower-impact falls; requires physical validation |
-| Understanding documents | OCR, text extraction, local summaries and Assist | Generated explanations may be wrong; not image-based diagnosis |
-| Emergency information | Consented profile snapshot accessed through NFC/QR URL | Internet required for a new online lookup; record may be stale |
-| Wellness reflection | Sleep journal, stress check-ins, seven-day views and reminders | Self-reported rather than sensor-inferred stages or stress |
-| Demonstration/development | Simulated readings, detector tests and protocol emulator | Simulation is distinguished from live data and cannot send automatic SOS |
+| Someone recently discharged | Continuous readings, trends, a personal baseline and plain-language alerts | Engineering thresholds, not a clinical protocol |
+| An older person living alone | Fall alarm with an "I'm OK" window, automatic text to family, NFC emergency ID | The 5 g fall gate can miss gentle falls |
+| A family member far away | An SMS when a live reading is confirmed abnormal | Needs SIM, signal and the wearer's opt-in |
+| Anyone in a heat wave, flood or storm | Official district alerts with what to do; heat rules that know the city's weather | Alerts depend on SACHET and a network to fetch them |
+| Rural use with weak connectivity | Detection, alerts, the language model and OCR all work offline | Alerts and weather are cached, not live, offline |
+| Anyone with a report to understand | OCR, PDF summaries, quizzes and chat with a local model | Generated text can be wrong |
+| Developers and evaluators | Simulator, protocol emulator, Model Lab, golden-file tests | Simulated data can never send an SOS |
 
-Disaster-response and public-health deployment are potential applications, not existing institutional integrations. Flood/cyclone advisories and automated disaster feeds are not implemented.
+## How it works
 
-## Architecture
+### The architecture
 
 ```mermaid
 flowchart TB
-    subgraph Wearable[Wearable prototype]
-        S[MAX30100 · DS18B20 · MPU6050 · EMG]
-        E[ESP32-S3 firmware]
-        S --> E
+    subgraph W[Wearable · ESP32-S3]
+        S[MAX30100 · DS18B20 · MPU6050 · EMG] --> F[Firmware: one text line, twice a second]
     end
-    subgraph Phone[Android phone — local processing]
-        B[BLE framing and parsing]
-        V[Validation and 5-second aggregation]
-        DB[(Room and local storage)]
-        D[Deterministic anomaly detector]
-        A[Persisted event and template explanation]
-        N[Local notification]
-        Q[Bounded explanation queue]
-        L[Shared local llama.cpp runtime]
-        UI[Health · Monitor · Trails · Tools · Assist]
-        X[OCR and document text]
-        B --> V --> DB
-        V --> D --> A --> DB
-        A --> N
-        A --> Q --> L
-        L -->|Validated rewrite or template fallback| DB
-        DB --> UI
-        X --> L
+    subgraph P[Android phone · everything that decides]
+        B[BLE framing and parsing] --> V[Validation · 5-second aggregation]
+        V --> DB[(Room)]
+        V --> M[Trained models<br/>heart rate in context]
+        M -->|scores only| D
+        V --> D[15 deterministic rules<br/>cooldowns · baseline · risk]
+        AW[City weather] -.->|only if no strap sensor| D
+        D --> E[Event + written explanation] --> DB
+        E --> N[Notification]
+        E --> SOS[Automatic SOS<br/>falls: 20 s I'm OK]
+        E -.queued, best effort.-> L[On-phone LLM<br/>validated rewording]
+        L -.-> DB
+        DB --> UI[Health · Monitor · Trails · Tools · Assist · Model Lab]
         UI <--> L
+        UI --> ML[Fall · sleep models]
     end
-    E -->|BLE notifications| B
-    A -->|Opt-in eligible live events| SMS[Android SMS / optional call]
-    UI -->|Opt-in city query| AQI[Open-Meteo / CAMS AQI]
-    UI -->|Selected fields and consent| WEB[Emergency snapshot service]
-    TAG[NFC / QR stable read URL] --> WEB
+    subgraph O[Optional, opt-in]
+        SA[NDMA SACHET alerts]
+        OM[Open-Meteo weather · pollutants · AQI]
+        EM[Emergency snapshot behind NFC/QR]
+        SMS[SMS / call]
+    end
+    F -->|Bluetooth LE| B
+    SA --> UI
+    OM --> AW
+    OM --> UI
+    UI --> EM
+    SOS --> SMS
 ```
 
-The wearable gathers signals; the **phone** runs the language model. The ESP32 does not run the bundled 1.5B model. BLE acquisition, persistence and anomaly processing are separate from serialized model inference.
+| Layer | Responsibility | Code |
+|---|---|---|
+| Source | Framing, units, ranges, reconnects, clock sync | `health/source/`, `health/source/ble/` |
+| Pipeline | Store → detect → store event → alert → queue rewrite, in that order | `health/service/MonitoringPipeline.kt` |
+| Detection | 15 rules, thresholds, baseline, risk scores, model signals; pure Kotlin | `health/detect/`, `health/domain/` |
+| Models | Feature code (twin of the Python spec), LiteRT runner, manifest with checksums | `com/gone/ai/ml/` |
+| Explanation | Templates first; LLM rewrite validated against the measured numbers | `health/explain/` |
+| Emergency | SOS policy and coordinator, NFC/QR emergency ID | `health/sos/`, `health/emergency/`, `health/nfc/` |
+| Area | SACHET alerts, weather, India AQI, background check | `health/disaster/`, `health/environment/` |
+| Language model | Shared llama.cpp runtime, leases, prompt budgets | `ai/`, `app/src/main/cpp/` |
 
-| Responsibility | Owner |
-|---|---|
-| Source identity and valid fields | Sensor source and parser |
-| Aggregation, persistence, detector invocation | Monitoring pipeline |
-| Structured anomalies from windows and thresholds | Detector |
-| Asynchronous wording improvement with fallback | Explanation worker |
-| Shared native model access and lifecycle | AI repository |
-| Reactive presentation and user actions | Compose UI and ViewModels |
-| Explicit, selected data sharing | Optional integration services |
-
-## End-to-end workflows
-
-### A live reading becomes an alert
+### A reading becomes an alert
 
 ```mermaid
 sequenceDiagram
     participant W as Wearable
-    participant P as Monitoring pipeline
+    participant P as Pipeline
     participant R as Room
-    participant D as Detector
-    participant U as User notification
-    participant AI as Local explanation worker
-    W->>P: Newline-framed BLE samples
-    P->>P: Parse, validate, aggregate
-    P->>R: Store reading with provenance
-    P->>D: Evaluate windows, thresholds and cooldowns
-    D-->>P: Structured anomaly if confirmed
-    P->>R: Save event with template explanation
-    P->>U: Show alert without waiting for AI
-    P->>AI: Queue optional explanation
-    alt Acceptable generated explanation
-        AI->>R: Update event wording
-    else Unavailable, timed out or rejected
-        R-->>U: Original explanation remains usable
-    end
+    participant H as HR model
+    participant D as Rules
+    participant U as Wearer
+    participant S as SOS
+    participant L as LLM
+    W->>P: HR:72,SPO2:97,STEMP:33.9,MOT:1.02,...
+    P->>P: parse, validate, 5-s bucket
+    P->>R: 1 · store the reading
+    P->>H: expected heart-rate band (if a resting rate is known)
+    P->>D: 2 · evaluate 15 rules over the window
+    D-->>P: confirmed anomaly, or nothing
+    P->>R: 3 · store the event with its written explanation
+    P->>U: 4 · notify now
+    P->>S: eligible? fall → 20 s "I'm OK"; others → send in 1.5 s
+    P->>L: 5 · queue a rewording (never waited for)
+    L-->>R: validated rewrite, or the template stays
 ```
 
-Sensor acquisition, five-second aggregation, rule duration requirements and Android scheduling contribute to total latency. No measured end-to-end latency guarantee is claimed.
+**The order is the safety property.** A slow, missing or wrong language model cannot delay or
+change an alert; a failed write cannot stop detection; a model that fails its checksum only
+silences its own rule.
 
-### A document becomes understandable text
-
-1. Select an image, capture with the camera, import supported document content or use consented screen capture.
-2. Extract text locally. PDF text extraction and OCR are distinct paths; this is not a multimodal diagnostic model.
-3. Review/select extracted text with meaningful symbols, numbers and spacing preserved.
-4. Run a local summary, explanation or quiz within the model's token budget.
-5. Read formatted output; copy, share or save to Memory Vault. Completed tool results can be saved automatically; incomplete output is handled separately.
-
-### An NFC record stays updateable
+### An official alert reaches the wearer
 
 ```mermaid
 flowchart LR
-    APP[Wearer edits profile] --> CONSENT[Select fields and enable sharing]
-    CONSENT --> SYNC[Upload snapshot when connected]
-    SYNC --> STORE[Private server-side storage]
-    NFC[NFC tag holds unique stable URL] --> PAGE[Read-only emergency page]
-    STORE --> PAGE
-    PAGE --> TIME[Display last received timestamp]
+    C[City chosen<br/>for air quality] --> F[State feed name<br/>rss_punjab.xml]
+    F -->|no location sent| X[SACHET CAP feed]
+    X --> P[Parse CAP 1.2<br/>active, not cancelled]
+    P --> M{Names your city<br/>or district?}
+    M -->|yes, Moderate+| N[Notify once]
+    M -->|no| L[Listed under<br/>your state]
+    P --> G[What to do<br/>NDMA guidance]
+    P --> K[(Cached for offline)]
 ```
 
-The tag stores an address, **not a live copy of the database**. Updating the record behind that address lets the same tag show newer information without rewriting it. The generic `/e` route is setup entry; personal records use `/e/<read-id>`. An offline/static NFC payload is a separate mode and must be rewritten when its contents change.
+### A document becomes understandable
 
-## Feature guide
+Pick an image, a PDF or a screenshot → text is extracted on the phone (ML Kit OCR, the PDF text
+layer, or render-then-OCR) → the local model summarises, explains or makes a quiz within its token
+budget → the result can be saved to the Memory Vault or sent to Assist.
 
-### Health, monitoring and sessions
+## Features
 
-| Feature | Behavior |
+### Health monitoring
+
+| Feature | What it does |
 |---|---|
-| Live monitoring | BLE connection, validated values, source-aware charts and explicit missing/standby states |
-| Temperature | Skin temperature stays separate from core temperature; DS18B20 skin readings do not become core fever measurements |
-| Trends and baselines | Historical windows, baseline comparisons and internal heat/respiratory/cardiovascular indicators |
-| Sessions | Start/stop monitoring sessions, review recorded data and generate a PDF report |
-| EMG calibration | Calibration workflow; raw ADC magnitude is not universal across users |
-| Simulation | Development/demo sources distinguishable from real input |
-| Wellness journal | Bed/wake times, awake minutes, sleep quality and daily stress ratings; edit/delete entries |
-| AQI | Optional city selection, animated regional US-AQI display and retained last successful reading |
+| Live monitoring | Bluetooth link with back-off reconnects and a 10 s stale-link watchdog; source-aware charts; missing values shown as missing |
+| Sessions and reports | Record a stretch of monitoring; build a report and a PDF from what was actually stored |
+| Personal baseline | Resting heart rate, typical SpO₂ and temperature from your own readings at rest |
+| Risk scores | Heat, respiratory and cardiovascular indicators, 0–100, every reading |
+| EMG calibration | Per-wearer muscle levels; raw ADC numbers are not universal |
+| Simulator | Ten scenarios for demos and tests; simulated readings never send an SOS |
+| Emergency ID | Choose fields, write a stable link to an NFC tag or show a QR; the record behind it updates |
 
-### Anomaly detection
+### The 15 rules
 
-The detector implements **13 rule IDs**. Rule presence does not mean the current hardware supplies every required input or that every risk is medically established.
+| Rule ID | Watches for | Highest severity |
+|---|---|---|
+| `spo2.critical` / `spo2.sustained` | Critically low oxygen / below 92 % for 10 minutes | CRITICAL / MODERATE |
+| `hr.high` / `hr.low` | Fast heart rate (130+ at rest, 150+ anytime) / slow at rest | CRITICAL |
+| `temp.fever` | Raised **core** temperature, when a core sensor exists | CRITICAL |
+| `temp.skinHigh` | Skin temperature 37.5 °C (MODERATE) or 39 °C (CRITICAL) | CRITICAL |
+| `env.heatStress` / `env.dehydrationRisk` | Heat plus a body response; city weather allowed when the strap has none (then MODERATE at most) | CRITICAL / MODERATE |
+| `resp.distress` / `cardio.strain` | Poor air with low oxygen; falling oxygen with rising heart rate | CRITICAL / MODERATE |
+| `motion.fall` | An impact of 5 g or more on the newest reading | CRITICAL |
+| `wellness.fatigue` | Raised resting heart rate over a long stretch | LOW |
+| `baseline.deviation` | Within normal ranges but away from your own normal | MODERATE |
+| `emg.sustainedHigh` | Muscles held tense at rest; rail readings ignored | MODERATE |
+| **`ml.hrContext`** (new) | Heart rate well above what recent movement explains (trained model) | MODERATE, never SOS |
 
-| Rule ID | Purpose |
+Every rule is a pure function with tests for firing **and** staying silent. Per-type 15-minute
+cooldowns stop repeats but let a worse event through. Thresholds:
+[`AnomalyThresholds.kt`](app/src/main/java/com/gone/ai/health/domain/AnomalyThresholds.kt).
+
+### Emergency SOS
+
+| Alert | What happens |
 |---|---|
-| `spo2.critical` | Critical low-oxygen reading |
-| `spo2.sustained` | Sustained low-oxygen pattern |
-| `hr.high` / `hr.low` | Sustained high/low heart-rate patterns |
-| `temp.fever` | Elevated core-temperature input, when available |
-| `env.heatStress` | Combined heat-stress indicators |
-| `env.dehydrationRisk` | Indirect dehydration-risk indicators |
-| `resp.distress` | Combined respiratory-risk pattern |
-| `cardio.strain` | Combined cardiovascular-strain pattern |
-| `motion.fall` | High-impact event with supporting rule conditions |
-| `wellness.fatigue` | Fatigue-related pattern |
-| `emg.sustainedHigh` | Sustained elevated muscle activity |
-| `baseline.deviation` | Departure from a personal baseline |
+| Possible fall (impact ≥ 5 g) | Alarm, vibration and an **"I'm OK, don't send"** countdown in the app and on the lock screen; default 20 s; sends if nobody taps |
+| Any other confirmed live anomaly | SMS after 1.5 s (alerts on one reading are combined); optional call 5 s later |
+| A fall, then another alert during its countdown | The countdown ends and both reasons go at once |
+| Never sends | Simulated or replayed readings; the `ml.hrContext` early warning; heat findings that rest on city weather |
 
-Thresholds, windows and cooldowns live in [domain configuration](app/src/main/java/com/gone/ai/health/domain/AnomalyThresholds.kt) and [rule implementations](app/src/main/java/com/gone/ai/health/detect/AnomalyRules.kt). Risk scores are engineering indicators, not probabilities of disease. Missing values must not become zeros or evidence of immobility.
+Details and remaining physical tests: [`docs/SOS_BEHAVIOR.md`](docs/SOS_BEHAVIOR.md).
 
-### Emergency assistance
+### Assist and tools
 
-- Automatic SOS is opt-in and requires a saved contact and SMS permission.
-- Every confirmed eligible **live** wearable anomaly, including low/moderate findings, can trigger a message. Motion additionally requires a finite impact of at least **5.0 g**.
-- Events combine for **1.5 seconds** to reduce duplicate messages from a reading. Detector checks and cooldowns still apply; there is no user countdown.
-- Simulated readings, historical replay and AQI do not trigger automatic SOS.
-- Calling is separately permissioned. Manual Tools actions open the SMS composer or dialer.
-- A working SIM and mobile service are required. A send callback does not prove delivery or that the recipient read the message.
-
-See [SOS behavior](docs/SOS_BEHAVIOR.md) for exact semantics and remaining physical tests.
-
-### Assist and AI tools
-
-| Tool | Implementation |
+| Tool | What it does |
 |---|---|
-| Assist | Streaming local chat, formatted headings/lists/code/tables, drafts during generation, stop/retry, history and message actions |
-| Personal context | Explicitly selected health/document context constrained before entering the prompt |
-| OCR | Local ML Kit recognition, selectable results and preserved numeric/symbol content |
-| Screenshot AI | Text-led explanation of captured/imported screen content |
-| Circle to Search | Permission-based screen capture/overlay workflow for selected content |
-| Quiz generator | Questions, answer feedback and score when output parses; raw-output fallback otherwise |
-| Memory Vault | Local saved scans, summaries and quizzes; search and deletion workflows |
-| Voice | Android recognition and text-to-speech; offline recognition preferred but not guaranteed |
-| Wellness tools | General educational guides and reminders, not a treatment service |
+| Assist | Streaming local chat with formatting, stop/retry, history, voice, and optional personal health context |
+| OCR · PDF summary · Screenshot AI | Text from images, documents and screens, summarised locally |
+| Circle to Search | Select part of the screen and ask about it |
+| Quiz generator | Questions, answers and a score from any text |
+| Memory Vault | Saved scans, summaries and quizzes; full-text search; choose which ones Assist may use |
+| **Model Lab** (new) | The three trained models: what they learned from, how they tested, timing on this phone, and a try-it for each |
+| Wellness | Sleep diary with **estimated sleep** from the wearable, stress check-ins, reminders |
 
-General chat output is not covered by the same constrained health-event rewrite validation. It can hallucinate, omit context or produce misleading advice.
+General chat is not held to the strict validation used for health alerts and can be wrong.
 
-### AQI, sleep and stress
+## Trained models
 
-AQI is **off by default**. Open-Meteo/CAMS supplies modeled **US AQI**, distinct from India's National AQI and an on-body sensor. Successful refreshes are at least 15 minutes apart while Home is visible; failures are throttled to one minute and requests time out after ten seconds. Values older than three hours are stale. Failure preserves the last good reading and timestamps; changing city invalidates the old cache.
+Three small models, trained on public datasets in [`ml/`](ml/README.md), tested on people they
+never saw, exported as INT8 TensorFlow Lite and run by LiteRT. A model produces a score; a rule
+decides. Full method, figures and limits: [`docs/MODELS.md`](docs/MODELS.md).
 
-Sleep uses entered bedtime, wake time, awake minutes and quality (1–5). Stress is a self-reported daily 1–5 scale. Seven-day trends exclude missing days from averages. Each journal allows one entry per date and up to 365 entries. These are longitudinal records, not automatic sleep staging or physiological stress detection.
+| Model | Learns | Data | Size | Held-out result | Baseline on the same data |
+|---|---|---|---|---|---|
+| **Fall detector** | Fall or not, from 4 s around an impact | WEDA-FALL + UMAFall, 44 people, 3,078 recordings | 15.0 KB | **96.2 %** falls caught, **95.9 %** activities with no alarm | 5 g rule: 50.7 % / 89.6 % |
+| **Heart rate in context** | Heart rate expected for the last 5 min of movement | PAMAP2, 9 people | 4.7 KB | **2.2** false alarms a day on healthy people | Fixed heart-rate rule: 51.6 a day |
+| **Sleep or awake** | Asleep or awake every 30 s from wrist movement | Walch et al. (PhysioNet), 31 lab-scored nights | 6.5 KB | Cohen's kappa **0.46**; total sleep within **17.4 min** a night | Movement threshold: kappa 0.37, 19.7 min |
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/ml-fall-comparison.png" alt="Fall detector compared with the 5 g rule on held-out people and on an unseen dataset" width="100%" /></td>
+<td width="50%"><img src="docs/assets/ml-hr-context.png" alt="Heart-rate rule false alarms and caught rises compared with the fixed rule" width="100%" /></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/ml-fall-roc.png" alt="ROC curves of the fall model and of peak size" width="100%" /></td>
+<td width="50%"><img src="docs/assets/ml-sleep.png" alt="Sleep model compared with a movement threshold on held-out nights" width="100%" /></td>
+</tr>
+</table>
+
+**Read these honestly.**
+- On a fall dataset it never saw, the fall model catches **64.8 %** of falls (the 5 g rule:
+  37.7 %). That is the fairer number for new hardware.
+- The **strap cannot feed the fall model yet**: it sends one peak value twice a second, not a
+  movement window, so strap falls still use the 5 g rule. The model runs in the Model Lab on the
+  phone's own sensor and on recordings; sending the window from the firmware is the next step.
+- The heart-rate model is about as accurate as a straight line (14.1 vs 14.2 bpm error); its value
+  is the conservative rule built on it, and it is an early hint that never sends an SOS. The strap
+  delivers no heart rate until its missing pull-up resistors are fitted.
+- Every model's inputs are computed by Kotlin code that tests prove identical to the Python code
+  that trained it, on real recordings ("golden files").
+
+## Your area: disaster alerts, weather, India AQI
+
+Opt-in, using the city chosen for air quality. Full description: [`docs/DISASTER-ALERTS.md`](docs/DISASTER-ALERTS.md).
+
+| Part | Source | Behaviour |
+|---|---|---|
+| Official alerts | NDMA **SACHET** CAP 1.2 feeds | State feed downloaded, district matched on the phone, new Moderate+ alerts for the district notified once, cached offline, with NDMA-based guidance per hazard |
+| City weather | Open-Meteo | Shown with feels-like, humidity, UV; used by the heat rules **only** when the strap has no thermometer (≤ 90 min old, MODERATE at most, labelled, no SOS) |
+| Forecast hints | Open-Meteo daily forecast | Heavy / very heavy / extremely heavy rain (64.5 / 115.6 / 204.5 mm) and heat-wave level heat (45 / 47 °C), labelled as not official |
+| India AQI | Open-Meteo pollutants | CPCB National AQI from 24-h and 8-h means, with the dominant pollutant |
 
 ## Hardware and protocol
 
-### Current Phase-1 wearable
-
-| Component | Function | Detail |
+| Part | Measures | Connection |
 |---|---|---|
-| ESP32-S3 development board | Acquisition and BLE | N16R8 build configuration; 3.3 V logic, 12-bit ADC |
-| MAX30100 breakout | Heart rate and SpO₂ | Board may say “MAX30100/30102”; current firmware uses MAX30100 driver |
-| DS18B20 | Skin temperature | GPIO 4; 1-Wire pull-up unless already present |
-| MPU6050 | Acceleration/motion | Separate I²C bus GPIO 6/7; configured ±8 g |
-| EMG module and contacts | Muscle activity | ADC1 GPIO 1; input must remain within 3.3 V |
-| Strap, wiring, resistors | Physical prototype assembly | Real module-based prototype construction |
+| ESP32-S3-N16R8 | — | Runs the firmware, Bluetooth LE (NimBLE), 80 MHz, 3 dBm |
+| MAX30100 | Pulse, SpO₂ | I²C bus 0, GPIO 8/9, own task on core 0 |
+| MPU6050 | Movement, impacts (±8 g) | I²C bus 1, GPIO 6/7 |
+| DS18B20 | Skin temperature | 1-Wire, GPIO 4 |
+| EMG module | Muscle activity | ADC, GPIO 1 |
 
-Pulse I²C uses GPIO 8/9. Power arrangements are in the [hardware guide](docs/HARDWARE_SETUP.md); there is no measured battery telemetry without additional hardware. A parts-list battery capacity does not establish measured runtime.
-
-**Current firmware has no SD logging.** The app contains a richer acknowledged/backfill protocol and emulator, but the sketch sends live readings only. Out-of-range samples are lost; firmware does not implement the full ACK/STOP protocol.
-
-### BLE contract
-
-| Item | Value / behavior |
-|---|---|
-| Advertised name | `G-one Wearable` |
-| Service / characteristic | `FFE0` / `FFE1` |
-| Transport | Notifications and writes without response; requested MTU 185 |
-| Framing | Newline-terminated ASCII; split/coalesced notifications handled |
-| Payload | Comma-separated `KEY:VALUE`; unknown fields ignored |
-| Typical keys | `HR`, `SPO2`, `STEMP`, `MOT`, `EMG`, `EMGPK`, `EMGBITS`, `ST`, `TS` |
-| Clock sync | Phone sends `T:<epoch_ms>` |
-| Temperature | `STEMP` is skin; `TEMP` is core and is not sent by current hardware |
-
-See [the protocol](docs/WEARABLE_PROTOCOL.md) for accepted ranges, status flags and replay behavior.
-
-### Hardware design assets
-
-| Directory | Role |
-|---|---|
-| [Phase-1 strap](hardware/gone-phase1-strap) | Prototype visualization and related assets |
-| [PCB concepts](hardware/gone-pcb-3d) | Later compact-board models |
-| [Jeevan Core](hardware/jeevan-core) | Final-phase chest/arm patch concept and layered presentation assets |
-
-Renderings do not establish routing correctness, assembly feasibility, biocompatibility, waterproofing, battery life or certification. Additional ECG/bioimpedance/environmental parts in concepts are not automatically part of current firmware.
+The link is the HM-10 serial profile (`FFE0`/`FFE1`), newline-framed `KEY:VALUE` lines such as
+`HR:72,SPO2:97,STEMP:33.90,MOT:1.02,EMG:1234,EMGPK:1810,EMGBITS:12,ST:5D,TS:…`, units and ranges
+checked by the app; the phone sets the wearable's clock with `T:<epoch ms>`. The app and the
+emulator also speak an acknowledged store-and-forward protocol (`SEQ`, `ACK`, `LOST`); **the
+current firmware is live-only**, so readings made out of range are lost.
+[Protocol](docs/WEARABLE_PROTOCOL.md) · [Hardware setup](docs/HARDWARE_SETUP.md) · design models in [`hardware/`](hardware) (renders, not fabricated boards).
 
 ## Implementation details
 
-### Local inference lifecycle
+**Model runtime.** `ModelRegistry` reads `assets/ml/manifest.json`, checks each `.tflite`
+against its SHA-256 and refuses a mismatch; `TfliteScorer` runs it on LiteRT with two CPU threads.
+Feature code (`FallWindow`, `HrContextFeatures`, `SleepFeatures`) is pure Kotlin, a twin of
+`ml/common/*.py`. Golden files written by the training scripts make the JVM tests compare the two
+on real recordings; `ModelOnDeviceTest` compares LiteRT's outputs with training's on a phone, and
+`AreaLiveNetworkTest` checks the weather, air-quality and SACHET clients against the live services.
 
-Kotlin accesses a C++ JNI bridge calling vendored llama.cpp/ggml CPU code. The AI repository manages shared ownership so tools and chat do not create independent model copies. Requests are serialized; cancellation and lease tracking control inference and release. The runtime reuses a shared prompt prefix when possible.
+**Model signals in detection.** The pipeline asks the heart-rate model for a band at each live
+reading (only with a reliable resting rate), keeps the bands for the window, and passes them to the
+detector as `ModelSignals`. A model that throws or is missing leaves its rule silent.
 
-The model is bundled as an asset and copied to app-private storage. This allows first use without a model download but increases APK and installed storage. An idle model releases after the final lease has been closed for 60 seconds.
+**Language model lifecycle.** A C++ JNI bridge over vendored llama.cpp; one shared instance with
+leases, released 60 s after the last one closes; requests serialised and cancellable; prompt prefix
+reused through the KV cache. Health rewrites are validated: any number not actually measured,
+any advice or diagnosis, or meta-text rejects the rewrite and the template stays.
 
-### Prompt and output boundaries
+**SOS coordinator.** A pure-Kotlin state machine: falls wait their window, other reasons cut it
+short, alerts within 1.5 s merge, sending survives monitoring being stopped, every attempt is recorded.
 
-Conversation, selected health context and attachments share a finite token window. Budgets constrain input growth while reserving response space. Document tools use a smaller per-step budget. Health explanations have a timeout and validation; the existing template remains when generated text is unavailable or rejected.
+**Area repository.** Pure Kotlin behind `AreaClient`/`AreaStore`: one part failing keeps the
+others; refreshes throttled (15 min, 1 min after a failure); alerts kept until they expire; each
+announced once. The XML parser refuses DTDs and external entities; only SACHET addresses are fetched.
 
-### Persistence and resilience
+**Persistence.** Room with exported schemas and hand-written additive migrations (version 5,
+unchanged in this release); 7-day reading retention; preferences and atomic files for the rest.
 
-Room stores records using exported schemas and migrations; the current schema is **version 5**. Preferences hold settings and journal/cache state. Coroutine flows feed the UI. A bounded explanation queue can discard an obsolete rewrite request under pressure without discarding the already-persisted anomaly.
+## Privacy and what leaves the phone
 
-Absent readings, stale AQI, interrupted generation, pending uploads/deletions and missing permissions should remain explicit rather than being replaced with plausible-looking data.
+"Local" means the decisions are local. It does not mean the database is encrypted.
 
-## Privacy and connectivity
-
-“Local AI” does not mean every feature is network-free or that stored data is encrypted.
-
-| Path | Local by default? | What can leave the phone |
+| Path | Default | What can leave the phone |
 |---|---|---|
-| Detection and language inference | Yes | No cloud LLM request required |
-| OCR and Vault | Yes | User-directed exports/sharing |
-| Sleep/stress journal | Yes | Stored in app-private preferences |
-| AQI, if enabled | No | City search/centre coordinates; request IP is visible to service |
-| Emergency profile, if enabled | No | Selected snapshot fields; optionally dated live vitals |
-| Automatic SOS, if enabled | Carrier service | SMS/call to configured contact |
-| Voice recognition | Depends on Android service | May use online recognition if offline service unavailable |
+| Detection, trained models, language model, OCR | On, local | Nothing |
+| Readings, sessions, reports, Vault, diary | On, local | Only what the wearer exports or shares |
+| Air quality, weather, India AQI | Off | City coordinates to Open-Meteo (and the request's IP address) |
+| Official alerts | Off | The name of the state's public feed to SACHET; no location |
+| Emergency snapshot | Off | The fields the wearer picks |
+| Automatic SOS | Off | SMS and optional call to the saved contact, via the carrier |
+| Voice | On request | May use online recognition if no offline pack exists |
+| Model timing (developer) | Manual | The `.tflite` files (public-data models) to Qualcomm AI Hub, by the developer |
 
-The local database is app-private SQLite, **not an encrypted-database implementation**. Backup exclusions reduce unintended exposure but do not replace encryption or device security.
-
-### Emergency sharing security model
-
-The companion web application is maintained separately. The phone creates a random edit secret and derives a separate read identifier. Write/delete operations require the edit credential; readers receive a capability URL. Server storage credentials belong on the server, never in the APK.
-
-Anyone possessing the read URL can access its shared record. It is read-only and displays the last-received time. Visible pages poll; uploads are best-effort and depend on connectivity/background scheduling. Revocation completes only after server deletion succeeds. Losing the edit key through uninstall/data clearing can prevent owner management of an existing record.
-
-See [NFC emergency sharing](docs/NFC-EMERGENCY-SHARING.md) for provisioning, refresh, deletion and deployment.
+The database is app-private SQLite, **not encrypted**; cloud backup is off.
 
 ## Technology stack
 
-| Layer | Technology / configured version |
+<details>
+<summary><strong>Stack illustration</strong> (drawn before this release; the table below adds LiteRT, TensorFlow training and the SACHET feed)</summary>
+
+<p align="center"><img src="docs/assets/g-one-tech-stack-revised.png" alt="Technology stack illustration from before the October 2026 release" width="520" /></p>
+
+</details>
+
+| Layer | Technology |
 |---|---|
-| Language | Kotlin 2.0.21 |
-| UI | Compose BOM 2024.09.00, Material 3, Navigation 2.8.9 |
-| State | ViewModel, coroutines, Flow/StateFlow |
-| Data | Room 2.7.1, DataStore 1.1.7, app-private files/preferences |
-| Recognition | ML Kit text recognition 16.0.1 |
-| Animation / QR | Lottie 6.6.2 / ZXing 3.5.3 |
-| Model runtime | llama.cpp/ggml, C++17, JNI, CPU/ARM NEON |
-| Android build | AGP 8.10.1, Gradle 8.11.1, compile/target SDK 36 |
-| Native build | NDK 28.2.13676358, CMake 3.22.1 |
-| Firmware | ESP32 Arduino sketch and sensor libraries |
-| Tests | JVM unit tests, Android instrumentation, lint, Python protocol emulator |
-| Companion service | Separate Next.js application and private server-side emergency storage |
+| Language and UI | Kotlin 2.0.21 · Compose BOM 2024.09.00 · Material 3 · Navigation 2.8.9 |
+| State and data | ViewModel · coroutines and Flow · Room 2.7.1 (schema 5) · DataStore 1.1.7 |
+| On-device ML | **LiteRT 1.4.2** (TensorFlow Lite) for the three INT8 models |
+| Language model | llama.cpp/ggml (vendored, C++17, JNI, ARM NEON) · Qwen2.5-1.5B-Instruct Q4_K_M |
+| Recognition, QR, animation | ML Kit text recognition 16.0.1 · ZXing 3.5.3 · Lottie 6.6.2 |
+| Optional services | NDMA SACHET CAP feeds · Open-Meteo weather, air quality and geocoding · a separate Next.js site for emergency snapshots |
+| Build | AGP 8.10.1 · Gradle 8.11.1 · SDK 36 · NDK 28.2.13676358 · CMake 3.22.1 |
+| Model training | Python 3.11 · TensorFlow 2.20 · scikit-learn 1.5 · Qualcomm AI Hub client 0.56 |
+| Firmware | ESP32 Arduino core · NimBLE-Arduino 2.x · MAX30100lib · OneWire/DallasTemperature |
+| Quality | JUnit (JVM) · AndroidX instrumentation · Android lint · pytest · GitHub Actions |
 
-Version authority: [catalog](gradle/libs.versions.toml), [Android configuration](app/build.gradle.kts) and [native build](app/src/main/cpp/CMakeLists.txt).
+## Performance and evidence
 
-## Performance and verification
-
-### Evidence, not promises
-
-These results distinguish measured artifacts, historical observations and configured limits. They are not a clinical evaluation or a cross-device benchmark.
+Measured artifacts and recorded observations only. Not a clinical evaluation.
 
 | Evidence | Result | Scope |
 |---|---|---|
-| Existing JVM test XML inspected | **590 tests**, 66 classes, 0 failures, 0 errors | Local `testDebugUnitTest` reports; not rerun for this documentation edit |
-| Release APK inspected | **1,182,249,970 bytes** / **1,127.48 MiB** | Current local artifact; future builds can change |
-| GGUF inspected | **1,117,320,736 bytes** / **1,065.56 MiB** | Model asset, also stored uncompressed in this APK |
-| Model share of APK | **94.51%** | GGUF ZIP-entry bytes / complete APK bytes |
-| Recorded prompt processing | **28.9 tokens/s** | One historical quiz prefill on Samsung SM-S721B; not generation speed or median |
-| Recorded firmware compile | **672,243 bytes flash**, **36.1 KB RAM** | Historical envelope-EMG build; about 21% of 3 MB app partition and 11% reported RAM |
-| Recorded protocol self-test | **10 scenarios passed** | Simulated sync; not proof of SD support in current firmware |
+| JVM unit tests | **659 tests, 74 classes, 0 failures**; lint 0 errors (55 warnings) | `testDebugUnitTest`, run 3 October 2026 |
+| On-device tests | **32 of 32** on a Samsung SM-S721B (Android 16): migrations, screen-reader labels, layout, model outputs equal to training's, live weather / India AQI / SACHET | `am instrument`, 4 October 2026 |
+| Model speed on the phone | Fall 15–27 µs, heart rate 9 µs, sleep 18 µs per run (CPU, median of 200) | Model Lab on the SM-S721B |
+| Model speed on Snapdragon | 41–55 µs per run on Galaxy S24 (8 Gen 3) and S25 (8 Elite); **all layers on the NPU** | Qualcomm AI Hub hosted phones, 4 October 2026 |
+| Python checks | 9 spec and checksum tests passed; protocol self-test 10 of 10 checks passed | `pytest ml/tests`; `emulate.py --selftest` |
+| Fall model, people held out | 96.2 % caught · 95.9 % no alarm · AUC 0.988 | 5-fold by person, 3,078 recordings |
+| Fall model, unseen dataset | 64.8 % caught · 98.1 % no alarm | Trained on WEDA-FALL, tested on UMAFall |
+| Heart-rate rule | 2.2 false alarms a day (fixed rule 51.6); +25/+40 bpm rises caught 34 %/53 % alone, 78 %/94 % with the fixed rule | Leave one person out, 10.7 h |
+| Sleep model | 91.9 % of epochs right, 49 % of awake epochs found, kappa 0.46, total-sleep error 17.4 min (movement threshold: 90.7 %, 39 %, 0.37, 19.7 min; always "asleep": 91.5 %) | 5-fold by person |
+| 8-bit vs float | Fall: 7 of 5,334 decisions differ; sleep: 7 of 5,000; heart rate: 0.57 bpm mean difference | Shipped INT8 vs float on training data |
+| Debug APK | 1,238,436,040 bytes (1.15 GiB): language model 90.2 %, LiteRT native library 4.5 MB, the three models and their demo recordings under 0.2 MB | This build |
+| Language model file | 1,117,320,736 bytes, SHA-256 `6a1a2eb6…407e`, matches the official file | Hashed 2 Oct 2026 |
+| Prompt processing | 28.9 tokens/s | One recorded quiz prefill on a Samsung SM-S721B (historical) |
+| Strap, on the bench | 19-minute session stored and reported; every report figure matched the database; a 9.47 g jolt raised a fall alert | [VERIFICATION.md](VERIFICATION.md) |
 
-[VERIFICATION.md](VERIFICATION.md) records historical device/firmware observations and older test counts. It is an evidence log, not a claim that every current screen and sensor has been rechecked.
+**Not measured yet:** the language model on a Snapdragon NPU or GPU (it runs on the CPU), the
+fall countdown and a real SMS on the strap, sustained LLM generation speed, battery, heat, and
+anything on patients.
 
-### Model footprint and compression
+### Time per run, measured
 
-![Measured APK footprint and nominal weight storage comparison](docs/assets/model-footprint.svg)
+<p align="center"><img src="docs/assets/ml-timing.png" alt="Microseconds per run on the phone's CPU and on Snapdragon NPUs" width="80%" /></p>
 
-The upper chart uses actual local bytes. Its remainder includes code, native libraries, resources, other assets and archive/signing overhead; it is not a measurement of Kotlin code alone.
+| Model | Galaxy S24 (Snapdragon 8 Gen 3) | Galaxy S25 (Snapdragon 8 Elite) | Layers on the NPU | SM-S721B (Exynos), CPU |
+|---|---|---|---|---|
+| Fall detector | 52 µs | 49 µs | 12 of 12 | 15–27 µs |
+| Heart rate in context | 48 µs | 43 µs | 5 of 5 | 9 µs |
+| Sleep or awake | 55 µs | 41 µs | 6 of 6 | 18 µs |
 
-The lower chart explains quantization using **nominal 1.5-billion-parameter arithmetic**: FP32 = 6.00 GB, FP16 = 3.00 GB, ideal four-bit packing = 0.75 GB. These are theoretical raw-weight sizes, **not downloaded checkpoints or measured compression benchmarks**. The actual Q4_K_M GGUF is 1.117 GB; mixed tensor precision and metadata mean it is not equivalent to packing every parameter into four bits. No full-precision baseline was measured, so no empirical compression ratio or accuracy-retention claim is made.
+Every layer of every model runs on the Snapdragon NPU. It is not faster there: for models this
+small, handing the work to the NPU costs more than the work. Both are far below what one reading
+every 5 seconds needs.
 
-Direct GGUF inspection reports `general.name = qwen2.5-1.5b-instruct`, `general.architecture = qwen2`, `general.file_type = 15` (Q4_K_M), but `general.size_label = 1.8B`. The nominal 1.5B chart is educational arithmetic based on the model name, not an asserted exact tensor count; this metadata discrepancy reinforces the need to pin model provenance.
+### Configured budgets
 
-### Configured resource budgets
+| Setting | Value |
+|---|---|
+| LLM context / prompt budget / answer | 4,096 / 3,568 / 512 tokens |
+| LLM threads / GPU layers | 4 / 0 (CPU) |
+| Health / attachment context in chat | 600 / 900 tokens |
+| Live aggregation | 5 s |
+| Rule cooldown | 15 min per type (worse events pass) |
+| Model threads | 2 (LiteRT, CPU) |
+| Area refresh | 15 min (1 min after a failure); background every 30 min |
+| Fall "I'm OK" window | 20 s default (0, 10, 20, 30) |
 
-| Setting | Value | Meaning |
+## Footprint and compression
+
+<p align="center"><img src="docs/assets/ml-sizes.png" alt="File sizes of the three sensor models and the language model, log scale" width="88%" /></p>
+
+The three sensor models together are 26.2 KB; the language model is 1.04 GiB, 90 % of the
+debug APK. Quantisation, measured:
+
+<p align="center"><img src="docs/assets/ml-quantisation.png" alt="Float32 versus INT8 file sizes of the sensor models" width="80%" /></p>
+
+For models this small most of the file is graph structure, so 8-bit saves little space
+(fall 17.9 → 15.0 KB, heart rate 4.7 → 4.7 KB, sleep 11.6 → 6.5 KB). The reason to quantise is that integer models run on NPUs such as Qualcomm's
+Hexagon, and on AI Hub's Snapdragon phones all three do, on every layer; the cost is measured above (7 of 5,334 fall decisions change).
+
+![APK footprint and nominal weight storage](docs/assets/model-footprint.svg)
+
+The lower chart is arithmetic for a nominal 1.5-billion-parameter model (FP32 6.0 GB, FP16
+3.0 GB, ideal 4-bit 0.75 GB), not a measured benchmark; the real Q4_K_M file is 1.117 GB because
+of mixed tensor precision and metadata. [Method](docs/assets/README.md).
+
+## Design comparisons
+
+| Decision | G-one | The alternative, and why not |
 |---|---|---|
-| Context window | 4,096 tokens | Configured context, not unlimited memory |
-| Prompt budget | 3,568 tokens | Reserves 512 output tokens plus 16-token margin |
-| Maximum response | 512 tokens | Per-generation upper bound |
-| CPU threads / GPU layers | 4 / 0 | CPU execution; no GPU/NPU acceleration claim |
-| Native batch / microbatch | 512 / 512 | Configuration, not throughput |
-| Health / attachment context | 600 / 900 tokens | Chat context budgets |
-| Document step | 640 tokens | Tool document budget per step |
-| Idle model release | 60 seconds | After final lease closes |
-| Live aggregation | 5 seconds | Contributes latency before evaluation |
-
-### Efficiency choices
-
-| Choice | Benefit | Trade-off |
-|---|---|---|
-| Quantized model | Smaller storage than nominal full-precision weights; offline inference | Quality trade-off unbenchmarked; substantial memory/storage remains |
-| Shared model runtime | Avoids independent instances per tool | Requests compete for serialized inference |
-| Prompt-prefix reuse | Can avoid repeated work | Depends on prompt continuity; no measured speedup provided |
-| Bounded explanation queue | Generative backlog does not control alert creation | Some rewrites may be omitted |
-| Template-first alerts | Usable text survives model failure | Less personalized language |
-| Cached AQI | Last-known context during network failure | Not current; timestamps remain essential |
-| Bundled model | No first-use download | Large APK plus separate extracted model copy |
-
-**Not measured:** sustained generation throughput, time-to-first-token percentiles, peak RSS, battery drain, thermal throttling, multi-day wearable runtime, detector sensitivity/specificity or controlled quantization quality. Publish those only after a reproducible device/data evaluation.
-
-## Engineering comparisons
-
-This compares design approaches, not benchmark results against commercial products.
-
-| Dimension | G-one today | Alternative and trade-off |
-|---|---|---|
-| Health event decision | Local deterministic rules | LLM-only decisions are flexible but harder to reproduce and validate |
-| Language assistance | Local quantized model | Cloud models introduce network and data-transfer dependencies |
-| Sensor storage | Phone persistence from live BLE | Wearable buffering improves gap recovery but needs firmware/storage support |
-| Emergency NFC | Stable URL to updateable snapshot | Static payload works without a server but needs rewriting after edits |
-| Environmental context | Optional modeled city AQI | Local air-quality hardware adds measurements but also hardware/calibration needs |
-| Sleep/stress | Transparent user journal | Automatic inference needs suitable signals and independent validation |
+| Who decides an alert | Named rules; models only supply scores | An end-to-end model is harder to test, explain and bound |
+| What the LLM may do | Reword, under number validation | Letting it judge would make every alert depend on generation |
+| Where models run | Phone, offline, INT8 | Cloud inference needs a network exactly when it may be missing |
+| How models are checked | Held-out people, a whole unseen dataset, the rule they would replace | Window-level splits leak the same person into training and test |
+| Fall SOS | 20 s cancel window for falls only | A window for everything delays help for an unconscious wearer |
+| Disaster alerts | Government CAP feed, matched on the phone | Sending location to a server to match alerts exposes where the wearer is |
+| Environment for heat rules | Strap sensor first; city weather capped and labelled | Treating a city's weather as the air around a person over-alerts |
+| Emergency NFC | Stable link to an updatable record | A static tag must be rewritten after every edit |
 
 ## Build and run
 
-### Prerequisites
-
-- Android Studio or command-line Android toolchain with JDK 17+.
-- SDK 36, NDK 28.2.13676358 and CMake 3.22.1.
-- ARM64 Android device, API 24+, with room for the APK, extracted model and application data.
-- Vendored native source at `app/src/main/cpp/llama/`.
-- Compatible Qwen2.5-1.5B-Instruct Q4_K_M GGUF at `app/src/main/assets/models/qwen.gguf`.
-
-The model exists in this workspace, but large model files may not be included in a checkout. Its setup note does not yet pin an exact download/revision/checksum; obtain the intended licensed artifact and verify it before distributing a reproducible build. An arbitrary file renamed `qwen.gguf` is not equivalent.
-
-### Build and checks
-
-Run from the root in PowerShell:
+**Prerequisites:** JDK 17, Android SDK 36, NDK 28.2.13676358, CMake 3.22.1, an ARM64 phone on
+Android 7.0+ with about 3 GB free.
 
 ```powershell
+powershell -ExecutionPolicy Bypass -File tools\fetch_model.ps1   # the pinned language model
 .\gradlew.bat :app:assembleDebug
 .\gradlew.bat :app:testDebugUnitTest :app:lintDebug
-.\gradlew.bat :app:connectedDebugAndroidTest
+.\gradlew.bat :app:connectedDebugAndroidTest                    # with a phone connected
+python -m pytest ml/tests
 python tools/wearable-emulator/emulate.py --selftest
 ```
 
-Instrumentation requires a compatible connected device. The Python self-test does not require a wearable. Native compilation must use the vendored implementation; a fallback stub is not a working AI runtime. Do not run legacy `setup_llama.ps1` over a working vendored tree.
+**Rebuild the trained models** (Python 3.11, `ml/requirements.txt`): `python -m ml.run_all`.
+**Time them on Snapdragon:** configure your own Qualcomm AI Hub token, then `python -m ml.aihub.profile`
+([instructions](ml/README.md#snapdragon-timing-qualcomm-ai-hub)).
+**Release builds** read signing details from a local, git-ignored `keystore.properties`.
+**CI** runs the unit tests, lint, the model checks and the protocol self-test on every push.
 
-| Output | Relative path |
-|---|---|
-| Debug APK | `app/build/outputs/apk/debug/app-debug.apk` |
-| Release directory | `app/build/outputs/apk/release/` |
-| JVM test report | `app/build/reports/tests/testDebugUnitTest/index.html` |
-| Lint report | `app/build/reports/lint-results-debug.html` |
-
-For release, provide local signing configuration through the existing `keystore.properties` mechanism, then run `:app:assembleRelease`. Keep credentials/keystores private. Without signing configuration the release can be unsigned and cannot be installed as a signed release.
-
-### First run
-
-1. Install the APK; allow model preparation when first needed.
-2. Select a real wearable or explicitly enable simulation for a demonstration.
-3. Grant requested Bluetooth/notification permissions, select the wearable and start monitoring.
-4. Check readings/contact quality before relying on charts; calibrate EMG for the setup.
-5. Open Assist or a document tool and verify local model loading/streaming.
-6. Configure AQI, emergency sharing and SOS individually. Test device-dependent behavior deliberately before relying on it.
-
-### Troubleshooting
-
-| Symptom | Check |
-|---|---|
-| AI engine not set up | Confirm vendored `llama/include/llama.h` exists and native build did not select stub |
-| Model fails to load | Complete compatible GGUF, free storage and successful asset extraction |
-| Empty pulse chart | MAX30100 driver, bus wiring/pull-ups, contact and status flags; absent data must not produce a fabricated graph |
-| No health alert | Monitoring, valid inputs, rule duration/cooldown and notification permission |
-| Template explanation remains | Model unavailable, timeout or rejected rewrite can intentionally retain fallback |
-| NFC shows old details | Sharing selection, successful upload and snapshot timestamp; scanning does not upload app edits |
-| APK cannot update installed app | Check signing identity and install error; different keys prevent in-place updates |
+**First run:** install; let the model be prepared; choose the wearable on the Device screen (or a
+simulator scenario); grant Bluetooth and notifications; start monitoring. Switch on Air quality,
+Your area, emergency sharing and Automatic SOS separately, each when you want it.
 
 ## Repository map
 
 ```text
-app/
-  src/main/java/com/gone/ai/
-    ai/                 Shared inference and runtime lifecycle
-    chat/               Conversation prompt/context handling
-    health/             Sources, detection, storage, SOS and UI
-    ocr/                Text extraction and document AI processing
-    circle/             Screen capture and overlay tools
-    data/library/       Room database and local library
-  src/main/cpp/         JNI and vendored llama.cpp/ggml
-  src/main/assets/      Model and application assets
-  src/test/             JVM regression tests
-  src/androidTest/      Device instrumentation
-firmware/               ESP32 wearable and owner's reference sketch
-hardware/               Strap, PCB and Jeevan Core assets
-tools/                  Emulator and development utilities
-docs/                   Protocol, setup and behavior guides
-VERIFICATION.md         Historical test and bench evidence
+app/src/main/java/com/gone/ai/
+  ai/ chat/            shared local LLM runtime, prompts, context budgets
+  ml/                  NEW · feature code, LiteRT runner, model registry, sleep estimator
+  health/
+    source/ ble/       parsing, validation, aggregation, the Bluetooth link
+    service/           foreground monitoring service and the ordered pipeline
+    detect/ domain/    the 15 rules, thresholds, baseline, risk scores, model signals
+    explain/           written explanations and rewrite validation
+    sos/               automatic texting and calling, the fall cancel window
+    disaster/          NEW · SACHET CAP parsing, district matching, NDMA guidance, IMD terms
+    environment/       air quality, NEW · weather, India AQI, area repository and job
+    emergency/ nfc/    emergency snapshot, NFC tags, QR
+    session/ ui/       sessions, PDF reports, health screens
+  ocr/ pdf/ circle/    text from images, documents and screens
+  ui/                  screens (NEW · Model Lab), navigation, theme
+app/src/main/assets/ml/   NEW · three .tflite models, manifest with checksums, demo recordings
+app/src/main/cpp/         JNI bridge and vendored llama.cpp/ggml
+app/src/test/             JVM tests and golden files    app/src/androidTest/  on-device tests
+ml/                       NEW · data preparation, training, tests, AI Hub profiling, charts
+firmware/                 strap firmware, owner's reference sketch, pin tracer
+hardware/                 strap, PCB and Jeevan Core design models
+tools/                    wearable emulator and checker, model fetch script
+docs/                     guides; VERIFICATION.md holds the run log
 ```
 
-## Limitations and future scope
+## Advantages, limits and next steps
 
-| Current limitation | Next meaningful step |
+**Advantages**
+- Alerts are explainable and testable: every one comes from a named rule with a test.
+- Trained models with honest, person-held-out evaluation against the rules they would replace.
+- Works offline end to end; area alerts and weather degrade to cached values, never to silence.
+- Official, government-issued disaster alerts, matched without sending location.
+- A fall can be cancelled; nothing else is delayed.
+- Reproducible: pinned language model, scripted model training, checksummed model files, CI, MIT licence.
+
+| Limit today | Next step |
 |---|---|
-| Prototype signals and engineering thresholds | Controlled signal-quality, false-positive and missed-event evaluation with appropriate oversight |
-| Live-only transport | Implement and physically verify buffering, ACK/resume and gap recovery |
-| Self-reported sleep/stress | Explore suitable sensing and validate inference before labeling automatic |
-| Incomplete environmental inputs | Add calibrated local measurements where needed; keep modeled AQI distinct |
-| Large model bundle | Pin provenance and benchmark smaller models/delivery options against quality and startup costs |
-| CPU-only runtime | Evaluate supported acceleration with memory, thermal and battery measurements |
-| Unencrypted local database | Evaluate encryption, key lifecycle and migration |
-| Public-by-link emergency record | Improve owner recovery, revocation UX and security review |
-| Conceptual later hardware | Electrical review, mechanical tolerances, PCB fabrication and assembly testing |
-| Android-only prototype | Evaluate other platforms and organizational workflows after current behavior is validated |
+| Strap heart rate blocked by missing 2.2 kΩ pull-ups; unstable power | Fit the resistors, then confirm heart rate against a manual count |
+| Firmware is live-only | 72-hour store-and-forward on the board's flash, using the protocol the app already speaks |
+| Fall model cannot see strap movement | Send a 4-s window on impact; then run the INT8 model on the ESP32-S3 |
+| No ambient sensor on the strap | A BME280; the app already parses `ATEMP`/`HUM` |
+| Language model is CPU-only; no Snapdragon phone in hand | Ship the NPU delegate for the small models and try an Adreno build of the LLM on a Snapdragon phone |
+| Database not encrypted | SQLCipher with a Keystore-held key |
+| One strap only | Health Connect import, standard Bluetooth heart-rate straps, Wear OS |
+| Stress is self-reported | A heart-rate-variability model once beat intervals reach the app |
+| Thresholds and models tested on volunteers | Evaluation with clinical oversight |
 
-No claims are made for certification, guaranteed fall detection, diagnostic accuracy, waterproofing, multi-day battery life, continuous offline NFC refresh or universal device compatibility. Review model/dependency licenses and establish the project's distribution license before redistribution; third-party components retain their own terms.
+No claim is made for certification, diagnosis, guaranteed fall detection, waterproofing or battery
+life. G-one records and explains readings; it does not diagnose.
 
 ## Documentation
 
 | Guide | Contents |
 |---|---|
-| [Complete project description](docs/G-ONE-COMPLETE-DESCRIPTION.md) | The whole project in one read: architecture, wearable, app, all three hardware prototypes and every 3D file |
-| [Hardware setup](docs/HARDWARE_SETUP.md) | Parts, pins, power and bench checks |
-| [Wearable protocol](docs/WEARABLE_PROTOCOL.md) | Fields, framing, validation and firmware limitations |
-| [Automatic SOS](docs/SOS_BEHAVIOR.md) | Eligibility, permissions and impact gate |
-| [AQI and wellness](docs/OPTIONAL-AQI-WELLNESS.md) | Cache semantics and journal behavior |
-| [NFC emergency sharing](docs/NFC-EMERGENCY-SHARING.md) | Consent, links, storage and lifecycle |
-| [Verification record](VERIFICATION.md) | Historical automated, phone and wearable evidence |
-| [UI audit](docs/UI-VET-2026-09-19.md) | Recorded findings and fixes |
-| [Footprint methodology](docs/assets/README.md) | Chart inputs, arithmetic and reproducibility |
+| [Trained models](docs/MODELS.md) | Data, method, every figure and limit for the three models |
+| [Disaster alerts, weather, India AQI](docs/DISASTER-ALERTS.md) | Sources, matching, privacy, IMD and CPCB terms |
+| [Automatic SOS](docs/SOS_BEHAVIOR.md) | What sends, the fall window, what never sends |
+| [PS26181 traceability](docs/PS26181-TRACEABILITY.md) | Each requirement → code, tests, evidence, gaps |
+| [Demo script](docs/DEMO-SCRIPT.md) | Five minutes, only what works today |
+| [ml/README](ml/README.md) | Reproducing the models; Qualcomm AI Hub |
+| [Complete project description](docs/G-ONE-COMPLETE-DESCRIPTION.md) | The whole project in one read, hardware included |
+| [Wearable protocol](docs/WEARABLE_PROTOCOL.md) · [Hardware setup](docs/HARDWARE_SETUP.md) | The link and the strap |
+| [NFC emergency sharing](docs/NFC-EMERGENCY-SHARING.md) · [AQI and wellness](docs/OPTIONAL-AQI-WELLNESS.md) | Optional features |
+| [Verification record](VERIFICATION.md) | What was run and what it showed |
 
 ---
 
 <div align="center">
 
-**G-one — Sense · Log · Move · Belong**
+**G-one — Sense · Decide · Explain · Belong**
 
-*Deterministic detection. Local explanation. Explicit consent.*
+*Rules decide. Models are sensors. The language model only rewords.*
 
-Documentation audited against this workspace on **22 September 2026**. Artifact measurements describe the local build, not every future release.
+MIT licensed · third-party terms in [NOTICE](NOTICE) · README checked against this workspace on 4 October 2026
 
 </div>

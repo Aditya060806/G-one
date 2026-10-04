@@ -67,7 +67,7 @@ alert still exists with its original wording.
 | **Language model** | Qwen2.5-1.5B-Instruct, 4-bit GGUF, run on the CPU through llama.cpp |
 | **Storage** | App-private Room database (schema version 5), preferences and files |
 | **Optional network** | City air quality, consented emergency snapshot, SMS and calls, Android speech |
-| **Tests** | 590 JVM tests in 66 classes, 0 failures; Android lint 0 errors |
+| **Tests** | 659 JVM tests in 74 classes, 0 failures (3 October 2026); Python model checks; protocol self-test |
 
 ---
 
@@ -86,7 +86,7 @@ flowchart TB
         PARSE[Parse and validate each line]
         AGG[Combine into one reading every 5 s]
         DB[(Room database)]
-        DET[Deterministic detector · 13 rules]
+        DET[Deterministic detector · 15 rules]
         EV[Event + plain-language explanation]
         NOTE[Notification and in-app alert]
         SOS[Optional automatic SOS]
@@ -288,7 +288,9 @@ Full description: [`WEARABLE_PROTOCOL.md`](WEARABLE_PROTOCOL.md).
 | `health/source/` | Parsing, validation, 5-second aggregation, simulated sources |
 | `health/source/ble/` | Connecting, reconnecting with back-off, stale-link watchdog, clock sync |
 | `health/service/` | Foreground monitoring service, the pipeline, wearable preferences, reminders |
-| `health/detect/`, `health/domain/` | The 13 rules, thresholds, baselines, risk scores — plain Kotlin, no Android |
+| `health/detect/`, `health/domain/` | The 15 rules, thresholds, baselines, risk scores, model signals — plain Kotlin, no Android |
+| `ml/` (app) and `ml/` (repository root) | The three trained models: feature code, LiteRT runner, manifest; training scripts and reports |
+| `health/disaster/`, `health/environment/` | NDMA SACHET alerts, city weather, India AQI, air quality |
 | `health/explain/` | Written explanations, tiers and the model-rewrite validation |
 | `health/session/` | Sessions, report building, PDF layout and writing |
 | `health/sos/` | Automatic emergency texting and calling |
@@ -311,22 +313,26 @@ Full description: [`WEARABLE_PROTOCOL.md`](WEARABLE_PROTOCOL.md).
 Readings that arrive late or are replayed from the past are stored and checked by the same rules,
 but never raise a notification — an alert about something three hours old reads as happening now.
 
-### The 13 rules
+### The 15 rules
 
 | Rule ID | Watches for |
 |---|---|
 | `spo2.critical` / `spo2.sustained` | Critically low oxygen / a sustained low pattern |
 | `hr.high` / `hr.low` | Sustained fast or slow heart rate |
 | `temp.fever` | Raised **core** temperature, when a core sensor exists |
-| `env.heatStress` / `env.dehydrationRisk` | Combined heat and dehydration indicators |
+| `temp.skinHigh` | Skin temperature of 37.5 °C (MODERATE) or 39 °C (CRITICAL) |
+| `env.heatStress` / `env.dehydrationRisk` | Combined heat and dehydration indicators; city weather allowed when the strap has no thermometer (then MODERATE at most, no SOS) |
 | `resp.distress` / `cardio.strain` | Combined respiratory and cardiovascular patterns |
-| `motion.fall` | A hard impact, with supporting conditions |
+| `motion.fall` | An impact of 5 g or more on the newest reading |
 | `wellness.fatigue` | A fatigue pattern |
 | `emg.sustainedHigh` | Muscles held tense |
 | `baseline.deviation` | A departure from this person's own baseline |
+| `ml.hrContext` | Heart rate well above what the last 5 minutes of movement explain, from a trained model; never above MODERATE, never an SOS |
 
-Skin temperature never feeds a fever rule. Risk scores are engineering indicators, not
-probabilities of illness. A missing value is never treated as a zero or as evidence of stillness.
+Skin temperature never feeds the fever rule; it has its own rule. Risk scores are engineering
+indicators, not probabilities of illness. A missing value is never treated as a zero or as
+evidence of stillness. The trained models and their test results are described in
+[`MODELS.md`](MODELS.md).
 
 The fall threshold is **5.0 g**, raised from 2.5 g so that ordinary knocks do not raise events or
 occupy the cooldown before a harder impact. It is an engineering setting, not a validated fall
@@ -339,9 +345,9 @@ Off until switched on in Settings, and it needs a saved contact and Android's SM
 | | |
 |---|---|
 | **What sends** | Every confirmed **live** anomaly from the wearable, including low and moderate ones. Motion additionally needs a finite impact of at least 5.0 g |
-| **What never sends** | Simulated readings, replayed history, air quality |
+| **What never sends** | Simulated readings, replayed history, air quality, the `ml.hrContext` early warning, heat findings based on city weather |
 | **Grouping** | Alerts raised within 1.5 s go in one message, so one reading cannot produce several texts |
-| **Countdown** | None. Saved countdown values from earlier versions are ignored |
+| **Countdown** | For a possible fall only: an alarm and an "I'm OK" button, 20 s by default (0, 10, 20 or 30 s). Every other alert sends at once |
 | **Calling** | Optional and separately permissioned; the text goes first |
 | **Needs** | A working SIM and signal. A successful send is not proof the contact read it |
 
@@ -383,6 +389,12 @@ the last good value with its timestamp, and anything older than three hours is m
 Sleep and stress are **self-reported journals**: bedtime, wake time, minutes awake and a 1–5
 quality rating; a 1–5 daily stress rating. Seven-day views leave missing days out of averages.
 They are records the wearer keeps, not automatic sleep staging or stress detection.
+
+**Since October 2026:** the Sleep card also shows an estimate of last night's sleep from the
+wearable's movement, made by an on-device model and labelled as an estimate; stress stays a
+self-report. A "Your area" card adds official NDMA SACHET disaster alerts for the wearer's
+district, the city's weather (which the heat rules may use when the strap has no thermometer) and
+India's National AQI. See [`DISASTER-ALERTS.md`](DISASTER-ALERTS.md).
 
 ### Emergency sharing over NFC or QR
 
@@ -621,7 +633,7 @@ app/src/main/java/com/gone/ai/
   health/
     source/ ble/     parsing, validation, aggregation, the Bluetooth link
     service/         foreground monitoring service and the pipeline
-    detect/ domain/  the 13 rules, thresholds, baselines, risk scores
+    detect/ domain/  the 15 rules, thresholds, baselines, risk scores
     explain/         written explanations and model-rewrite validation
     session/         sessions, reports, PDF
     sos/             automatic texting and calling
@@ -632,7 +644,7 @@ app/src/main/java/com/gone/ai/
   data/library/      Room database and Memory Vault
   voice/             speech in and out
 app/src/main/cpp/    JNI bridge and vendored llama.cpp/ggml
-app/src/test/        590 JVM tests
+app/src/test/        659 JVM tests
 app/src/androidTest/ migrations and TalkBack label checks
 firmware/
   g_one_wearable/    the firmware that runs on the strap
@@ -663,7 +675,7 @@ rather than this build:
 | 250 Hz sampling | Two readings a second over Bluetooth; one stored reading every five seconds |
 | 72-hour offline buffer | Live only — nothing is stored on the wearable; out-of-range readings are lost |
 | Encrypted local SQLite | App-private SQLite, not encrypted |
-| HRV, arrhythmia triggers, siren, multi-contact SOS | Heart rate, SpO₂, skin temperature, motion and EMG; 13 rules; SMS and an optional call to one saved contact |
+| HRV, arrhythmia triggers, siren, multi-contact SOS | Heart rate, SpO₂, skin temperature, motion and EMG; 15 rules and three small trained models; SMS and an optional call to one saved contact |
 
 When the two disagree, this document and `VERIFICATION.md` are the accurate ones.
 
@@ -675,7 +687,9 @@ When the two disagree, this document and `VERIFICATION.md` are the accurate ones
 
 | Evidence | Result |
 |---|---|
-| JVM tests | 590 tests, 66 classes, 0 failures |
+| JVM tests | 659 tests, 74 classes, 0 failures (3 October 2026) |
+| Trained models | Fall: 96.2 % falls caught, 95.9 % no alarm on held-out people (5 g rule: 50.7 % / 89.6 %). Heart-rate rule: 2.2 false alarms a day (fixed rule 51.6). Sleep: kappa 0.46 (movement threshold 0.37). See [`MODELS.md`](MODELS.md) |
+| Official alerts | Live SACHET feeds fetched and parsed, 2 October 2026 |
 | Android lint | 0 errors |
 | Firmware build | Compiles with no warnings from the sketch; about 21 % of the 3 MB app partition |
 | Protocol self-test | 10 of 10 scenarios |
@@ -690,8 +704,10 @@ When the two disagree, this document and `VERIFICATION.md` are the accurate ones
 - **Board power is unstable:** repeated brown-outs, a hot board and sensors that vary from boot to
   boot point to a wiring fault rather than firmware.
 - **A real SOS text and call** have not been sent from the phone.
-- Fall sensitivity, false-positive rates, battery life, sustained generation speed, memory use and
-  thermal behaviour are unmeasured.
+- Fall sensitivity and false alarms **on the strap** (the fall model's figures are on public
+  datasets), battery life, sustained generation speed, memory use and thermal behaviour are
+  unmeasured. The small models were timed on Qualcomm AI Hub's Snapdragon phones (all layers on
+  the NPU, 41–55 µs); the language model has not been run on a Snapdragon NPU or GPU.
 - The PCB and Jeevan Core designs have had no electrical review or fabrication.
 
 ---
@@ -704,8 +720,9 @@ When the two disagree, this document and `VERIFICATION.md` are the accurate ones
 | Unstable board power | Find the heat source, then a decoupling capacitor and firm power rails |
 | Live-only transport | Implement and verify buffering and gap recovery on the board |
 | Engineering thresholds | Evaluate sensitivity and false positives with proper oversight |
-| Self-reported sleep and stress | Validate any automatic inference before calling it automatic |
-| 1.13 GiB APK | Pin the model's provenance; weigh smaller models against quality |
+| Sleep estimate checked only on public lab data; stress self-reported | Check the sleep estimate on the strap; a stress model once beat intervals reach the app |
+| Fall model cannot see the strap's movement | Send a 4-second window on impact, then run the model on the ESP32-S3 |
+| 1.15 GiB APK | Model provenance is now pinned (`tools/fetch_model.ps1`); weigh smaller models against quality |
 | Unencrypted database | Evaluate encryption, key lifecycle and migration |
 | Public-by-link emergency record | Improve owner recovery and revocation, and get a security review |
 | Concept hardware | Electrical review, tolerances, fabrication and assembly testing |

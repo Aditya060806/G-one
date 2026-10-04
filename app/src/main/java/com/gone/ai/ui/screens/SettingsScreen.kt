@@ -40,6 +40,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gone.ai.ai.state.AIInferenceState
 import com.gone.ai.health.sos.AndroidSosSender
+import com.gone.ai.health.sos.SosCoordinator
 import com.gone.ai.health.sos.SosNumbers
 import com.gone.ai.health.sos.SosPreferences
 import com.gone.ai.health.sos.SosRecord
@@ -719,13 +720,20 @@ private fun SosSettingsSection(
         SettingsDivider(isDarkTheme)
         Text(
             "Every confirmed live anomaly sends an SMS automatically, without waiting for you. " +
-                "Motion requires a high impact of at least 5 g and alerts immediately; smaller knocks do not send an SOS. " +
+                "The one exception is a possible fall: it needs an impact of at least 5 g, sounds an alarm, " +
+                "and gives you the time chosen below to tap \"I'm OK\" before it sends. " +
                 "Alerts from the same reading are combined for 1.5 seconds. " +
                 "Existing alert cooldowns limit repeats. Simulated and historical readings never send. " +
                 "A working SIM and mobile signal are required.",
             style = MaterialTheme.typography.bodySmall,
             color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
             modifier = Modifier.padding(vertical = 4.dp)
+        )
+        SettingsDivider(isDarkTheme)
+        FallCancelWindowRow(
+            seconds = settings.fallCancelSeconds,
+            isDarkTheme = isDarkTheme,
+            onChange = { chosen -> SosPreferences.update(context) { it.copy(fallCancelSeconds = chosen) } }
         )
         SettingsDivider(isDarkTheme)
         SettingsToggle(
@@ -762,6 +770,34 @@ private fun SosSettingsSection(
                 color = if (last.sms.sent) SuccessGreen else ErrorRed,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+        }
+    }
+}
+
+/** How long a possible fall waits for "I'm OK" before the SOS goes. */
+@Composable
+private fun FallCancelWindowRow(seconds: Int, isDarkTheme: Boolean, onChange: (Int) -> Unit) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(
+            "After a possible fall, wait",
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (isDarkTheme) TextPrimary else TextPrimaryLight
+        )
+        Text(
+            if (seconds == 0) "The SOS is sent at once. You cannot stop it."
+            else "An alarm sounds and you have $seconds seconds to tap \"I'm OK\". If you do nothing, the SOS is sent.",
+            style = MaterialTheme.typography.bodySmall,
+            color = if (isDarkTheme) TextSecondary else TextSecondaryLight,
+            modifier = Modifier.padding(top = 2.dp, bottom = 8.dp)
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            SosCoordinator.FALL_CANCEL_CHOICES.forEach { choice ->
+                FilterChip(
+                    selected = choice == seconds,
+                    onClick = { onChange(choice) },
+                    label = { Text(if (choice == 0) "At once" else "$choice s") }
+                )
+            }
         }
     }
 }

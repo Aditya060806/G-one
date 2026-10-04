@@ -1,0 +1,71 @@
+<cap:alert xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+<cap:identifier>IN-1790419457567036_36</cap:identifier>
+<cap:sender>Punjab-SDMA</cap:sender>
+<cap:sent>2026-09-26T16:18:32+05:30</cap:sent>
+<cap:status>Actual</cap:status>
+<cap:msgType>Update</cap:msgType>
+<cap:scope>Public</cap:scope>
+<cap:restriction/>
+<cap:addresses/>
+<cap:note/>
+<cap:references>IMD-Chandigarh,IN-1790419457567036_53,2026-09-26T16:13:39+05:30</cap:references>
+<cap:incidents/>
+<cap:info>
+<cap:language>en-IN</cap:language>
+<cap:category>Met</cap:category>
+<cap:event>Moderate Thunderstorms with surface wind</cap:event>
+<cap:urgency>Expected</cap:urgency>
+<cap:severity>Severe</cap:severity>
+<cap:certainty>Likely</cap:certainty>
+<cap:audience>1</cap:audience>
+<cap:effective>2026-09-26T16:13:00+05:30</cap:effective>
+<cap:onset>2026-09-26T16:18:32+05:30</cap:onset>
+<cap:expires>2026-09-26T19:13:00+05:30</cap:expires>
+<cap:headline>Moderate Thunderstorms with surface wind is very likely to occur at a few places over S.A.S Nagar in next 3 hours.If any emergency call 112. Punjab SDMA</cap:headline>
+<cap:description/>
+<cap:instruction>Please follow SDMA guidelines.</cap:instruction>
+<cap:contact/>
+<cap:parameter>
+<cap:valueName>Polygon URL</cap:valueName>
+<cap:value>https://sachet.ndma.gov.in/cap_public_website/FetchPolygonXMLFile?identifier=1790419457567036</cap:value>
+</cap:parameter>
+<cap:area>
+<cap:areaDesc>S.A.S Nagar district of Punjab</cap:areaDesc>
+<cap:geocode>
+<cap:valueName>LGD District Code</cap:valueName>
+<cap:value>608</cap:value>
+</cap:geocode>
+<cap:altitude>0</cap:altitude>
+<cap:ceiling>0</cap:ceiling>
+</cap:area>
+</cap:info>
+<cap:info>
+<cap:language>PN</cap:language>
+<cap:category>Met</cap:category>
+<cap:event>Moderate Thunderstorms with surface wind</cap:event>
+<cap:urgency>Expected</cap:urgency>
+<cap:severity>Severe</cap:severity>
+<cap:certainty>Likely</cap:certainty>
+<cap:audience>1</cap:audience>
+<cap:effective>2026-09-26T16:13:00+05:30</cap:effective>
+<cap:onset>2026-09-26T16:18:32+05:30</cap:onset>
+<cap:expires>2026-09-26T19:13:00+05:30</cap:expires>
+<cap:headline>ਅਗਲੇ 3 ਘੰਟਿਆਂ ਦੌਰਾਨ ਐਸ.ਏ.ਐਸ. ਨਗਰ  ਦੇ ਕੁਝ ਇਲਾਕਿਆਂ ਵਿੱਚ ਜ਼ਮੀਨੀ ਹਵਾਵਾਂ ਦੇ ਨਾਲ ਦਰਮਿਆਨੇ ਦਰਜੇ ਦੇ ਗਰਜ-ਤੂਫ਼ਾਨ ਆਉਣ ਦੀ ਬਹੁਤ ਸੰਭਾਵਨਾ ਹੈ। ਕਿਸੇ ਵੀ ਐਮਰਜੈਂਸੀ ਦੀ ਸਥਿਤੀ ਵਿੱਚ 112 'ਤੇ ਕਾਲ ਕਰੋ।</cap:headline>
+<cap:description/>
+<cap:instruction>Please follow SDMA guidelines.</cap:instruction>
+<cap:contact/>
+<cap:parameter>
+<cap:valueName>Polygon URL</cap:valueName>
+<cap:value>https://sachet.ndma.gov.in/cap_public_website/FetchPolygonXMLFile?identifier=1790419457567036</cap:value>
+</cap:parameter>
+<cap:area>
+<cap:areaDesc>S.A.S Nagar district of Punjab</cap:areaDesc>
+<cap:geocode>
+<cap:valueName>LGD District Code</cap:valueName>
+<cap:value>608</cap:value>
+</cap:geocode>
+<cap:altitude>0</cap:altitude>
+<cap:ceiling>0</cap:ceiling>
+</cap:area>
+</cap:info>
+</cap:alert>

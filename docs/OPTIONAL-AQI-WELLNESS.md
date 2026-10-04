@@ -23,6 +23,18 @@ excluded from averages. One entry per type/date, up to 365 of each type; saving 
 it. Individual entries and the entire journal can be deleted. Journal data remains in app
 private preferences, excluded from cloud backup under the existing app rules.
 
+## October 2026 additions
+
+- **India AQI.** The "Your area" card adds CPCB's National AQI, computed on the phone from
+  Open-Meteo's modelled pollutant concentrations, beside the US AQI above. See
+  [DISASTER-ALERTS.md](DISASTER-ALERTS.md#india-aqi).
+- **Estimated sleep.** When last night has enough stored wearable readings, the Sleep card shows
+  an estimate from the on-device sleep model (asleep time, fell asleep, woke up), labelled as an
+  estimate from wrist movement. "Use as a diary entry" opens the usual sleep dialog pre-filled;
+  the quality rating and the decision to save stay the wearer's. Simulated readings are never
+  used. The model and its test results are in [MODELS.md](MODELS.md#3-sleep-or-awake-sleep_v1).
+- Stress remains a self-reported check-in; no stress model is shipped.
+
 ## Problem-statement coverage
 
 - Adds optional environmental context with an honest offline cache.

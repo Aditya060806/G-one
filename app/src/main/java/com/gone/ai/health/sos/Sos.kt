@@ -21,6 +21,10 @@ import kotlin.math.roundToInt
  *
  * Only live readings from the wearable count. A simulated reading is not a person, and a reading
  * replayed from the past describes something already over — the caller checks both.
+ *
+ * Two kinds of finding never send: the heart-rate-in-context early warning, which rests on a
+ * trained model, and heat findings that rest on the city's weather instead of a sensor on the
+ * wrist. Both are hints to check in, not grounds to text someone.
  */
 object SosPolicy {
 
@@ -37,9 +41,12 @@ object SosPolicy {
         type: AnomalyType,
         severity: Severity,
         latest: VitalsSample?,
-        fallImpactG: Float? = null
+        fallImpactG: Float? = null,
+        fromCityWeather: Boolean = false
     ): String? {
         return when {
+            type == AnomalyType.HEART_RATE_CONTEXT -> null
+            fromCityWeather -> null
             type == AnomalyType.FALL_DETECTED ->
                 if (severity == Severity.CRITICAL && fallImpactG != null && fallImpactG.isFinite() && fallImpactG >= SEVERE_IMPACT_G)
                     "Very hard impact (${oneDecimal(fallImpactG)} g); a possible fall"

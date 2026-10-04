@@ -92,7 +92,7 @@ private val navRoutes = navItems.map { it.route }
 
 /** Routes another component may ask to open, e.g. Circle Learn's "open in app". */
 private val externalRoutes = navRoutes.toSet() +
-    setOf("library", "pdf_summary", "ocr", "screenshot", "quiz", "circle_learn", "device", "reports", "emergency_id")
+    setOf("library", "pdf_summary", "ocr", "screenshot", "quiz", "circle_learn", "device", "reports", "emergency_id", "model_lab")
 
 /**
  * Navigation transitions:
@@ -404,6 +404,7 @@ fun AppNavigation(
                         onNavigateToQuiz       = { navController.navigate("quiz") },
                         onNavigateToCircle     = { navController.navigate("circle_learn") },
                         onNavigateToLibrary    = { navController.navigate("library") },
+                        onNavigateToModelLab   = { navController.navigate("model_lab") },
                         onNavigateToSettings   = { showSettingsSheet = true },
                         onAskAssistant         = askAssistant
                     )
@@ -496,6 +497,9 @@ fun AppNavigation(
                         onOpenReport   = { navController.navigate("report/$it") },
                         vm             = healthViewModel
                     )
+                }
+                detailScreen("model_lab") {
+                    ModelLabScreen(isDarkTheme = isDarkTheme, onBack = { navController.popBackStack() })
                 }
                 detailScreen("emergency_id") {
                     EmergencyIdScreen(

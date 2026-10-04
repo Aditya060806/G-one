@@ -135,4 +135,31 @@ class EmergencyHtmlRendererTest {
         assertTrue(html.contains("Fall detected"))
         assertTrue(html.contains("vital-value critical"))
     }
+
+    /** Whatever was typed into the profile is shown as text; none of it can become markup. */
+    @Test
+    fun `typed fields cannot add markup or a different link`() {
+        val payload = samplePayload(
+            name = "<script>alert(1)</script>",
+            bloodGroup = "O+<img src=x>",
+            allergies = "\"Latex\" & <b>Sulfa</b>",
+            emergencyContact = "+91 98765\" onclick=\"x()"
+        )
+        val html = EmergencyHtmlRenderer.render(payload, nowMillis = t0)
+
+        assertFalse(html.contains("<script>alert(1)</script>"))
+        assertTrue(html.contains("&lt;script&gt;alert(1)&lt;/script&gt;"))
+        assertFalse(html.contains("<img src=x>"))
+        assertFalse(html.contains("<b>Sulfa</b>"))
+        assertTrue(html.contains("&quot;Latex&quot; &amp; &lt;b&gt;Sulfa&lt;/b&gt;"))
+        assertTrue("the link holds only what a dialler accepts", html.contains("href=\"tel:+9198765\""))
+        assertFalse(html.contains("onclick=\"x()\""))
+    }
+
+    @Test
+    fun `typed text that looks like a template placeholder stays as text`() {
+        val html = EmergencyHtmlRenderer.render(samplePayload(name = "{{CONTACTS}}"), nowMillis = t0)
+        assertTrue(html.contains("&#123;&#123;CONTACTS&#125;&#125;"))
+        assertTrue("the contact section appears once", html.split("Call Emergency Contact").size == 2)
+    }
 }

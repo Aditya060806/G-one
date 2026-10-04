@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="feed.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Punjab: CAP Disaster Alert Feeds</title>
+    <description>CAP Integrated Alert System Warning Updates</description>
+    <language>en</language>
+    <link>https://sachet.ndma.gov.in/cap_public_website/rss/rss_punjab.xml</link>
+    <atom:link href="https://sachet.ndma.gov.in/cap_public_website/rss/rss_punjab.xml" rel="self" type="application/rss+xml"/>
+    <copyright>public domain</copyright>
+    <pubDate>Tue, 15 Sep 2026 09:02:00 GMT</pubDate>
+    <item>
+      <title>ਅਗਲੇ 3 ਘੰਟਿਆਂ ਦੌਰਾਨ ਐਸ.ਏ.ਐਸ. ਨਗਰ  ਦੇ ਕੁਝ ਇਲਾਕਿਆਂ ਵਿੱਚ ਜ਼ਮੀਨੀ ਹਵਾਵਾਂ ਦੇ ਨਾਲ ਦਰਮਿਆਨੇ ਦਰਜੇ ਦੇ ਗਰਜ-ਤੂਫ਼ਾਨ ਆਉਣ ਦੀ ਬਹੁਤ ਸੰਭਾਵਨਾ ਹੈ। ਕਿਸੇ ਵੀ ਐਮਰਜੈਂਸੀ ਦੀ ਸਥਿਤੀ ਵਿੱਚ 112 'ਤੇ ਕਾਲ ਕਰੋ।</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1790419457567036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1790419457567036</guid>
+      <pubDate>Sat, 26 Sep 2026 10:48:33 GMT</pubDate>
+    </item>
+    <item>
+      <title>Moderate Rain with Thunderstorm is likely to occur at a few places over Hoshiarpur, Rupnagar, S.A.S Nagar, Shahid Bhagat Singh Nagar in next 3 hours. If Any Emergency Call 112. Punjab SDMA</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789606395168036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789606395168036</guid>
+      <pubDate>Thu, 17 Sep 2026 00:55:25 GMT</pubDate>
+    </item>
+    <item>
+      <title>Moderate Rain with Thunderstorm is likely to occur at a few places over Bathinda, Faridkot, Fazilka, Ferozepur, Sri Muktsar Sahib in next 3 hours. If Any Emergency Call 112. Punjab SDMA</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789581312127036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789581312127036</guid>
+      <pubDate>Wed, 16 Sep 2026 17:59:50 GMT</pubDate>
+    </item>
+    <item>
+      <title>Thunderstorm  with Moderate to Heavy Rain is very likely to occur at a few places over Gurdaspur, Hoshiarpur, Pathankot in next 3 hours. If any Emergency Call 112 Punjab SDMA.</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789419583134036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789419583134036</guid>
+      <pubDate>Mon, 14 Sep 2026 21:27:01 GMT</pubDate>
+    </item>
+    <item>
+      <title>ਅਗਲੇ 3 ਘੰਟਿਆਂ ਦੌਰਾਨ ਪਟਿਆਲਾ ਦੇ ਜ਼ਿਆਦਾਤਰ ਇਲਾਕਿਆਂ ਵਿੱਚ ਦਰਮਿਆਨੀ ਬਾਰਿਸ਼ ਅਤੇ ਬਿਜਲੀ ਦੇ ਨਾਲ ਤੂਫ਼ਾਨ ਆਉਣ ਦੀ ਬਹੁਤ ਸੰਭਾਵਨਾ ਹੈ I ਕਿਸੇ ਵੀ ਐਮਰਜੈਂਸੀ ਦੀ ਸਥਿਤੀ ਵਿੱਚ 112 'ਤੇ ਕਾਲ ਕਰੋ। ਪੰਜਾਬ ਐਸ.ਡੀ.ਐਮ.ਏ.</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789359747754036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789359747754036</guid>
+      <pubDate>Mon, 14 Sep 2026 04:26:38 GMT</pubDate>
+    </item>
+    <item>
+      <title>ਅਗਲੇ 3 ਘੰਟਿਆਂ ਵਿੱਚ ਹੁਸ਼ਿਆਰਪੁਰ, ਜਲੰਧਰ, ਕਪੂਰਥਲਾ ਵਿੱਚ ਕੁਝ ਥਾਵਾਂ 'ਤੇ ਦਰਮਿਆਨੀ ਗਰਜ-ਤੂਫ਼ਾਨ ਆਉਣ ਦੀ ਸੰਭਾਵਨਾ ਹੈ। ਜੇਕਰ ਕੋਈ ਐਮਰਜੈਂਸੀ ਹੋਵੇ ਤਾਂ 112 'ਤੇ ਕਾਲ ਕਰੋ। ਪੰਜਾਬ ਐਸਡੀਐਮਏ।</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789298013879036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789298013879036</guid>
+      <pubDate>Sun, 13 Sep 2026 11:16:55 GMT</pubDate>
+    </item>
+    <item>
+      <title>ਅਗਲੇ 3 ਘੰਟਿਆਂ ਵਿੱਚ ਐਸ.ਏ.ਐਸ. ਨਗਰ ਵਿੱਚ ਜ਼ਿਆਦਾਤਰ ਥਾਵਾਂ 'ਤੇ ਦਰਮਿਆਨੀ ਤੋਂ ਭਾਰੀ ਬਾਰਿਸ਼ ਹੋਣ ਦੀ ਸੰਭਾਵਨਾ ਹੈ। ਜੇਕਰ ਕੋਈ ਐਮਰਜੈਂਸੀ ਹੋਵੇ ਤਾਂ 112 'ਤੇ ਕਾਲ ਕਰੋ, ਪੰਜਾਬ ਐਸ.ਡੀ.ਐਮ.ਏ.।</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789286090873036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789286090873036</guid>
+      <pubDate>Sun, 13 Sep 2026 07:59:18 GMT</pubDate>
+    </item>
+    <item>
+      <title>ਅਗਲੇ 3 ਘੰਟਿਆਂ ਵਿੱਚ ਲੁਧਿਆਣਾ, ਮਲੇਰਕੋਟਲਾ, ਪਟਿਆਲਾ, ਸੰਗਰੂਰ ਵਿੱਚ ਕੁਝ ਥਾਵਾਂ 'ਤੇ ਗਰਜ ਨਾਲ ਦਰਮਿਆਨੀ ਤੋਂ ਭਾਰੀ ਬਾਰਿਸ਼ ਹੋਣ ਦੀ ਸੰਭਾਵਨਾ ਹੈ। ਜੇਕਰ ਕੋਈ ਐਮਰਜੈਂਸੀ ਹੋਵੇ ਤਾਂ 112 ਤੇ ਕਾਲ ਕਰੋ, ਪੰਜਾਬ ਐਸਡੀਐਮਏ I</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789280934038036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789280934038036</guid>
+      <pubDate>Sun, 13 Sep 2026 06:39:51 GMT</pubDate>
+    </item>
+    <item>
+      <title>Light Rain with thunderstorm is likely to occur at isolated places over Hoshiarpur, Sangrur in next 3 hours.If Any Emergency Call 112. Punjab SDMA</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1789122881641036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1789122881641036</guid>
+      <pubDate>Fri, 11 Sep 2026 11:06:22 GMT</pubDate>
+    </item>
+    <item>
+      <title>Thunderstorm  with moderate to Heavy Rainis very likely to occur at a few places over Fatehgarh Sahib, Ludhiana, Malerkotla, Patiala, Rupnagar, S.A.S Nagar, Shahid Bhagat Singh Nagar in next 3 hours. If any emergency call 112. Punjab SDMA.</title>
+      <description/>
+      <category>Met</category>
+      <link>https://sachet.ndma.gov.in/cap_public_website/FetchXMLFile?identifier=1788613266009036</link>
+      <author>controlroom@ndma.gov.in (IMD Chandigarh)</author>
+      <guid isPermaLink="false">1788613266009036</guid>
+      <pubDate>Sat, 05 Sep 2026 13:07:25 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

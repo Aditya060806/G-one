@@ -168,7 +168,7 @@ object MockHealthDataSeeder {
             if (minutesAgo in 900..926) { hr = 98.0; motion = 1.02 }
             // Fever (event 12 h ago).
             episode(680, 780)?.let { e -> temp += e * 1.9; hr += e * 24; motion = 1.0 }
-            // Fall: impact 10 h ago, then stillness.
+            // Fall: a hard impact 10 h ago. The rule raises it on that reading alone.
             if (minutesAgo == 600) motion = 5.4
             if (minutesAgo in 596..599) { motion = 1.0; hr = 104.0 }
             // Heat exposure, 9 h 40 min to 7 h ago (heat stress, strain, dehydration events).
@@ -285,11 +285,11 @@ object MockHealthDataSeeder {
                     type = AnomalyType.FALL_DETECTED, severity = Severity.CRITICAL,
                     triggeredAt = at(598), ruleId = FallDetectionRule.id,
                     riskScores = RiskScores(0, 9, 38),
-                    heartRate = 104, spo2 = 96, durationMinutes = 2,
+                    heartRate = 104, spo2 = 96,
                     fallImpactG = 5.4f, motionDetected = false
                 ),
-                aiRewrite = "A sudden hard movement like a fall was picked up, followed by about " +
-                    "2 minutes with almost no movement.",
+                aiRewrite = "A sudden, very hard movement of 5.4 g was picked up, the kind that can " +
+                    "happen in a fall. Someone should check on the person.",
                 acknowledgedAfterMinutes = 9
             ),
             DemoEvent(

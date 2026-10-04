@@ -117,6 +117,17 @@ class AccessibilityLabelsTest {
         )
     }
 
+    /** Also the screen that loads and runs every trained model: it must come up, and stay up. */
+    @Test
+    fun modelLab() {
+        check("Model Lab") { com.gone.ai.ui.screens.ModelLabScreen(isDarkTheme = dark, onBack = {}) }
+        compose.waitUntil(timeoutMillis = 20_000) {
+            compose.onAllNodes(androidx.compose.ui.test.hasText("Time it on this phone")).fetchSemanticsNodes().size >= 2
+        }
+        Thread.sleep(3_000)   // the replays run in the background; a crash there would end the test
+        compose.waitForIdle()
+    }
+
     @Test
     fun toolsDark() {
         dark = true

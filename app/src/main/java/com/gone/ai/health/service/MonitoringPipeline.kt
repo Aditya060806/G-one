@@ -5,6 +5,10 @@ import com.gone.ai.health.data.HealthRepository
 import com.gone.ai.health.data.ReadingSource
 import com.gone.ai.health.data.toEventEntity
 import com.gone.ai.health.detect.AnomalyDetector
+import com.gone.ai.health.detect.AreaWeather
+import com.gone.ai.health.detect.HeartRateBand
+import com.gone.ai.health.detect.HeartRateExpectation
+import com.gone.ai.health.detect.ModelSignals
 import com.gone.ai.health.domain.AnomalyEvidence
 import com.gone.ai.health.domain.AnomalyType
 import com.gone.ai.health.domain.PatientBaseline
@@ -107,7 +111,14 @@ class MonitoringPipeline(
     private val explainer: AiExplainer? = null,
     private val clock: () -> Long = System::currentTimeMillis,
     /** Recompute the patient baseline no more often than this. */
-    private val baselineRefreshMillis: Long = DEFAULT_BASELINE_REFRESH_MILLIS
+    private val baselineRefreshMillis: Long = DEFAULT_BASELINE_REFRESH_MILLIS,
+    /**
+     * The heart-rate-in-context model, or null. Asked once per live reading, after the reading
+     * is stored; a failure or a null answer only leaves its rule silent.
+     */
+    private val heartRateExpectation: HeartRateExpectation? = null,
+    /** The wearer's city weather, if they switched it on. Read on every live reading. */
+    private val areaWeather: () -> AreaWeather? = { null }
 ) {
 
     private val _snapshot = MutableStateFlow(MonitoringSnapshot())
@@ -142,6 +153,9 @@ class MonitoringPipeline(
      * Touched only by [onSample], which the caller invokes sequentially.
      */
     private val window = ArrayDeque<VitalsSample>()
+
+    /** The model's expected heart-rate band for readings in [window], by timestamp. */
+    private val heartRateBands = LinkedHashMap<Long, HeartRateBand>()
 
     private var cachedBaseline: PatientBaseline = PatientBaseline.EMPTY
     private var baselineComputedAt: Long = 0
@@ -179,6 +193,7 @@ class MonitoringPipeline(
      */
     fun reset() {
         window.clear()
+        heartRateBands.clear()
         historyWindow.clear()
         cachedBaseline = PatientBaseline.EMPTY
         baselineComputedAt = 0
@@ -234,13 +249,16 @@ class MonitoringPipeline(
             cooldownsLoaded = true
         }
         refreshBaselineIfStale(patientId, now)
+        recordExpectedHeartRate(sample)
 
         _snapshot.update { it.copy(state = MonitoringState.ANALYZING) }
         val result = detector.evaluate(
             samples = window.toList(),
             baseline = cachedBaseline,
             now = now,
-            recentEvents = cooldowns
+            recentEvents = cooldowns,
+            signals = ModelSignals(heartRateBands = heartRateBands.toMap()),
+            areaWeather = runCatching { areaWeather() }.getOrNull()
         )
 
         samplesProcessed++
@@ -380,6 +398,21 @@ class MonitoringPipeline(
         eventsRaised += raised.size
         _snapshot.update { it.copy(eventsRaised = eventsRaised) }
         return raised
+    }
+
+    /**
+     * Asks the model what heart rate the last five minutes of movement would explain, for the
+     * newest reading. Only with a reliable resting rate: the model's answer is relative to it.
+     */
+    private fun recordExpectedHeartRate(sample: VitalsSample) {
+        val model = heartRateExpectation ?: return
+        val resting = cachedBaseline.restingHeartRate
+            ?.takeIf { cachedBaseline.isReliable(detector.thresholds) } ?: return
+        runCatching { model.expected(window.toList(), sample.timestamp, resting) }
+            .getOrNull()
+            ?.let { heartRateBands[sample.timestamp] = it }
+        val oldest = window.firstOrNull()?.timestamp ?: return
+        heartRateBands.keys.removeAll { it < oldest }
     }
 
     /** Drop samples older than the trend window so memory stays bounded. */

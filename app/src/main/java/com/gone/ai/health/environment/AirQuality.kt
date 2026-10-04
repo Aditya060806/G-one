@@ -6,7 +6,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
 
-data class AqiPlace(val id: Long, val label: String, val latitude: Double, val longitude: Double)
+data class AqiPlace(
+    val id: Long,
+    val label: String,
+    val latitude: Double,
+    val longitude: Double,
+    /** State or territory, as the geocoder names it; used to pick the official alert feed. */
+    val state: String? = null,
+    /** District without the word "district"; used to tell which alerts are for this place. */
+    val district: String? = null
+) {
+    /** The place's own name, the first part of the label. */
+    val name: String get() = label.substringBefore(',').trim()
+}
 data class AqiReading(val value: Int, val observedAt: Long, val fetchedAt: Long) {
     fun isStale(now: Long) = now - observedAt > 3 * 60 * 60_000L || observedAt > now + 60_000L
 }

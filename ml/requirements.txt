@@ -1,0 +1,9 @@
+# The versions the shipped models were built with (Python 3.11.9, Windows 11, CPU training).
+numpy==2.2.1
+pandas
+scikit-learn==1.5.2
+tensorflow==2.20.0
+matplotlib
+pytest
+# Only for ml/aihub/profile.py (Snapdragon timing through Qualcomm AI Hub):
+qai-hub==0.56.0

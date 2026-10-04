@@ -21,14 +21,16 @@ object SosPreferences {
     private const val PREFS = "gone_sos"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_CALL_AFTER = "call_after"
-    private const val KEY_COUNTDOWN = "countdown_seconds"
+    // A new key: countdown lengths saved by earlier versions applied to every alert and are not carried over.
+    private const val KEY_FALL_CANCEL = "fall_cancel_seconds"
     private const val KEY_RECORDS = "records"
     private const val MAX_RECORDS = 20
 
     data class Settings(
         val enabled: Boolean = false,
         val callAfter: Boolean = false,
-        val countdownSeconds: Int = SosCoordinator.DEFAULT_COUNTDOWN_SECONDS
+        /** The "I'm OK" window for a fall. Other alerts never wait. */
+        val fallCancelSeconds: Int = SosCoordinator.DEFAULT_FALL_CANCEL_SECONDS
     )
 
     @Volatile private var settings: MutableStateFlow<Settings>? = null
@@ -39,11 +41,12 @@ object SosPreferences {
     fun settings(context: Context): StateFlow<Settings> = settingsFlow(context).asStateFlow()
 
     fun update(context: Context, change: (Settings) -> Settings) {
-        val next = change(settingsFlow(context).value).copy(countdownSeconds = 0)
+        val changed = change(settingsFlow(context).value)
+        val next = changed.copy(fallCancelSeconds = cancelWindow(changed.fallCancelSeconds))
         prefs(context).edit {
             putBoolean(KEY_ENABLED, next.enabled)
             putBoolean(KEY_CALL_AFTER, next.callAfter)
-            putInt(KEY_COUNTDOWN, next.countdownSeconds)
+            putInt(KEY_FALL_CANCEL, next.fallCancelSeconds)
         }
         settingsFlow(context).value = next
     }
@@ -56,8 +59,12 @@ object SosPreferences {
         val s = settingsFlow(context).value
         if (!s.enabled) return null
         val number = number(context) ?: return null
-        return SosConfig(number, UserProfile.load(context).name, 0, s.callAfter)
+        return SosConfig(number, UserProfile.load(context).name, s.fallCancelSeconds, s.callAfter)
     }
+
+    /** Only the offered lengths are kept; anything else falls back to the default. */
+    private fun cancelWindow(seconds: Int): Int =
+        if (seconds in SosCoordinator.FALL_CANCEL_CHOICES) seconds else SosCoordinator.DEFAULT_FALL_CANCEL_SECONDS
 
     fun records(context: Context): StateFlow<List<SosRecord>> = recordsFlow(context).asStateFlow()
 
@@ -85,7 +92,7 @@ object SosPreferences {
                 Settings(
                     enabled = it.getBoolean(KEY_ENABLED, false),
                     callAfter = it.getBoolean(KEY_CALL_AFTER, false),
-                    countdownSeconds = 0 // Older saved countdowns no longer delay automatic SMS.
+                    fallCancelSeconds = cancelWindow(it.getInt(KEY_FALL_CANCEL, SosCoordinator.DEFAULT_FALL_CANCEL_SECONDS))
                 )
             }
         ).also { settings = it }

@@ -54,8 +54,26 @@ class SosPolicyTest {
 
     @Test
     fun `every confirmed non motion anomaly sends at every severity`() {
-        for (type in AnomalyType.entries.filter { it != AnomalyType.FALL_DETECTED }) {
+        val excluded = setOf(AnomalyType.FALL_DETECTED, AnomalyType.HEART_RATE_CONTEXT)
+        for (type in AnomalyType.entries.filter { it !in excluded }) {
             for (severity in Severity.entries) assertNotNull("$type $severity", reason(type, severity))
+        }
+    }
+
+    /** A trained model's early hint is a reason to look, not to text someone. */
+    @Test
+    fun `the heart-rate-in-context finding never sends`() {
+        for (severity in Severity.entries) {
+            assertNull(reason(AnomalyType.HEART_RATE_CONTEXT, severity, sample(hr = 140)))
+        }
+    }
+
+    /** The city's weather is not the air around this person. */
+    @Test
+    fun `heat findings resting on city weather never send`() {
+        for (type in listOf(AnomalyType.HEAT_STRESS, AnomalyType.DEHYDRATION_RISK)) {
+            assertNull(SosPolicy.reasonFor(type, Severity.MODERATE, sample(hr = 110), fromCityWeather = true))
+            assertNotNull(SosPolicy.reasonFor(type, Severity.MODERATE, sample(hr = 110), fromCityWeather = false))
         }
     }
 

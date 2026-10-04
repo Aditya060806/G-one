@@ -101,8 +101,11 @@ android {
 
     // Room's MigrationTestHelper reads each version's exported schema from the test APK's
     // assets. Without this the instrumented migration tests could not find 1.json … 4.json.
+    // The second directory holds the models' expected outputs (written by the scripts in ml/),
+    // so the same files check the Kotlin maths on the JVM and the models themselves on a phone.
     sourceSets {
         getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest").assets.srcDir("$projectDir/src/test/resources")
     }
 
     compileOptions {
@@ -133,7 +136,8 @@ android {
     // By default Android compresses assets. We must disable compression for
     // large binary files — compressed assets can't be memory-mapped efficiently.
     androidResources {
-        noCompress += listOf("gguf", "bin", "model")
+        // .tflite: the small sensor models are memory-mapped straight from the APK.
+        noCompress += listOf("gguf", "bin", "model", "tflite")
     }
 
     // ── Packaging: include native .so files, exclude duplicates ─────────────────
@@ -177,6 +181,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.lottie.compose)
     implementation(libs.zxing.core)
+    // Runs the small trained sensor models (app/src/main/assets/ml). The language model
+    // does not go through this; it stays on llama.cpp.
+    implementation(libs.litert)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)

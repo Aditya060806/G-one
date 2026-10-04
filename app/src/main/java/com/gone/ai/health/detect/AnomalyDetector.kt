@@ -42,7 +42,9 @@ class AnomalyDetector(
         samples: List<VitalsSample>,
         baseline: PatientBaseline = PatientBaseline.EMPTY,
         now: Long,
-        recentEvents: Map<AnomalyType, RecentEvent> = emptyMap()
+        recentEvents: Map<AnomalyType, RecentEvent> = emptyMap(),
+        signals: ModelSignals = ModelSignals.NONE,
+        areaWeather: AreaWeather? = null
     ): DetectionResult {
         val window = VitalsWindow.of(samples)
 
@@ -61,7 +63,9 @@ class AnomalyDetector(
             baseline   = baseline,
             thresholds = thresholds,
             riskScores = risk,
-            now        = now
+            now        = now,
+            signals    = signals,
+            areaWeather = areaWeather
         )
 
         val fired = rules.mapNotNull { rule ->

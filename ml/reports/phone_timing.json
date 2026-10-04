@@ -1,0 +1,5 @@
+{
+  "note": "Median of 200 runs on the CPU (LiteRT, 2 threads), read from the app's Model Lab screen on 4 October 2026. The fall model was timed twice: 15 and 27 microseconds.",
+  "device": "Samsung SM-S721B (Exynos 2400e), Android 16",
+  "inference_micros": {"fall": 27, "hr_context": 9, "sleep": 18}
+}

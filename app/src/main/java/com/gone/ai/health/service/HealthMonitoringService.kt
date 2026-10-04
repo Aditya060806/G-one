@@ -60,6 +60,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import com.gone.ai.health.environment.AreaAwareness
+import com.gone.ai.ml.HrContextModel
+import com.gone.ai.ml.ModelRegistry
+import com.gone.ai.ml.TfliteScorer
 
 /**
  * The foreground service that runs continuous health monitoring.
@@ -252,6 +256,8 @@ class HealthMonitoringService : Service() {
     private var modelLease: ModelLeaseTracker.Lease? = null
     private var patientId: String = DEFAULT_PATIENT_ID
     private lateinit var sos: SosCoordinator
+    /** The heart-rate-in-context model, held for the life of the service and closed with it. */
+    private var hrContextScorer: TfliteScorer? = null
     /** Only a real wearable raises an SOS: simulated vitals are not a person. */
     @Volatile private var streamingFromWearable = false
 
@@ -274,8 +280,11 @@ class HealthMonitoringService : Service() {
         activeSos = sos
         scope.launch {
             sos.pending.collect { waiting ->
-                _pendingSos.value = waiting?.takeIf { SosPreferences.config(this@HealthMonitoringService)?.countdownSeconds != 0 }
-                if (waiting != null && SosPreferences.config(this@HealthMonitoringService)?.countdownSeconds != 0) HealthNotifications.showSosCountdown(this@HealthMonitoringService, waiting)
+                // Only a fall's "I'm OK" window is shown. The short pause that gathers other
+                // alerts into one message is not something the wearer can or should stop.
+                val shown = waiting?.takeIf { it.cancellable }
+                _pendingSos.value = shown
+                if (shown != null) HealthNotifications.showSosCountdown(this@HealthMonitoringService, shown)
                 else HealthNotifications.cancelSosCountdown(this@HealthMonitoringService)
             }
         }
@@ -287,7 +296,14 @@ class HealthMonitoringService : Service() {
             alerts = SosAwareAlertSink(NotificationAlertSink(this)),
             // The model is an optional enhancement. Monitoring is fully functional
             // without it, which is what keeps it off the critical path.
-            explainer = LlamaAiExplainer(aiRepository)
+            explainer = LlamaAiExplainer(aiRepository),
+            // A few-kilobyte trained model; null (and its rule silent) if it is missing or
+            // fails its checksum.
+            heartRateExpectation = ModelRegistry.open(this, "hr_context")?.let { scorer ->
+                hrContextScorer = scorer
+                HrContextModel(scorer, ModelRegistry.info(this, "hr_context")?.version ?: 1)
+            },
+            areaWeather = { AreaAwareness.weatherForRules(this) }
         )
 
         scope.launch {
@@ -614,6 +630,8 @@ class HealthMonitoringService : Service() {
             else CoroutineScope(Dispatchers.IO).launch { sos.sendPendingNow() }
         }
         stoppedByWearer = false
+        hrContextScorer?.close()
+        hrContextScorer = null
         activeSos = null
         _pendingSos.value = null
         HealthNotifications.cancelSosCountdown(this)
@@ -648,13 +666,17 @@ class HealthMonitoringService : Service() {
             val fallImpactG = if (type == AnomalyType.FALL_DETECTED) {
                 runCatching { JSONObject(event.evidenceJson).optDouble("fall_impact_g").toFloat() }.getOrNull()
             } else null
+            val fromCityWeather = runCatching {
+                JSONObject(event.evidenceJson).optString("environment_source") == "city"
+            }.getOrDefault(false)
             val reason = SosPolicy.reasonFor(
                 type = type,
                 severity = Severity.fromWireName(event.severity),
                 latest = pipeline.snapshot.value.latest,
-                fallImpactG = fallImpactG
+                fallImpactG = fallImpactG,
+                fromCityWeather = fromCityWeather
             ) ?: return
-            sos.raise(reason)
+            sos.raise(reason, fall = type == AnomalyType.FALL_DETECTED)
         }
 
         override suspend fun onExplanationUpgraded(eventId: Long, text: String) =

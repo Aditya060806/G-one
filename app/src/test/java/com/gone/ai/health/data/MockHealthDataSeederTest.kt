@@ -37,7 +37,8 @@ class MockHealthDataSeederTest {
         "motion.fall"          to AnomalyType.FALL_DETECTED,
         "wellness.fatigue"     to AnomalyType.FATIGUE,
         "baseline.deviation"   to AnomalyType.BASELINE_DEVIATION,
-        "emg.sustainedHigh"    to AnomalyType.SUSTAINED_MUSCLE_ACTIVITY
+        "emg.sustainedHigh"    to AnomalyType.SUSTAINED_MUSCLE_ACTIVITY,
+        "ml.hrContext"         to AnomalyType.HEART_RATE_CONTEXT
     )
 
     /** Severities each rule can actually emit, read from AnomalyRules. */
@@ -55,7 +56,8 @@ class MockHealthDataSeederTest {
         "motion.fall"          to setOf(Severity.CRITICAL),
         "wellness.fatigue"     to setOf(Severity.LOW),
         "baseline.deviation"   to setOf(Severity.LOW, Severity.MODERATE),
-        "emg.sustainedHigh"    to setOf(Severity.LOW, Severity.MODERATE)
+        "emg.sustainedHigh"    to setOf(Severity.LOW, Severity.MODERATE),
+        "ml.hrContext"         to setOf(Severity.LOW, Severity.MODERATE)
     )
 
     @Test

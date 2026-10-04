@@ -22,7 +22,9 @@ class OpenMeteoClient : AqiClient {
             runCatching {
                 val item = result.getJSONObject(index)
                 AqiPlace(item.getLong("id"), listOf(item.getString("name"), item.optString("admin1"), item.optString("country"))
-                    .filter { it.isNotBlank() }.distinct().joinToString(", "), item.getDouble("latitude"), item.getDouble("longitude"))
+                    .filter { it.isNotBlank() }.distinct().joinToString(", "), item.getDouble("latitude"), item.getDouble("longitude"),
+                    state = item.optString("admin1").takeIf { it.isNotBlank() },
+                    district = item.optString("admin2").removeSuffix(" district").removeSuffix(" District").takeIf { it.isNotBlank() })
                     .takeIf { it.latitude in -90.0..90.0 && it.longitude in -180.0..180.0 }
             }.getOrNull()
         }
@@ -36,30 +38,37 @@ class OpenMeteoClient : AqiClient {
         return AqiReading(value.roundToInt(), current.getLong("time") * 1000L, now)
     }
 
-    private suspend fun get(address: String): JSONObject = withContext(Dispatchers.IO) {
+    private suspend fun get(address: String): JSONObject = JSONObject(HttpText.get(address, "application/json"))
+}
+
+/**
+ * One plain GET, read as text, for the optional area services. HTTPS only by address, no
+ * redirects, short timeouts, and a size cap so a misbehaving server cannot fill memory.
+ */
+object HttpText {
+    suspend fun get(address: String, accept: String, maxChars: Int = 65_536): String = withContext(Dispatchers.IO) {
         // Cancellation disconnects the socket, so slow/trickling responses cannot block the UI timeout.
         suspendCancellableCoroutine { continuation ->
             val connection = URL(address).openConnection() as HttpURLConnection
             connection.connectTimeout = 4_000
             connection.readTimeout = 4_000
             connection.instanceFollowRedirects = false
-            connection.setRequestProperty("Accept", "application/json")
+            connection.setRequestProperty("Accept", accept)
             val future = executor.submit {
                 try {
                     check(connection.responseCode == 200)
                     val text = connection.inputStream.bufferedReader().use { reader ->
-                        val chars = CharArray(65_537)
+                        val chars = CharArray(maxChars + 1)
                         var count = 0
                         while (count < chars.size) {
                             val read = reader.read(chars, count, chars.size - count)
                             if (read < 0) break
                             count += read
                         }
-                        require(count <= 65_536)
+                        require(count <= maxChars)
                         String(chars, 0, count)
                     }
-                    val result = JSONObject(text)
-                    if (continuation.isActive) continuation.resume(result)
+                    if (continuation.isActive) continuation.resume(text)
                 } catch (e: Exception) {
                     if (continuation.isActive) continuation.resumeWithException(e)
                 } finally { connection.disconnect() }
@@ -68,7 +77,7 @@ class OpenMeteoClient : AqiClient {
         }
     }
 
-    companion object { private val executor = Executors.newFixedThreadPool(2) }
+    private val executor = Executors.newFixedThreadPool(2)
 }
 
 class AndroidAqiStore(context: Context) : AqiStore {
@@ -76,7 +85,9 @@ class AndroidAqiStore(context: Context) : AqiStore {
     override fun load(): AqiSaved = runCatching {
         val json = JSONObject(preferences.getString("saved", "{}") ?: "{}")
         val place = json.optJSONObject("place")?.let {
-            AqiPlace(it.getLong("id"), it.getString("label"), it.getDouble("latitude"), it.getDouble("longitude"))
+            AqiPlace(it.getLong("id"), it.getString("label"), it.getDouble("latitude"), it.getDouble("longitude"),
+                state = it.optString("state").takeIf { s -> s.isNotBlank() },
+                district = it.optString("district").takeIf { s -> s.isNotBlank() })
         }
         val reading = if (place != null) json.optJSONObject("reading")?.let {
             AqiReading(it.getInt("value"), it.getLong("observed"), it.getLong("fetched"))
@@ -86,7 +97,10 @@ class AndroidAqiStore(context: Context) : AqiStore {
 
     override fun save(value: AqiSaved) {
         val json = JSONObject().put("enabled", value.enabled)
-        value.place?.let { json.put("place", JSONObject().put("id", it.id).put("label", it.label).put("latitude", it.latitude).put("longitude", it.longitude)) }
+        value.place?.let {
+            json.put("place", JSONObject().put("id", it.id).put("label", it.label).put("latitude", it.latitude).put("longitude", it.longitude)
+                .put("state", it.state ?: "").put("district", it.district ?: ""))
+        }
         value.reading?.let { json.put("reading", JSONObject().put("value", it.value).put("observed", it.observedAt).put("fetched", it.fetchedAt)) }
         preferences.edit().putString("saved", json.toString()).apply()
     }

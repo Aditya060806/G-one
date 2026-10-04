@@ -1,0 +1,43 @@
+{
+  "model": "sleep_v1",
+  "data": {
+    "nights": 31,
+    "scored_epochs": 25395,
+    "awake_share": 0.0852,
+    "dataset": "Walch et al. 2019, PhysioNet (Apple Watch movement, lab sleep scoring)"
+  },
+  "test": "5-fold, split by person",
+  "fold_thresholds": [
+    0.1666,
+    0.2308,
+    0.2486,
+    0.2013,
+    0.2046
+  ],
+  "model_scores": {
+    "epochs": 25395,
+    "accuracy": 0.9193,
+    "sleep_sensitivity": 0.9592,
+    "wake_specificity": 0.4905,
+    "kappa": 0.4647,
+    "total_sleep_error_min": 17.4
+  },
+  "movement_threshold_scores": {
+    "epochs": 25395,
+    "accuracy": 0.9066,
+    "sleep_sensitivity": 0.9547,
+    "wake_specificity": 0.3902,
+    "kappa": 0.3652,
+    "total_sleep_error_min": 19.7
+  },
+  "always_asleep_accuracy": 0.9148,
+  "threshold": 0.1903,
+  "export": {
+    "file": "app/src/main/assets/ml/sleep_v1.tflite",
+    "bytes": 6624,
+    "parameters": 2593,
+    "largest_difference_from_float": 0.0492,
+    "decisions_changed_by_8bit": 7,
+    "of_epochs": 5000
+  }
+}

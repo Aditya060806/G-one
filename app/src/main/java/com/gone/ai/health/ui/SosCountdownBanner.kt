@@ -74,7 +74,7 @@ fun SosCountdownBanner(modifier: Modifier = Modifier) {
             modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive }
         )
         Text(
-            "G-one will text, then call, your emergency contact. If you are all right, stop it.",
+            "G-one will ${if (waiting.willCall) "text, then call," else "text"} your emergency contact. If you are all right, stop it.",
             color = Color.White.copy(alpha = 0.9f),
             fontSize = 14.sp
         )

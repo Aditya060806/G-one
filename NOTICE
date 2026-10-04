@@ -1,0 +1,47 @@
+G-one
+Copyright (c) 2026 Aditya Pandey and the G-one contributors. Licensed under the MIT License (see LICENSE).
+
+This project includes or depends on work by others. Their terms apply to their parts.
+
+Software
+
+  llama.cpp and ggml (app/src/main/cpp/llama)
+      Copyright (c) 2023-2026 The ggml authors. MIT License.
+      https://github.com/ggml-org/llama.cpp
+
+  Android Jetpack, Kotlin, Compose, Room, ML Kit, ZXing, LiteRT and the other Gradle
+  dependencies listed in gradle/libs.versions.toml: Apache License 2.0 unless their own
+  notices say otherwise.
+
+Language model (downloaded by tools/fetch_model.ps1, not stored in this repository)
+
+  Qwen2.5-1.5B-Instruct, GGUF Q4_K_M
+      Copyright (c) Alibaba Cloud. Apache License 2.0.
+      https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
+
+Data used to train the small sensor models in app/src/main/assets/ml (see ml/README.md)
+
+  UMAFall
+      E. Casilari, J. A. Santoyo-Ramon, J. M. Cano-Garcia, "UMAFall: A Multisensor Dataset for
+      the Research on Automatic Fall Detection", Procedia Computer Science 110, 2017.
+      Universidad de Malaga. CC BY 4.0. https://doi.org/10.6084/m9.figshare.4214283
+      A few short recordings from it are also bundled as test and demonstration samples.
+
+  WEDA-FALL
+      J. Marques, P. Moreno, "Online Fall Detection Using Wrist Devices", Sensors 23(3), 2023.
+      https://github.com/joaojtmarques/WEDA-FALL
+      Used for training and testing only. Its repository states no licence, so no recording
+      from it is redistributed here.
+
+  PAMAP2 Physical Activity Monitoring
+      A. Reiss, D. Stricker, "Introducing a New Benchmark Dataset for Activity Monitoring",
+      ISWC 2012. CC BY 4.0. https://doi.org/10.24432/C5NW2H
+
+  Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography
+      O. Walch et al., SLEEP 42(12), 2019; PhysioNet. https://doi.org/10.13026/hmhs-py35
+
+Public information services the app can contact when the wearer switches them on
+
+  Open-Meteo (weather, air quality, geocoding): https://open-meteo.com, CC BY 4.0 data.
+  SACHET, National Disaster Management Authority, Government of India: public alert feeds,
+  https://sachet.ndma.gov.in

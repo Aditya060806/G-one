@@ -11,6 +11,7 @@ import com.gone.ai.health.domain.Trend
 import com.gone.ai.health.domain.VitalsSample
 import com.gone.ai.health.domain.classifyTrend
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 /**
  * Everything a rule is allowed to look at.
@@ -24,10 +25,25 @@ data class DetectionContext(
     val baseline: PatientBaseline,
     val thresholds: AnomalyThresholds,
     val riskScores: RiskScores,
-    val now: Long
+    val now: Long,
+    /** What the trained models said; see [ModelSignals]. Rules that use none ignore it. */
+    val signals: ModelSignals = ModelSignals.NONE,
+    /** The wearer's city weather, if they switched it on; see [AreaWeather]. */
+    val areaWeather: AreaWeather? = null
 ) {
     val latest: VitalsSample? get() = window.latest
-    val env: EnvironmentContext get() = window.environment
+
+    /**
+     * The environment the rules judge heat against: the wearable's own ambient reading when it
+     * sends one, otherwise the city's weather while it is fresh, otherwise nothing.
+     */
+    val env: EnvironmentContext
+        get() {
+            val own = window.environment
+            if (own.ambientTempC != null) return own
+            val area = areaWeather?.takeIf { it.isFresh(now) } ?: return own
+            return EnvironmentContext.from(area.temperatureC, area.humidityPct, own.aqi, EnvironmentSource.CITY)
+        }
 
     /**
      * Assemble evidence, filling the observational fields from the newest sample.
@@ -43,9 +59,14 @@ data class DetectionContext(
         durationMinutes: Int? = null,
         trend: Trend? = null,
         baselineDeltaPct: Float? = null,
-        fallImpactG: Float? = null
+        fallImpactG: Float? = null,
+        expectedHeartRate: Int? = null,
+        modelId: String? = null,
+        modelScore: Float? = null
     ): AnomalyEvidence {
         val l = latest
+        // City weather is quoted only by the heat findings that relied on it, and says so.
+        val cityWeather = type in HEAT_TYPES && env.source == EnvironmentSource.CITY
         return AnomalyEvidence(
             type               = type,
             severity           = severity,
@@ -56,8 +77,8 @@ data class DetectionContext(
             spo2               = l?.spo2,
             bodyTempC          = l?.bodyTempC,
             skinTempC          = if (type == AnomalyType.HIGH_SKIN_TEMPERATURE) l?.skinTempC else null,
-            ambientTempC       = l?.ambientTempC,
-            ambientHumidityPct = l?.ambientHumidityPct,
+            ambientTempC       = if (cityWeather) env.ambientTempC else l?.ambientTempC,
+            ambientHumidityPct = if (cityWeather) env.humidityPct else l?.ambientHumidityPct,
             aqi                = l?.aqi,
             durationMinutes    = durationMinutes,
             trend              = trend,
@@ -65,7 +86,11 @@ data class DetectionContext(
             fallImpactG        = fallImpactG,
             motionDetected     = l?.motionMagnitudeG?.let { it > VitalsSample.REST_MOTION_G },
             sampleCount        = window.size,
-            emgLevel           = if (type == AnomalyType.SUSTAINED_MUSCLE_ACTIVITY) l?.emgMean else null
+            emgLevel           = if (type == AnomalyType.SUSTAINED_MUSCLE_ACTIVITY) l?.emgMean else null,
+            expectedHeartRate  = expectedHeartRate,
+            modelId            = modelId,
+            modelScore         = modelScore,
+            environmentSource  = if (cityWeather) EnvironmentSource.CITY.name.lowercase() else null
         )
     }
 
@@ -76,12 +101,20 @@ data class DetectionContext(
         durationMinutes: Int? = null,
         trend: Trend? = null,
         baselineDeltaPct: Float? = null,
-        fallImpactG: Float? = null
+        fallImpactG: Float? = null,
+        expectedHeartRate: Int? = null,
+        modelId: String? = null,
+        modelScore: Float? = null
     ) = AnomalyCandidate(
         type     = type,
         severity = severity,
-        evidence = evidence(type, severity, ruleId, durationMinutes, trend, baselineDeltaPct, fallImpactG)
+        evidence = evidence(type, severity, ruleId, durationMinutes, trend, baselineDeltaPct, fallImpactG,
+            expectedHeartRate, modelId, modelScore)
     )
+
+    private companion object {
+        val HEAT_TYPES = setOf(AnomalyType.HEAT_STRESS, AnomalyType.DEHYDRATION_RISK)
+    }
 }
 
 /** A single deterministic detection rule. */
@@ -251,7 +284,9 @@ object HeatStressRule : AnomalyRule {
         if (!coreElevated && !hrElevated && !tempRising) return null
 
         val severity = when {
-            env.isSevereHeat(t) && (coreElevated || hrElevated) -> Severity.CRITICAL
+            // A city's weather is not the air around this person: it can support a warning, not
+            // the most urgent tier.
+            env.isSevereHeat(t) && (coreElevated || hrElevated) && env.source == EnvironmentSource.WEARABLE -> Severity.CRITICAL
             coreElevated || hrElevated -> Severity.MODERATE
             else -> Severity.LOW
         }
@@ -541,6 +576,67 @@ object AnomalyRules {
         FallDetectionRule,
         FatigueRule,
         BaselineDeviationRule,
-        SustainedMuscleActivityRule
+        SustainedMuscleActivityRule,
+        HeartRateContextRule
     )
+}
+
+/**
+ * Heart rate well above what the last five minutes of movement explain.
+ *
+ * THE ONE RULE THAT READS A TRAINED MODEL. `HrContextModel` (trained on PAMAP2, see
+ * `ml/hr_context`) gives, for each reading, the band of heart rates people showed for that
+ * amount of movement, relative to their resting rate. This rule decides, with fixed numbers:
+ *
+ *   LOW       at least 90 % of the last 3 minutes' readings 10 or more bpm above the band
+ *   MODERATE  at least 90 % of the last 5 minutes' readings 30 or more bpm above the band
+ *
+ * It catches "150 while barely moving", which the fixed heart-rate rule (at rest only) and the
+ * baseline rule (at rest only) both miss. It never goes above MODERATE, it never sends an SOS,
+ * and it stays out of the fixed heart-rate rule's way: when that rule would fire, this one does
+ * not. With no model, no reliable resting rate or too little movement data it is silent.
+ */
+object HeartRateContextRule : AnomalyRule {
+    override val id = "ml.hrContext"
+
+    const val LOW_EXCESS_BPM = 10f
+    const val LOW_SPAN_MILLIS = 3 * 60_000L
+    const val LOW_MIN_READINGS = 30
+    const val MODERATE_EXCESS_BPM = 30f
+    const val MODERATE_SPAN_MILLIS = 5 * 60_000L
+    const val MODERATE_MIN_READINGS = 48
+    const val SHARE = 0.9f
+
+    override fun evaluate(ctx: DetectionContext): AnomalyCandidate? {
+        val latest = ctx.latest ?: return null
+        val rate = latest.heartRate ?: return null
+        val band = ctx.signals.heartRateBands[latest.timestamp] ?: return null
+        val t = ctx.thresholds
+        if (rate >= t.hrCriticalHighBpm || (rate >= t.hrHighBpm && ctx.window.isAtRest)) return null
+
+        val (severity, minutes) = when {
+            held(ctx, latest.timestamp, MODERATE_SPAN_MILLIS, MODERATE_MIN_READINGS, MODERATE_EXCESS_BPM) -> Severity.MODERATE to 5
+            held(ctx, latest.timestamp, LOW_SPAN_MILLIS, LOW_MIN_READINGS, LOW_EXCESS_BPM) -> Severity.LOW to 3
+            else -> return null
+        }
+        return ctx.candidate(
+            AnomalyType.HEART_RATE_CONTEXT, severity, id,
+            durationMinutes = minutes,
+            expectedHeartRate = band.high.roundToInt(),
+            modelId = "hr_context_v${band.modelVersion}",
+            modelScore = rate - band.high
+        )
+    }
+
+    private fun held(ctx: DetectionContext, now: Long, span: Long, need: Int, excess: Float): Boolean {
+        val above = ctx.window.samples
+            .filter { it.timestamp > now - span && it.timestamp <= now }
+            .mapNotNull { s ->
+                val r = s.heartRate ?: return@mapNotNull null
+                val b = ctx.signals.heartRateBands[s.timestamp] ?: return@mapNotNull null
+                r - b.high
+            }
+        if (above.size < need) return false
+        return above.count { it >= excess } >= SHARE * above.size
+    }
 }

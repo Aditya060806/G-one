@@ -1,0 +1,77 @@
+{
+  "model": "hr_context_v1",
+  "data": {
+    "people": 9,
+    "hours": 10.7,
+    "dataset": "PAMAP2 (wrist movement, chest-strap heart rate)"
+  },
+  "test": "leave one person out",
+  "expected_rate": {
+    "mean_error_bpm": {
+      "model": 14.11,
+      "resting rate": 22.96,
+      "straight line": 14.22
+    },
+    "median_error_bpm": {
+      "model": 10.84,
+      "resting rate": 16.24,
+      "straight line": 11.12
+    },
+    "share_inside_band": 0.6427,
+    "band": "10th to 90th percentile",
+    "mean_error_by_activity_bpm": {
+      "ascending stairs": 21.6,
+      "car driving": 5.6,
+      "computer work": 10.0,
+      "cycling": 14.4,
+      "descending stairs": 24.3,
+      "folding laundry": 13.4,
+      "house cleaning": 11.6,
+      "ironing": 9.8,
+      "lying": 8.4,
+      "nordic walking": 13.2,
+      "playing soccer": 49.6,
+      "rope jumping": 26.7,
+      "running": 18.6,
+      "sitting": 8.4,
+      "standing": 10.8,
+      "transition": 16.5,
+      "vacuum cleaning": 12.6,
+      "walking": 10.2,
+      "watching TV": 7.4
+    }
+  },
+  "false_alarms": {
+    "note": "Held-out recordings of healthy people doing ordinary activities; every alert here is unwanted.",
+    "hours": 10.7,
+    "model_rule_alerts": 1,
+    "model_rule_per_24h": 2.24,
+    "fixed_rule_alerts": 23,
+    "fixed_rule_per_24h": 51.58
+  },
+  "made_up_rises": {
+    "+25 bpm for 6 min": {
+      "trials": 32,
+      "model_rule_detected": 0.3438,
+      "fixed_rule_detected": 0.5625,
+      "either_rule_detected": 0.7812,
+      "only_model_rule_detected": 0.2188,
+      "model_median_delay_s": 209.0
+    },
+    "+40 bpm for 6 min": {
+      "trials": 32,
+      "model_rule_detected": 0.5312,
+      "fixed_rule_detected": 0.8125,
+      "either_rule_detected": 0.9375,
+      "only_model_rule_detected": 0.125,
+      "model_median_delay_s": 164.1
+    }
+  },
+  "export": {
+    "file": "app/src/main/assets/ml/hr_context_v1.tflite",
+    "bytes": 4768,
+    "parameters": 867,
+    "largest_difference_bpm": 6.74,
+    "mean_difference_bpm": 0.571
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "fall": {
+    "parameters": 4185,
+    "float32_bytes": 18360,
+    "int8_bytes": 14072,
+    "ratio": 1.3
+  },
+  "hr_context": {
+    "parameters": 867,
+    "float32_bytes": 4816,
+    "int8_bytes": 3560,
+    "ratio": 1.35
+  },
+  "sleep": {
+    "parameters": 2593,
+    "float32_bytes": 11864,
+    "int8_bytes": 5440,
+    "ratio": 2.18
+  }
+}

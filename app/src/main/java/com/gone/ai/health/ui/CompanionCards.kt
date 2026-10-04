@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.NightsStay
 import androidx.compose.material.icons.filled.SelfImprovement
+import androidx.compose.material.icons.filled.Thunderstorm
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.background
@@ -53,6 +54,7 @@ internal fun CompanionCards(darkTheme: Boolean, vm: CompanionViewModel = viewMod
                 while (true) {
                     now = System.currentTimeMillis()
                     vm.refreshAqi()
+                    vm.refreshArea()
                     delay(60_000)
                 }
             } finally { vm.pauseAqi() }
@@ -60,16 +62,18 @@ internal fun CompanionCards(darkTheme: Boolean, vm: CompanionViewModel = viewMod
     }
     AirQualityCard(vm, darkTheme, now)
     Spacer(Modifier.height(14.dp))
+    AreaCard(vm, darkTheme, now)
+    Spacer(Modifier.height(14.dp))
     WellnessCard(vm, darkTheme, now)
 }
 
 @Composable
-private fun CompanionPanel(title: String, dark: Boolean, content: @Composable ColumnScope.() -> Unit) {
+internal fun CompanionPanel(title: String, dark: Boolean, content: @Composable ColumnScope.() -> Unit) {
     Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp), color = if (dark) ModernCardDark else ModernCardLight) {
         Column(Modifier.animateContentSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Box(Modifier.size(42.dp).background(companionAccent(dark).copy(alpha = 0.10f), RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
-                    Icon(when (title) { "Sleep" -> Icons.Default.NightsStay; "Stress" -> Icons.Default.SelfImprovement; else -> Icons.Default.Air }, null, tint = companionAccent(dark))
+                    Icon(when (title) { "Sleep" -> Icons.Default.NightsStay; "Stress" -> Icons.Default.SelfImprovement; "Your area" -> Icons.Default.Thunderstorm; else -> Icons.Default.Air }, null, tint = companionAccent(dark))
                 }
                 Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             }
@@ -149,6 +153,9 @@ private fun AirQualityCard(vm: CompanionViewModel, dark: Boolean, now: Long) {
     }
 }
 
+private fun clock(at: Long) = java.time.Instant.ofEpochMilli(at).atZone(ZoneId.systemDefault()).toLocalTime()
+    .let { String.format(Locale.US, "%02d:%02d", it.hour, it.minute) }
+private fun localDate(at: Long) = java.time.Instant.ofEpochMilli(at).atZone(ZoneId.systemDefault()).toLocalDate()
 private fun formatAqiTime(time: Long) = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(time))
 private fun durationText(minutes: Int) = "${minutes / 60}h ${minutes % 60}m"
 private fun dateTimestamp(date: LocalDate) = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -157,6 +164,9 @@ private fun dateTimestamp(date: LocalDate) = date.atStartOfDay(ZoneId.systemDefa
 private fun WellnessCard(vm: CompanionViewModel, dark: Boolean, now: Long) {
     val logs by vm.journal.logs.collectAsState()
     var sleepDialog by rememberSaveable { mutableStateOf(false) }
+    var useEstimate by rememberSaveable { mutableStateOf(false) }
+    val estimate by vm.sleepEstimate.collectAsState()
+    LaunchedEffect(Unit) { vm.refreshSleepEstimate() }
     var stressDialog by rememberSaveable { mutableStateOf(false) }
     var historyDialog by rememberSaveable { mutableStateOf(false) }
     var clearDialog by rememberSaveable { mutableStateOf(false) }
@@ -169,7 +179,15 @@ private fun WellnessCard(vm: CompanionViewModel, dark: Boolean, now: Long) {
         Text(average?.let { durationText(it) } ?: "—", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
         Text(if (average == null) "Build your sleep picture, one night at a time." else "Average sleep · ${weekSleep.size} of 7 days logged", style = MaterialTheme.typography.bodyMedium)
         WellnessWeekBars(weekSleep.associate { it.wakeDate to it.sleepMinutes / 60f }, today, "hours", 12f, dark)
-        Button(onClick = { sleepDialog = true }, modifier = Modifier.fillMaxWidth()) { Text("Log or edit sleep") }
+        estimate?.let { e ->
+            Text("Estimated from the wearable, last night", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text("${durationText(e.asleepMinutes)} asleep, ${clock(e.fellAsleep)} to ${clock(e.wokeUp)}, about ${e.awakeMinutes} min awake in between",
+                style = MaterialTheme.typography.bodyMedium)
+            Text("From wrist movement by the on-device sleep model; ${(e.coverage * 100).roundToInt()} % of the night had readings. An estimate, not sleep stages.",
+                style = MaterialTheme.typography.labelSmall)
+            OutlinedButton(onClick = { useEstimate = true; sleepDialog = true }, modifier = Modifier.fillMaxWidth()) { Text("Use as a diary entry") }
+        }
+        Button(onClick = { useEstimate = false; sleepDialog = true }, modifier = Modifier.fillMaxWidth()) { Text("Log or edit sleep") }
         Text("Your sleep diary · not measured sleep stages", style = MaterialTheme.typography.labelSmall)
     }
     Spacer(Modifier.height(14.dp))
@@ -188,7 +206,7 @@ private fun WellnessCard(vm: CompanionViewModel, dark: Boolean, now: Long) {
         Text("Your check-in · not an AI diagnosis or SOS trigger", style = MaterialTheme.typography.labelSmall)
         TextButton(onClick = { historyDialog = true }) { Text("Manage sleep & stress history") }
     }
-    if (sleepDialog) WellnessEntryDialog(true, vm, today) { sleepDialog = false }
+    if (sleepDialog) WellnessEntryDialog(true, vm, today, prefill = estimate.takeIf { useEstimate }) { sleepDialog = false }
     if (stressDialog) WellnessEntryDialog(false, vm, today) { stressDialog = false }
     if (historyDialog) AlertDialog(onDismissRequest = { historyDialog = false }, title = { Text("Your local entries") }, text = {
         LazyColumn(Modifier.heightIn(max = 380.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -220,15 +238,22 @@ private fun WellnessCard(vm: CompanionViewModel, dark: Boolean, now: Long) {
 private fun stressLabel(level: Int) = listOf("Very low", "Low", "Moderate", "High", "Very high")[level - 1]
 
 @Composable
-private fun WellnessEntryDialog(sleep: Boolean, vm: CompanionViewModel, today: LocalDate, dismiss: () -> Unit) {
+private fun WellnessEntryDialog(
+    sleep: Boolean,
+    vm: CompanionViewModel,
+    today: LocalDate,
+    prefill: com.gone.ai.ml.SleepEstimate? = null,
+    dismiss: () -> Unit
+) {
     val logs by vm.journal.logs.collectAsState()
-    var date by rememberSaveable { mutableStateOf(today.toString()) }
-    var bed by rememberSaveable { mutableStateOf("23:00") }
-    var wake by rememberSaveable { mutableStateOf("07:00") }
-    var awake by rememberSaveable { mutableStateOf("0") }
+    var date by rememberSaveable { mutableStateOf(prefill?.let { localDate(it.wokeUp).toString() } ?: today.toString()) }
+    var bed by rememberSaveable { mutableStateOf(prefill?.let { clock(it.fellAsleep) } ?: "23:00") }
+    var wake by rememberSaveable { mutableStateOf(prefill?.let { clock(it.wokeUp) } ?: "07:00") }
+    var awake by rememberSaveable { mutableStateOf(prefill?.awakeMinutes?.toString() ?: "0") }
     var rating by rememberSaveable { mutableFloatStateOf(3f) }
     var problem by rememberSaveable { mutableStateOf<String?>(null) }
     LaunchedEffect(date) {
+        if (prefill != null) return@LaunchedEffect   // the estimate's times stay until the wearer edits them
         val parsed = runCatching { LocalDate.parse(date) }.getOrNull() ?: return@LaunchedEffect
         if (sleep) logs.sleep.firstOrNull { it.wakeDate == parsed }?.let {
             bed = String.format(Locale.US, "%02d:%02d", it.bedtimeMinute / 60, it.bedtimeMinute % 60)

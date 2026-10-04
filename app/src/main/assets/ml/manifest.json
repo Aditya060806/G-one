@@ -1,0 +1,151 @@
+{
+  "models": {
+    "fall": {
+      "bytes": 15408,
+      "file": "fall_v1.tflite",
+      "input": {
+        "clip_g": 4.0,
+        "magnitude_scale": 7.0,
+        "peak_half_width": 12,
+        "pre_samples": 25,
+        "rate_hz": 25,
+        "shape": [
+          1,
+          100,
+          1,
+          4
+        ],
+        "trigger_g": 2.0
+      },
+      "metrics": {
+        "f1": 0.9368,
+        "false_alarms_per_hour": 11.5991,
+        "rule_5g_sensitivity": 0.5068,
+        "rule_5g_specificity": 0.8964,
+        "sensitivity": 0.9623,
+        "specificity": 0.9585,
+        "unseen_dataset_sensitivity": 0.6479,
+        "unseen_dataset_specificity": 0.9814
+      },
+      "parameters": 4185,
+      "quantisation": "INT8 weights and activations, float input and output",
+      "sha256": "33609a9a69896ad1011d70e21cc65629e3357a1d85f421674f48630f600b4c7c",
+      "snapdragon": [
+        {
+          "chipset": "qualcomm-snapdragon-8gen3",
+          "device": "Samsung Galaxy S24 (Family)",
+          "inference_micros": 52,
+          "job": "jgd6xznep",
+          "peak_memory_bytes": 121253888,
+          "runs_on": "NPU (12 of 12 layers)"
+        },
+        {
+          "chipset": "qualcomm-snapdragon-8-elite-for-galaxy",
+          "device": "Samsung Galaxy S25",
+          "inference_micros": 49,
+          "job": "jp2okvx4g",
+          "peak_memory_bytes": 148602880,
+          "runs_on": "NPU (12 of 12 layers)"
+        }
+      ],
+      "tested": "5-fold, split by person",
+      "threshold": 0.6474,
+      "trained_on": "WEDA-FALL (wrist) and UMAFall (wrist, pocket, waist)",
+      "version": 1
+    },
+    "hr_context": {
+      "bytes": 4768,
+      "file": "hr_context_v1.tflite",
+      "input": {
+        "features": 7,
+        "low_excess_bpm": 10.0,
+        "min_readings_5_min": 48,
+        "moderate_excess_bpm": 30.0,
+        "motion_cap_g": 4.0,
+        "output_scale": 50.0,
+        "rest_motion_g": 1.15,
+        "spans_s": [
+          30,
+          60,
+          120,
+          300
+        ]
+      },
+      "metrics": {
+        "false_alarms_per_24h": 2.24,
+        "made_up_rise_25_detected": 0.3438,
+        "made_up_rise_40_detected": 0.5312,
+        "mean_error_bpm": 14.11,
+        "resting_rate_error_bpm": 22.96,
+        "share_inside_band": 0.6427,
+        "straight_line_error_bpm": 14.22
+      },
+      "parameters": 867,
+      "quantisation": "INT8 weights and activations, float input and output",
+      "sha256": "5e39832c7eb7c58bbebcb185e03e7bd5fbb49901d44e00f32832c924544dffb1",
+      "snapdragon": [
+        {
+          "chipset": "qualcomm-snapdragon-8gen3",
+          "device": "Samsung Galaxy S24 (Family)",
+          "inference_micros": 48,
+          "job": "jgk6e9v25",
+          "peak_memory_bytes": 121794560,
+          "runs_on": "NPU (5 of 5 layers)"
+        },
+        {
+          "chipset": "qualcomm-snapdragon-8-elite-for-galaxy",
+          "device": "Samsung Galaxy S25",
+          "inference_micros": 43,
+          "job": "j56oyd205",
+          "peak_memory_bytes": 148660224,
+          "runs_on": "NPU (5 of 5 layers)"
+        }
+      ],
+      "tested": "leave one person out",
+      "trained_on": "PAMAP2 (9 people, wrist movement and heart rate, 18 activities)",
+      "version": 1
+    },
+    "sleep": {
+      "bytes": 6624,
+      "file": "sleep_v1.tflite",
+      "input": {
+        "channels": 3,
+        "context": 10,
+        "epoch_readings": 6,
+        "min_readings": 4
+      },
+      "metrics": {
+        "accuracy": 0.9193,
+        "kappa": 0.4647,
+        "sleep_sensitivity": 0.9592,
+        "total_sleep_error_min": 17.4,
+        "wake_specificity": 0.4905
+      },
+      "parameters": 2593,
+      "quantisation": "INT8 weights and activations, float input and output",
+      "sha256": "fa3f36607239ebf0191c9b09e1d00a99a12d3b7ed6487633643475a9ec315115",
+      "snapdragon": [
+        {
+          "chipset": "qualcomm-snapdragon-8gen3",
+          "device": "Samsung Galaxy S24 (Family)",
+          "inference_micros": 55,
+          "job": "jpv269qjg",
+          "peak_memory_bytes": 120119296,
+          "runs_on": "NPU (6 of 6 layers)"
+        },
+        {
+          "chipset": "qualcomm-snapdragon-8-elite-for-galaxy",
+          "device": "Samsung Galaxy S25",
+          "inference_micros": 41,
+          "job": "jgk6e9725",
+          "peak_memory_bytes": 148328448,
+          "runs_on": "NPU (6 of 6 layers)"
+        }
+      ],
+      "tested": "5-fold, split by person",
+      "threshold": 0.1903,
+      "trained_on": "Walch et al. 2019, PhysioNet (31 nights, wrist movement, lab sleep scoring)",
+      "version": 1
+    }
+  }
+}

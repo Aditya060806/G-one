@@ -57,7 +57,7 @@ object EmergencyHtmlRenderer {
         // ── Block A — Personal section ────────────────────────────────────────
         val bloodGroupHtml = payload.bloodGroup?.let { bg ->
             """<div class="blood-group-box"><span class="blood-label">Blood Group</span>
-               <span class="blood-value">$bg</span></div>"""
+               <span class="blood-value">${esc(bg)}</span></div>"""
         } ?: ""
 
         val allergiesHtml = payload.allergies?.let {
@@ -133,15 +133,17 @@ object EmergencyHtmlRenderer {
             val contact = payload.emergencyContact
             if (contact.isNullOrBlank()) return@buildString
             append("""<div class="section"><div class="section-title">📞 Emergency Contact</div>""")
-            append("""<a href="tel:$contact" class="call-btn">📞 Call Emergency Contact<br>
-                <span class="call-sub">$contact</span></a>""")
+            // Only what a dialler accepts goes in the link; the text beside it is escaped.
+            val dial = contact.filter { it.isDigit() || it == '+' }
+            append("""<a href="tel:$dial" class="call-btn">📞 Call Emergency Contact<br>
+                <span class="call-sub">${esc(contact)}</span></a>""")
             append("""<a href="tel:112" class="call-btn secondary">🚑 Call 112 — Emergency Services</a>""")
             append("</div>")
         }
 
         // ── Patient identity ──────────────────────────────────────────────────
-        val nameHtml = payload.name?.let { "<div class=\"patient-name\">$it</div>" } ?: ""
-        val ageHtml  = payload.age?.let  { "<div class=\"patient-age\">Age: $it</div>" } ?: ""
+        val nameHtml = payload.name?.let { "<div class=\"patient-name\">${esc(it)}</div>" } ?: ""
+        val ageHtml  = payload.age?.let  { "<div class=\"patient-age\">Age: ${esc(it.toString())}</div>" } ?: ""
 
         // ── Inline JS: format timestamps + re-evaluate staleness on open ──────
         // Using embedded epoch ms so the page is self-contained.
@@ -167,7 +169,24 @@ object EmergencyHtmlRenderer {
 
     private fun infoRow(label: String, value: String, rowClass: String = "info-row"): String =
         """<div class="$rowClass"><span class="info-label">$label</span>
-           <span class="info-value">${value.replace("<", "&lt;").replace(">", "&gt;")}</span></div>"""
+           <span class="info-value">${esc(value)}</span></div>"""
+
+    /**
+     * Everything the wearer typed is text, never markup. Braces are escaped too, so typed text
+     * can never be mistaken for one of the template's own {{PLACEHOLDERS}}.
+     */
+    private fun esc(value: String): String = buildString(value.length + 8) {
+        for (c in value) when (c) {
+            '&'  -> append("&amp;")
+            '<'  -> append("&lt;")
+            '>'  -> append("&gt;")
+            '"'  -> append("&quot;")
+            '\'' -> append("&#39;")
+            '{'  -> append("&#123;")
+            '}'  -> append("&#125;")
+            else -> append(c)
+        }
+    }
 
     private fun vitalRow(
         label: String,

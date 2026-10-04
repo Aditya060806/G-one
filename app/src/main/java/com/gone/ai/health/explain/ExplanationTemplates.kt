@@ -106,6 +106,7 @@ object ExplanationTemplates {
                 detail = buildString {
                     append("It currently feels like around ${feelsLike(e)} outside")
                     append(humidityClause(e))
+                    append(cityWeatherClause(e))
                     append(", and the body is showing signs of struggling with it")
                     append(bodyResponseClause(e))
                     append(". In this kind of heat the body can overheat faster than ")
@@ -117,7 +118,9 @@ object ExplanationTemplates {
             AnomalyType.DEHYDRATION_RISK -> Explanation(
                 headline = "Possible dehydration",
                 detail = buildString {
-                    append("In the current heat, the heart rate has been climbing while ")
+                    append("In the current heat")
+                    append(cityWeatherClause(e))
+                    append(", the heart rate has been climbing while ")
                     append("body temperature also rises")
                     append(hrClause(e))
                     append(". This pattern often appears when the body is short of ")
@@ -186,6 +189,20 @@ object ExplanationTemplates {
                     append(". Changes like this sometimes appear a day or two before ")
                     append("someone starts feeling unwell, which is why it is worth ")
                     append("flagging early rather than waiting.")
+                },
+                tier = tier, ruleId = e.ruleId
+            )
+
+            AnomalyType.HEART_RATE_CONTEXT -> Explanation(
+                headline = "Heart rate high for the activity",
+                detail = buildString {
+                    append("The heart is beating ${hrText(e)}")
+                    e.expectedHeartRate?.let { append(", while the recent movement would usually go with no more than about $it beats a minute") }
+                    append(durationClause(e))
+                    append(". The expected range comes from a small pattern-recognition model that ")
+                    append("learned how heart rate follows wrist movement, set against this person's ")
+                    append("own resting rate. It is an early hint to check in, not a measurement of ")
+                    append("anything wrong, and it can be thrown off by a loose strap.")
                 },
                 tier = tier, ruleId = e.ruleId
             )
@@ -260,6 +277,9 @@ object ExplanationTemplates {
     }
 
     /** The raw envelope with its scale, because a bare "3050" means nothing to anyone. */
+    private fun cityWeatherClause(e: AnomalyEvidence): String =
+        if (e.environmentSource == "city") " (the city's weather, not measured at the wrist)" else ""
+
     private fun emgClause(e: AnomalyEvidence): String =
         e.emgLevel?.let { " (currently $it on its 0 to ${VitalsSample.EMG_ADC_MAX} scale)" } ?: ""
 

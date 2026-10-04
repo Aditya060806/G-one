@@ -735,6 +735,90 @@ class MonitoringPipelineTest {
         assertEquals(ReadingSource.BLE.wireName, stored.source)
     }
 
+    // ── The heart-rate-in-context model ───────────────────────────────────────
+
+    private fun contextPipeline(repo: FakeHealthRepository, sink: FakeAlertSink, asked: IntArray, clock: () -> Long) =
+        MonitoringPipeline(
+            repo, AnomalyDetector(thresholds), sink, null, clock = clock,
+            heartRateExpectation = { _, _, resting ->
+                asked[0]++
+                com.gone.ai.health.detect.HeartRateBand(resting, resting + 10f, resting + 20f, 1)
+            }
+        )
+
+    /** Live readings, every 5 s, at 120 bpm while lightly moving: 30 above a band topping out at 90. */
+    @Test
+    fun `the model's band reaches its rule, which warns LOW then MODERATE`() = runTest {
+        val repo = FakeHealthRepository(baselineToReturn = PatientBaseline(restingHeartRate = 70f, sampleCount = 100))
+        val sink = FakeAlertSink(mutableListOf())
+        val asked = IntArray(1)
+        var clock = TestVitals.T0
+        val p = contextPipeline(repo, sink, asked, { clock })
+
+        repeat(60) { i ->
+            val s = VitalsSample(TestVitals.T0 + i * 5_000L, heartRate = 120, motionMagnitudeG = 1.3f)
+            clock = s.timestamp
+            p.onSample(patient, s, ReadingSource.BLE)
+        }
+
+        assertEquals("asked once per live reading", 60, asked[0])
+        val context = sink.alerts.map { it.second }.filter { it.eventType == AnomalyType.HEART_RATE_CONTEXT.wireName }
+        assertEquals(listOf("LOW", "MODERATE"), context.map { it.severity })
+        assertTrue(context.last().evidenceJson.contains("\"model\":\"hr_context_v1\""))
+        assertTrue(context.last().evidenceJson.contains("\"expected_heart_rate\":90"))
+    }
+
+    /** The band is relative to the resting rate; without a trustworthy one the model is not asked. */
+    @Test
+    fun `without a reliable resting rate the model is not asked`() = runTest {
+        val repo = FakeHealthRepository(baselineToReturn = PatientBaseline(restingHeartRate = 70f, sampleCount = 3))
+        val sink = FakeAlertSink(mutableListOf())
+        val asked = IntArray(1)
+        var clock = TestVitals.T0
+        val p = contextPipeline(repo, sink, asked, { clock })
+        repeat(60) { i ->
+            val s = VitalsSample(TestVitals.T0 + i * 5_000L, heartRate = 120, motionMagnitudeG = 1.3f)
+            clock = s.timestamp
+            p.onSample(patient, s, ReadingSource.BLE)
+        }
+        assertEquals(0, asked[0])
+        assertTrue(sink.alerts.none { it.second.eventType == AnomalyType.HEART_RATE_CONTEXT.wireName })
+    }
+
+    @Test
+    fun `a model that throws only leaves its rule silent`() = runTest {
+        val repo = FakeHealthRepository(baselineToReturn = PatientBaseline(restingHeartRate = 70f, sampleCount = 100))
+        val sink = FakeAlertSink(mutableListOf())
+        var clock = TestVitals.T0
+        val p = MonitoringPipeline(repo, AnomalyDetector(thresholds), sink, null, clock = { clock },
+            heartRateExpectation = { _, _, _ -> error("model failed") })
+        repeat(20) { i ->
+            val s = VitalsSample(TestVitals.T0 + i * 5_000L, heartRate = 72, spo2 = if (i == 19) 86 else 97, motionMagnitudeG = 1.0f)
+            clock = s.timestamp
+            p.onSample(patient, s, ReadingSource.BLE)
+        }
+        assertEquals(20, repo.readings.size)
+        assertTrue("other rules still work", sink.alerts.any { it.second.eventType == AnomalyType.LOW_SPO2.wireName })
+    }
+
+    /** City weather supplied to the pipeline lets the heat rule work, marked as the city's. */
+    @Test
+    fun `city weather reaches the heat rule through the pipeline`() = runTest {
+        val repo = FakeHealthRepository()
+        val sink = FakeAlertSink(mutableListOf())
+        var clock = TestVitals.T0
+        val p = MonitoringPipeline(repo, AnomalyDetector(thresholds), sink, null, clock = { clock },
+            areaWeather = { com.gone.ai.health.detect.AreaWeather(46f, 45f, clock - 60_000L, "Test city") })
+        TestVitals.series(8, hrFrom = 108, motion = TestVitals.REST).forEach {
+            clock = it.timestamp
+            p.onSample(patient, it, ReadingSource.BLE)
+        }
+        val heat = sink.alerts.map { it.second }.first { it.eventType == AnomalyType.HEAT_STRESS.wireName }
+        assertTrue(heat.evidenceJson.contains("\"environment_source\":\"city\""))
+        assertEquals("MODERATE", heat.severity)
+        assertTrue("never written into the stored reading", repo.readings.all { it.ambientTempC == null })
+    }
+
     @Test
     fun `high wearable skin temperature creates and delivers an alert`() = runTest {
         val repo = FakeHealthRepository()

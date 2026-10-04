@@ -59,12 +59,6 @@
     <!-- Emergency Medical ID: writes NDEF payload to NFC tag. App installs on phones without NFC. -->
     <uses-permission android:name="android.permission.NFC" />
     <uses-feature android:name="android.hardware.nfc" android:required="false" />
-    <!--
-      No SEND_SMS or CALL_PHONE. SOS actions open the dialer or the messaging app with
-      the contact and message filled in (ACTION_DIAL / ACTION_SENDTO), so the person
-      confirms before anything is sent. Those two permissions are also restricted on
-      Google Play.
-    -->
 
     <!--
       Android 11+ hides other apps' services unless they are declared here. Without these,
@@ -92,6 +86,9 @@
         android:theme="@style/Theme.Gone"
         tools:targetApi="31">
         <service android:name=".health.emergency.EmergencySyncJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false" />
+        <!-- Optional "Your area" check: weather, India AQI and official NDMA alerts, every 30 min while switched on. -->
+        <service android:name=".health.environment.AreaAlertJob"
             android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false" />
         <activity
             android:name=".MainActivity"

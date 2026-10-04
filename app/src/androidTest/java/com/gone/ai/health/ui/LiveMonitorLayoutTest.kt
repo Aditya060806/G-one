@@ -31,7 +31,8 @@ class LiveMonitorLayoutTest {
                 }
             }
         }
-        val header = compose.onNodeWithText("Live Monitor", substring = true)
+        // Exact: "Start Live Monitoring" on the same screen also contains these words.
+        val header = compose.onNodeWithText("Live Monitor")
         header.assertIsDisplayed()
         val before = header.fetchSemanticsNode().boundsInRoot
         val scroll = compose.onNode(hasScrollAction())

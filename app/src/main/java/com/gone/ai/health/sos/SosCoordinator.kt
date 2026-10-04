@@ -14,7 +14,8 @@ import kotlinx.coroutines.withContext
 data class SosConfig(
     val number: String,
     val name: String?,
-    val countdownSeconds: Int,
+    /** How long the wearer has to stop an SOS raised by a fall alone; 0 sends it at once. */
+    val fallCancelSeconds: Int,
     val callAfter: Boolean
 )
 
@@ -45,14 +46,16 @@ data class SosRecord(
 )
 
 /**
- * Runs the countdown between an alert and the SOS, gathers alerts that arrive together into one
- * message, and sends: the text first, then — if wanted — the call.
+ * Gathers alerts that arrive together into one message and sends it: the text first, then — if
+ * wanted — the call.
  *
- * THE COUNTDOWN. By default the wearer has [SosConfig.countdownSeconds] to tap "I'm OK" ([cancel])
- * before anything is sent; nothing is asked of them, and if they do nothing it sends. A wearable
- * knocked against a table would otherwise text their contact about nothing. Set to zero it sends
- * at once, after only [BATCH_MILLIS], so that alerts raised on the same reading go in one message
- * rather than several.
+ * A FALL CAN BE STOPPED; NOTHING ELSE WAITS. A fall is one hard impact, and a wrist knocked
+ * against a table makes the same impact. So an SOS raised by a fall alone waits
+ * [SosConfig.fallCancelSeconds] with an alarm and an "I'm OK" button ([cancel]); nothing is asked
+ * of the wearer, and if they do nothing it sends. Low oxygen, heart-rate and every other alert
+ * are measured over time and go after only [BATCH_MILLIS], which exists so that alerts raised on
+ * the same reading go in one message rather than several. If one of those arrives while a fall
+ * is waiting, the wait ends and both go together.
  *
  * Once sending has begun it runs to the end even if monitoring stops: a message half-sent is
  * worse than one sent.
@@ -66,8 +69,19 @@ class SosCoordinator(
     private val onRecord: (SosRecord) -> Unit = {}
 ) {
 
-    /** An SOS waiting out its countdown. */
-    data class Pending(val reasons: List<String>, val sendAt: Long)
+    /**
+     * An SOS waiting to go.
+     *
+     * @param cancellable true while it is a fall's "I'm OK" window, which the wearer is shown;
+     *   false for the short gathering pause, which they are not.
+     * @param willCall whether a call follows the text, so the countdown can say so.
+     */
+    data class Pending(
+        val reasons: List<String>,
+        val sendAt: Long,
+        val cancellable: Boolean = false,
+        val willCall: Boolean = false
+    )
 
     private val _pending = MutableStateFlow<Pending?>(null)
     val pending: StateFlow<Pending?> = _pending.asStateFlow()
@@ -75,25 +89,40 @@ class SosCoordinator(
     private var countdown: Job? = null
 
     /**
-     * An alert that warrants an SOS. Starts the countdown, or, if one is running, adds its reason
-     * to the message already waiting. False when the automatic SOS is off.
+     * An alert that warrants an SOS. Starts the wait, or, if one is running, adds its reason to
+     * the message already waiting. False when the automatic SOS is off.
+     *
+     * @param fall true for a fall, which the wearer may stop; see the class comment.
      */
-    fun raise(reason: String): Boolean {
+    fun raise(reason: String, fall: Boolean = false): Boolean {
         val cfg = config() ?: return false
+        val wait = maxOf(if (fall) cfg.fallCancelSeconds * 1000L else 0L, BATCH_MILLIS)
+        val now = clock()
         val waiting = _pending.value
         if (waiting != null) {
-            if (reason !in waiting.reasons) _pending.value = waiting.copy(reasons = waiting.reasons + reason)
+            val sendAt = minOf(waiting.sendAt, now + wait)
+            _pending.value = waiting.copy(
+                reasons = if (reason in waiting.reasons) waiting.reasons else waiting.reasons + reason,
+                sendAt = sendAt,
+                // An alert that cannot wait ends a fall's window.
+                cancellable = waiting.cancellable && wait > BATCH_MILLIS
+            )
+            if (sendAt < waiting.sendAt) sendAfter(sendAt - now)
             return true
         }
-        val wait = maxOf(cfg.countdownSeconds * 1000L, BATCH_MILLIS)
-        _pending.value = Pending(listOf(reason), clock() + wait)
+        _pending.value = Pending(listOf(reason), now + wait, cancellable = wait > BATCH_MILLIS, willCall = cfg.callAfter)
+        sendAfter(wait)
+        return true
+    }
+
+    private fun sendAfter(wait: Long) {
+        countdown?.cancel()
         countdown = scope.launch {
             delay(wait)
             val due = _pending.value ?: return@launch
             _pending.value = null
             withContext(NonCancellable) { dispatch(due.reasons) }
         }
-        return true
     }
 
     /** "I'm OK": nothing is sent. False when no SOS was waiting. */
@@ -139,8 +168,9 @@ class SosCoordinator(
         const val BATCH_MILLIS = 1_500L
         /** Between the text and the call, so the text arrives first. */
         const val CALL_AFTER_MILLIS = 5_000L
-        val COUNTDOWN_CHOICES = listOf(0, 15, 30, 60)
-        const val DEFAULT_COUNTDOWN_SECONDS = 0
+        /** Seconds a fall's SOS can be stopped in; 0 sends it at once like every other alert. */
+        val FALL_CANCEL_CHOICES = listOf(0, 10, 20, 30)
+        const val DEFAULT_FALL_CANCEL_SECONDS = 20
     }
 }
 

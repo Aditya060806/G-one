@@ -1,5 +1,79 @@
 # Verification
 
+## October 2026 upgrade (2–3 October 2026)
+
+Trained models, official disaster alerts, city weather and India AQI, the fall "I'm OK" window,
+the Model Lab, reproducibility and licence. Nothing committed; Windows 11, Python 3.11.9,
+TensorFlow 2.20 (CPU). On 2–3 October no phone was connected; on **4 October the Samsung SM-S721B
+(Android 16) was connected** and the on-device checks below were run. The debug build installed
+over the existing one with `adb install -r`, so the phone's data was kept; only the old test
+harness package was replaced.
+
+| Check | Command | Result |
+|---|---|---|
+| Unit tests | `gradlew testDebugUnitTest` | **659 tests, 74 classes, 0 failures** (was 590) |
+| Android lint | `gradlew lintDebug` | **0 errors**, 55 warnings |
+| Debug build | `gradlew assembleDebug` | Builds: 1,238,436,040 bytes; adds LiteRT's native library (4.5 MB) and `assets/ml/` (three models, manifest, demo recordings) |
+| On-device tests | `adb shell am instrument -w com.gone.ai.test/…AndroidJUnitRunner` on the SM-S721B | **32 of 32 pass**: 8 migrations, 12 TalkBack label checks (now including the Model Lab), 2 Live Monitor layout, 6 model tests (LiteRT outputs equal training's for the fall and heart-rate models, every model under 1 ms, the service's start-up calls), 4 live network tests (Open-Meteo weather, India AQI, the Punjab SACHET feed and a CAP alert, a full refresh) |
+| Model specifications | `python -m pytest ml/tests` | 9 passed, including every model's size and SHA-256 against the manifest |
+| Sync protocol | `python tools/wearable-emulator/emulate.py --selftest` | 10 of 10 checks pass |
+| Language model provenance | `certutil -hashfile … SHA256` and the Hugging Face API | Workspace `qwen.gguf` is byte-identical to `Qwen/Qwen2.5-1.5B-Instruct-GGUF` `qwen2.5-1.5b-instruct-q4_k_m.gguf` at revision `91cad511…` |
+| SACHET feeds | `curl` of `rss_india.xml`, `rss_punjab.xml` and CAP messages | Live, CAP 1.2, English plus the state language; state feeds named by the state's first word; polygon files refuse scripted access (HTTP 403) |
+| Open-Meteo | weather, air-quality and geocoding requests for Ludhiana | Response shapes as the client expects (`current`, `daily`, `hourly`, `admin1`, `admin2`) |
+| Qualcomm AI Hub | `python -m ml.aihub.profile` in `ml/.venv` (qai-hub 0.56.0), 4 October 2026, with the owner's token | **All three models run entirely on the NPU** of hosted Snapdragon phones. Galaxy S24 (8 Gen 3): fall 52 µs, heart rate 48 µs, sleep 55 µs. Galaxy S25 (8 Elite): 49, 43, 41 µs. Raw profiles in `ml/reports/aihub/`; timings in the manifest and shown in the Model Lab |
+
+### Model training runs
+
+| Model | Data | Test | Result (people held out) | Baseline on the same data |
+|---|---|---|---|---|
+| `fall_v1` | WEDA-FALL + UMAFall, 44 people, 3,078 recordings | 5-fold by person; plus trained on WEDA-FALL, tested on UMAFall | 96.2 % falls caught, 95.9 % no alarm; unseen dataset 64.8 % / 98.1 % | 5 g rule 50.7 % / 89.6 %; unseen 37.7 % / 91.4 % |
+| `hr_context_v1` + rule `ml.hrContext` | PAMAP2, 9 people, 10.7 h | Leave one person out | Expected-rate error 14.1 bpm; 2.2 false alarms a day; synthetic +25/+40 bpm rises caught 34 %/53 % | Resting-rate guess 23.0 bpm; straight line 14.2 bpm; fixed rule 51.6 false alarms a day, rises 56 %/81 % |
+| `sleep_v1` | Walch et al., 31 nights, 25,395 epochs | 5-fold by person | Kappa 0.46, awake found 49 %, total-sleep error 17.4 min | Movement threshold kappa 0.37, 39 %, 19.7 min |
+
+Details and limits: [docs/MODELS.md](docs/MODELS.md). Golden files tie the Kotlin feature code to
+the Python code: `FallWindowTest`, `HrContextTest` and `SleepTest` pass.
+
+### On the phone, 4 October 2026 (SM-S721B, by hand through adb)
+
+| Check | Seen |
+|---|---|
+| App opens after the update | Yes; the existing readings and the 30 September fall event are still there |
+| Model Lab | All three models load ("Checksum matches the manifest"). Timed on the phone's CPU, median of 200 runs: fall 15–27 µs, heart rate in context 9 µs, sleep 18 µs |
+| Fall replay | The recorded lateral fall (6.9 g peak) scores 1.00 → fall |
+| Heart-rate replay | The clean PAMAP2 session raises no alert; with the made-up +30 bpm rise at minutes 9–15 the rule alerts at minute 11 |
+| Sleep replay | The model agrees with the sleep lab on 93 % of the night's epochs (435 min asleep by the lab, 461 by the model) |
+| Live fall demo | Switches on and waits for an impact; not shaken by hand in this run |
+| Health tab | "Your area" and the Sleep card render in their off / no-data states |
+
+**Found on the phone and fixed.**
+- The Model Lab crashed on opening: each model was closed the moment it finished loading (the
+  clean-up read the newly loaded model instead of the old one). Fixed, and model calls on that
+  screen now fail safely if the screen is left mid-calculation. A Model Lab test was added to the
+  on-device suite.
+- The Model Lab's two switches had no label for screen readers (caught by the label test). The
+  whole row is now the labelled toggle.
+- Eight replay chips did not fit one row and squashed the layout; the row now scrolls.
+- The heart-rate replay never listed an alert because of an overflow in its "time since the last
+  alert" check (in the demo code, not the rule). Fixed.
+- The demo's made-up rise sat where the raised rate crossed 150 bpm, which belongs to the fixed
+  rule, so the model rule correctly stayed silent. Moved to a quiet stretch (minutes 9–15).
+- `LiveMonitorLayoutTest` (existing) failed because it matched any text containing "Live Monitor",
+  which includes the "Start Live Monitoring" button. It now matches the header exactly.
+
+### Still to check
+
+- The fall "I'm OK" window on the strap: alarm, countdown, cancel, and sending after 20 s with a real SIM.
+- A real SACHET alert for the wearer's own district arriving as a notification (area alerts are
+  off on this phone; the live test used a fixed public city and saved nothing).
+- The live phone-sensor fall demo with an actual drop.
+- The estimated-sleep card after a night of wearing the strap.
+- Monitoring with the heart-rate model in the running service (its start-up calls are covered by
+  on-device tests; a simulated session was not started, to leave the phone's data alone).
+- The language model on a Snapdragon NPU or GPU (the small models are done; see above).
+
+---
+
+
 What was run for the "what's left" work (session PDFs, the tools, personalised answers, voice chat and TalkBack, acknowledged wearable sync, and the bug and design pass), what it showed, and what still needs the phone and the wearable.
 
 - **Date:** 2026-09-17

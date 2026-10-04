@@ -41,12 +41,15 @@ object HealthNotifications {
     const val CHANNEL_ALERTS = "gone_health_alerts"
     /** Its own channel, sounding as an alarm: the countdown must be noticed to be cancelled. */
     const val CHANNEL_SOS = "gone_sos"
+    /** Official disaster alerts for the wearer's district (SACHET), when switched on. */
+    const val CHANNEL_AREA = "gone_area_alerts"
 
     const val NOTIF_ID_MONITORING = 4201
     const val NOTIF_ID_SOS = 4202
     const val NOTIF_ID_SOS_RESULT = 4203
     /** Alert IDs are offset so they can never collide with the ongoing notification. */
     private const val ALERT_ID_BASE = 5000
+    private const val AREA_ID_BASE = 6000
 
     fun createChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
@@ -60,6 +63,17 @@ object HealthNotifications {
             ).apply {
                 description = "Shows that G-one is watching your vitals in the background."
                 setShowBadge(false)
+            }
+        )
+
+        mgr.createNotificationChannel(
+            NotificationChannel(
+                CHANNEL_AREA,
+                "Area alerts",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Official disaster warnings (NDMA SACHET) for your district, if you switch them on."
+                enableVibration(true)
             }
         )
 
@@ -80,7 +94,7 @@ object HealthNotifications {
                 "Emergency SOS",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "The countdown before G-one texts and calls your emergency contact, and what it sent."
+                description = "The countdown after a possible fall, before G-one texts your emergency contact, and what it sent."
                 enableVibration(true)
                 vibrationPattern = longArrayOf(0, 700, 300, 700, 300, 700)
                 setSound(
@@ -112,11 +126,12 @@ object HealthNotifications {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val what = pending.reasons.joinToString("; ")
+        val action = if (pending.willCall) "text, then call," else "text"
         val notification = NotificationCompat.Builder(context, CHANNEL_SOS)
             .setSmallIcon(R.drawable.ic_stat_gone)
             .setContentTitle("SOS to your emergency contact")
             .setContentText("$what. Sending unless you tap I'm OK.")
-            .setStyle(NotificationCompat.BigTextStyle().bigText("$what.\n\nG-one will text, then call, your emergency contact when the countdown ends, unless you tap I'm OK."))
+            .setStyle(NotificationCompat.BigTextStyle().bigText("$what.\n\nG-one will $action your emergency contact when the countdown ends, unless you tap I'm OK."))
             .setWhen(pending.sendAt)
             .setShowWhen(true)
             .setUsesChronometer(true)
@@ -212,6 +227,30 @@ object HealthNotifications {
         }
 
         return builder.build()
+    }
+
+    /** An official alert for the wearer's district. Shown once per alert. */
+    fun notifyAreaAlert(context: Context, alert: com.gone.ai.health.environment.AreaAlert) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) return
+        val what = buildString {
+            append(alert.headline)
+            if (alert.instruction.isNotBlank()) append("\n\n").append(alert.instruction)
+            append("\n\nIssued by ${alert.issuer.ifBlank { "the authorities" }} via NDMA SACHET.")
+        }
+        val notification = NotificationCompat.Builder(context, CHANNEL_AREA)
+            .setSmallIcon(R.drawable.ic_stat_gone)
+            .setContentTitle("${alert.event} · ${alert.severity.ifBlank { "Alert" }}")
+            .setContentText(alert.headline)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(what))
+            .setCategory(NotificationCompat.CATEGORY_EVENT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(openAppIntent(context))
+            .setAutoCancel(true)
+            .build()
+        val id = AREA_ID_BASE + (alert.identifier.hashCode() and 0x3FF)
+        runCatching { NotificationManagerCompat.from(context).notify(id, notification) }
     }
 
     private fun openAppIntent(context: Context): PendingIntent =

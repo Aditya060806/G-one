@@ -36,6 +36,16 @@ app/build/
 # Kotlin incremental build sessions
 .kotlin/
 
+# Build logs and JVM crash dumps
+*.log
+hs_err_pid*
+
+# Model training: raw and prepared datasets, virtual environment, caches
+ml/data/
+ml/.venv/
+__pycache__/
+.pytest_cache/
+
 # Release signing — keys and passwords must never be committed
 /keystore.properties
 *.jks

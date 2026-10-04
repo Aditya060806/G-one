@@ -316,7 +316,7 @@ class AnomalyRulesTest {
     }
 
     @Test
-    fun `smaller knocks followed by stillness do not raise a fall`() {
+    fun `knocks below five g do not raise a fall, whatever follows`() {
         for (peak in listOf(2.5f, 3.4f, 4.99f)) {
             val samples = listOf(TestVitals.sample(0.0, motion = peak), TestVitals.sample(1.0, motion = 1f))
             assertNull(FallDetectionRule.evaluate(ctx(samples)))
@@ -324,7 +324,7 @@ class AnomalyRulesTest {
     }
 
     @Test
-    fun `missing motion after a high impact is not proof of immobility`() {
+    fun `a newest reading with no motion value raises nothing`() {
         val samples = listOf(TestVitals.sample(0.0, motion = 5f), TestVitals.sample(1.0).copy(motionMagnitudeG = null))
         assertNull(FallDetectionRule.evaluate(ctx(samples)))
     }
@@ -338,11 +338,11 @@ class AnomalyRulesTest {
     }
 
     /**
-     * One fall must be reported once. Without a lookback the impact stayed in the
-     * 30-minute window and fired again as a "new" fall when the cooldown expired.
+     * One fall must be reported once. Only the newest reading can raise it, so an impact
+     * still inside the 30-minute window cannot fire again when the cooldown expires.
      */
     @Test
-    fun `fall detection ignores an impact older than the lookback`() {
+    fun `an impact minutes old is not raised again by later quiet readings`() {
         val samples = mutableListOf<VitalsSample>()
         samples += TestVitals.sample(0.0, hr = 84, motion = 5.4f)      // impact
         for (i in 1..14) {
@@ -434,7 +434,7 @@ class AnomalyRulesTest {
     fun `rule ids are unique and stable`() {
         val ids = AnomalyRules.ALL.map { it.id }
         assertEquals(ids.size, ids.toSet().size)
-        assertEquals(14, AnomalyRules.ALL.size)
+        assertEquals(15, AnomalyRules.ALL.size)
     }
 
     /** Every rule must tolerate a window with nothing in it. */
@@ -556,6 +556,99 @@ class AnomalyRulesTest {
                 ctx(listOf(TestVitals.sample(0.0).copy(skinTempC = 35.5f)))
             )
         )
+    }
+
+    // ── Heart rate in context (reads the trained model's band) ───────────────
+
+    /** Readings every 5 s for [minutes], each with the given rate and a band whose top is [bandHigh]. */
+    private fun contextCase(minutes: Int, rate: Int, bandHigh: Float, motion: Float = 1.3f): DetectionContext {
+        val samples = (0 until minutes * 12).map {
+            VitalsSample(timestamp = TestVitals.T0 + it * 5_000L, heartRate = rate, motionMagnitudeG = motion)
+        }
+        val bands = samples.associate { it.timestamp to HeartRateBand(bandHigh - 30f, bandHigh - 15f, bandHigh, 1) }
+        return ctx(samples).copy(signals = ModelSignals(bands))
+    }
+
+    @Test
+    fun `heart rate well above the expected band for three minutes is a LOW finding`() {
+        val c = HeartRateContextRule.evaluate(contextCase(minutes = 3, rate = 118, bandHigh = 100f))
+        assertEquals(AnomalyType.HEART_RATE_CONTEXT, c!!.type)
+        assertEquals(Severity.LOW, c.severity)
+        assertEquals(100, c.evidence.expectedHeartRate)
+        assertEquals("hr_context_v1", c.evidence.modelId)
+        assertEquals(18f, c.evidence.modelScore!!, 1e-4f)
+        assertEquals("ml.hrContext", c.evidence.ruleId)
+    }
+
+    @Test
+    fun `thirty above the band for five minutes is MODERATE and never more`() {
+        val c = HeartRateContextRule.evaluate(contextCase(minutes = 5, rate = 140, bandHigh = 100f))
+        assertEquals(Severity.MODERATE, c!!.severity)
+    }
+
+    @Test
+    fun `a rate inside or just above the band stays silent`() {
+        assertNull(HeartRateContextRule.evaluate(contextCase(minutes = 5, rate = 104, bandHigh = 100f)))
+        assertNull(HeartRateContextRule.evaluate(contextCase(minutes = 5, rate = 90, bandHigh = 100f)))
+    }
+
+    @Test
+    fun `too short a stretch stays silent`() {
+        assertNull(HeartRateContextRule.evaluate(contextCase(minutes = 2, rate = 125, bandHigh = 100f)))
+    }
+
+    @Test
+    fun `without the model's band the rule is silent`() {
+        val noBand = contextCase(minutes = 5, rate = 140, bandHigh = 100f).copy(signals = ModelSignals.NONE)
+        assertNull(HeartRateContextRule.evaluate(noBand))
+    }
+
+    /** The fixed rule owns these rates; two alerts for one heartbeat would be noise. */
+    @Test
+    fun `steps aside where the fixed heart-rate rule fires`() {
+        assertNull(HeartRateContextRule.evaluate(contextCase(minutes = 5, rate = 155, bandHigh = 100f)))
+        assertNull(HeartRateContextRule.evaluate(contextCase(minutes = 5, rate = 135, bandHigh = 100f, motion = 1.0f)))
+        // 135 while moving: the fixed rule is silent, so this one may speak.
+        assertNotNull(HeartRateContextRule.evaluate(contextCase(minutes = 5, rate = 135, bandHigh = 100f, motion = 1.3f)))
+    }
+
+    // ── Heat with the city's weather ─────────────────────────────────────────
+
+    private fun hotCity(at: Long, temperatureC: Float = 44f) = AreaWeather(temperatureC, 40f, at, "Ludhiana, Punjab, India")
+
+    /** Hot city, raised resting heart rate, no ambient sensor on the wrist. */
+    private fun cityHeatCase(weatherAge: Long = 10 * 60_000L, ownAmbient: Float? = null): DetectionContext {
+        val samples = TestVitals.series(8, hrFrom = 108, motion = TestVitals.REST, ambientTemp = ownAmbient)
+        val now = samples.last().timestamp
+        return ctx(samples).copy(areaWeather = hotCity(now - weatherAge, temperatureC = 50f))
+    }
+
+    @Test
+    fun `city weather lets the heat rule work without a sensor, capped below CRITICAL`() {
+        val c = HeatStressRule.evaluate(cityHeatCase())
+        assertNotNull(c)
+        assertEquals(Severity.MODERATE, c!!.severity)
+        assertEquals("city", c.evidence.environmentSource)
+        assertEquals(50f, c.evidence.ambientTempC!!, 0.01f)
+    }
+
+    @Test
+    fun `stale city weather is not used`() {
+        assertNull(HeatStressRule.evaluate(cityHeatCase(weatherAge = 3 * 60 * 60_000L)))
+    }
+
+    @Test
+    fun `the wearable's own ambient reading wins over the city's`() {
+        val c = HeatStressRule.evaluate(cityHeatCase(ownAmbient = 22f))
+        assertNull("22 °C on the wrist is not heat, whatever the city says", c)
+    }
+
+    @Test
+    fun `city weather never reaches findings that are not about heat`() {
+        val samples = listOf(TestVitals.sample(spo2 = 87))
+        val c = CriticalSpo2Rule.evaluate(ctx(samples).copy(areaWeather = hotCity(samples.last().timestamp)))
+        assertNull(c!!.evidence.ambientTempC)
+        assertNull(c.evidence.environmentSource)
     }
 
     /** And a sample where every field is absent. */
