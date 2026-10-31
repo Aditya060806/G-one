@@ -52,7 +52,9 @@ object QrCodeGenerator {
         return try {
             val hints = mapOf(
                 EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M,
-                EncodeHintType.MARGIN          to 4     // standard quiet zone for reliable scanning
+                EncodeHintType.MARGIN          to 4,    // standard quiet zone for reliable scanning
+                // UTF-8, so Hindi names and symbols survive; ZXing defaults to ISO-8859-1.
+                EncodeHintType.CHARACTER_SET   to "UTF-8"
             )
             val matrix: BitMatrix = MultiFormatWriter()
                 .encode(content, BarcodeFormat.QR_CODE, sizePx, sizePx, hints)

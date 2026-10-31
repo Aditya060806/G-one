@@ -1,5 +1,8 @@
 package com.gone.ai.health.service
 
+import com.gone.ai.health.explain.SpokenAlerts
+import com.gone.ai.voice.LanguagePreferences
+import com.gone.ai.voice.SpeechOutput
 import android.Manifest
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
@@ -661,8 +664,9 @@ class HealthMonitoringService : Service() {
         override suspend fun onAnomaly(eventId: Long, event: AnomalyEventEntity, explanation: Explanation) {
             // Notification failure must not prevent emergency SMS.
             runCatching { delegate.onAnomaly(eventId, event, explanation) }
-            if (!streamingFromWearable) return
             val type = AnomalyType.fromWireName(event.eventType) ?: return
+            speakAloud(type, Severity.fromWireName(event.severity))
+            if (!streamingFromWearable) return
             val fallImpactG = if (type == AnomalyType.FALL_DETECTED) {
                 runCatching { JSONObject(event.evidenceJson).optDouble("fall_impact_g").toFloat() }.getOrNull()
             } else null
@@ -681,6 +685,18 @@ class HealthMonitoringService : Service() {
 
         override suspend fun onExplanationUpgraded(eventId: Long, text: String) =
             delegate.onExplanationUpgraded(eventId, text)
+
+        /**
+         * Says the alert aloud in the chosen language, when the wearer turned that on. Fixed
+         * sentences from [SpokenAlerts], never model text. Notices (LOW) are not spoken.
+         */
+        private fun speakAloud(type: AnomalyType, severity: Severity) {
+            val context = this@HealthMonitoringService
+            if (severity == Severity.LOW || !LanguagePreferences.readAlertsAloud(context).value) return
+            runCatching {
+                SpeechOutput.getInstance(context).speak(SpokenAlerts.sentence(type, severity, LanguagePreferences.current(context)))
+            }
+        }
     }
 
     /** The link's own flows, gathered so they are published together. */

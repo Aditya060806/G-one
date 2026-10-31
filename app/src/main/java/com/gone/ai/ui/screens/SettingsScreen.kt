@@ -58,7 +58,10 @@ import com.gone.ai.ui.components.PureBreadcrumbText
 import com.gone.ai.ui.components.GradientBackground
 import com.gone.ai.ui.components.GlassCard
 import com.gone.ai.ui.theme.*
+import com.gone.ai.voice.AppLanguage
+import com.gone.ai.voice.LanguagePreferences
 import com.gone.ai.voice.SpeechInput
+import com.gone.ai.voice.SpeechOutput
 import androidx.compose.ui.zIndex
 
 /**
@@ -466,6 +469,10 @@ fun SettingsBodyContent(
 
     Spacer(Modifier.height(12.dp))
 
+    LanguageSection(isDarkTheme)
+
+    Spacer(Modifier.height(12.dp))
+
     SettingsSection("AI Engine", isDarkTheme) {
         val (modelLabel, modelColor) = when (aiState) {
             is AIInferenceState.Idle       -> "Ready" to SuccessGreen
@@ -529,6 +536,41 @@ fun SettingsBodyContent(
             "G-one · v$appVersion",
             style = MaterialTheme.typography.labelSmall,
             color = if (isDarkTheme) TextDisabled else TextSecondaryLight.copy(0.4f)
+        )
+    }
+}
+
+/** Voice language for listening, speaking and answers, and spoken alerts. */
+@Composable
+private fun LanguageSection(isDarkTheme: Boolean) {
+    val context = LocalContext.current
+    val language by LanguagePreferences.language(context).collectAsState()
+    val readAloud by LanguagePreferences.readAlertsAloud(context).collectAsState()
+    val notice by SpeechOutput.getInstance(context).languageNotice.collectAsState()
+    SettingsSection("Language", isDarkTheme) {
+        Text(
+            "Used to listen, speak, answer in Ask your health and the assistant, and read alerts aloud.",
+            style = MaterialTheme.typography.bodySmall,
+            color = if (isDarkTheme) TextSecondary else TextSecondaryLight
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AppLanguage.entries.forEach { lang ->
+                FilterChip(
+                    selected = language == lang,
+                    onClick = { LanguagePreferences.setLanguage(context, lang) },
+                    label = { Text(lang.nativeName) }
+                )
+            }
+        }
+        notice?.let {
+            Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+        }
+        SettingsDivider(isDarkTheme)
+        SettingsToggle(
+            Icons.Default.RecordVoiceOver, "Read alerts aloud",
+            if (readAloud) "Health alerts are spoken in ${language.englishName}" else "Alerts are shown and notified, not spoken",
+            readAloud, { LanguagePreferences.setReadAlertsAloud(context, !readAloud) }, isDarkTheme
         )
     }
 }

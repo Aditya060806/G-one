@@ -1,5 +1,6 @@
 package com.gone.ai.viewmodel
 
+import com.gone.ai.voice.LanguagePreferences
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -485,7 +486,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             runCatching { healthContext.build() }.getOrNull()?.let { fitted(it, ChatPrompt.HEALTH_CONTEXT_TOKEN_BUDGET) }
         } else null
         val document = attachment?.let { fitted(it.text, ChatPrompt.ATTACHMENT_TOKEN_BUDGET) }
-        return ChatPrompt.system(attachment?.title, document, health)
+        return ChatPrompt.system(
+            attachment?.title, document, health,
+            replyLanguage = LanguagePreferences.current(getApplication())
+        )
     }
 
     /**

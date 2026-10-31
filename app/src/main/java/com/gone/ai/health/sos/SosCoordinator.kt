@@ -170,7 +170,13 @@ class SosCoordinator(
         const val CALL_AFTER_MILLIS = 5_000L
         /** Seconds a fall's SOS can be stopped in; 0 sends it at once like every other alert. */
         val FALL_CANCEL_CHOICES = listOf(0, 10, 20, 30)
-        const val DEFAULT_FALL_CANCEL_SECONDS = 20
+
+        /**
+         * Send at once, with no chance to stop it. The wearer asked for a hard impact to text
+         * the contact immediately; the cost is that a hard knock against a table does too.
+         * Settings offers 10, 20 or 30 seconds for anyone who wants the chance to cancel.
+         */
+        const val DEFAULT_FALL_CANCEL_SECONDS = 0
     }
 }
 

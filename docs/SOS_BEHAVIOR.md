@@ -9,9 +9,9 @@ than a sensor on the wrist. Simulated, replayed and historical readings never se
 
 | Alert | What happens |
 |---|---|
-| Possible fall (impact of at least **5.0 g**) | An alarm sounds, the phone vibrates, and a countdown with **"I'm OK, don't send"** shows in the app and on the notification. Default 20 seconds; 10, 20, 30 or "At once" in Settings. If nothing is tapped, the SOS is sent. |
+| Possible fall (impact of at least **5.0 g**) | **Sent at once, by default.** The wearer asked for a hard impact to reach their contact immediately, so there is no window to stop it; the cost is that a hard knock against a table texts them too. Settings offers a 10, 20 or 30 second **"I'm OK, don't send"** countdown, with an alarm and vibration, for anyone who wants the chance to cancel. |
 | Everything else (low oxygen, heart rate, temperature, …) | Sent after 1.5 seconds, with no countdown. The 1.5 seconds only gathers alerts raised on the same reading into one message. |
-| A fall, then another alert during the fall's countdown | The countdown ends and one message with both reasons goes at once. |
+| A fall, then another alert within 1.5 seconds | One message carries both reasons. With a countdown chosen, a second alert during it ends the countdown and sends at once. |
 | Another alert, then a fall within 1.5 seconds | Sent at once with both reasons; the fall does not delay it. |
 
 Why only falls: a fall is one hard impact, and a wrist knocked against a table makes the same

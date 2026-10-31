@@ -47,6 +47,8 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.QrCode2
+import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
@@ -116,6 +118,8 @@ fun ToolsScreen(
     onNavigateToCircle     : () -> Unit = {},
     onNavigateToLibrary    : () -> Unit = {},
     onNavigateToModelLab   : () -> Unit = {},
+    onNavigateToAskHealth  : () -> Unit = {},
+    onNavigateToClinic     : () -> Unit = {},
     onNavigateToSettings   : () -> Unit = {},
     onAskAssistant         : (title: String, text: String) -> Unit = { _, _ -> }
 ) {
@@ -351,6 +355,26 @@ fun ToolsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                // Questions about your own readings, answered from this phone's records
+                SoberBentoListTile(
+                    icon = Icons.Default.QuestionAnswer,
+                    title = "Ask your health",
+                    subtitle = "Ask in English or हिन्दी; answered from your own readings",
+                    badge = "New",
+                    darkTheme = dark,
+                    onClick = onNavigateToAskHealth
+                )
+
+                // A doctor-visit summary as an offline QR code
+                SoberBentoListTile(
+                    icon = Icons.Default.QrCode2,
+                    title = "Clinic Mode",
+                    subtitle = "Your last days for the doctor, as a QR any camera reads",
+                    badge = "Offline",
+                    darkTheme = dark,
+                    onClick = onNavigateToClinic
+                )
+
                 // 3. Medical myth buster (Highlighted card with subtle accent like reference row)
                 SoberBentoListTile(
                     icon = Icons.Default.Psychology,

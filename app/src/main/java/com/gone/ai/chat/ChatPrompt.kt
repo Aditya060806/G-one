@@ -1,5 +1,6 @@
 package com.gone.ai.chat
 
+import com.gone.ai.voice.AppLanguage
 import com.gone.ai.ai.prompts.PromptFormatter
 
 /**
@@ -31,9 +32,15 @@ object ChatPrompt {
         attachmentTitle: String? = null,
         attachmentText: String? = null,
         healthContext: String? = null,
-        base: String = PromptFormatter.DEFAULT_SYSTEM_PROMPT
+        base: String = PromptFormatter.DEFAULT_SYSTEM_PROMPT,
+        /** The language chosen in Settings. Null or English leaves the prompt as it was. */
+        replyLanguage: AppLanguage? = null
     ): String = buildString {
         append(base)
+        if (replyLanguage == AppLanguage.HINDI) {
+            append("\n\nReply in simple Hindi, in Devanagari script, even if the user writes in English or ")
+            append("Hinglish. Keep numbers, units and medicine names exactly as they appear.")
+        }
         if (!healthContext.isNullOrBlank()) {
             append("\n\n").append(HEALTH_RULES).append('\n')
             append("--- PERSON START ---\n")

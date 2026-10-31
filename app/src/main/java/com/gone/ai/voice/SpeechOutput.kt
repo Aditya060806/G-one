@@ -40,6 +40,13 @@ class SpeechOutput private constructor(context: Context) : Speaker {
     /** Why replies cannot be spoken, if they cannot. */
     val unavailable: StateFlow<String?> = _unavailable.asStateFlow()
 
+    /** The language the wearer chose; applied when the engine is ready, and on every change. */
+    @Volatile private var wanted: AppLanguage = LanguagePreferences.current(context)
+
+    private val _languageNotice = MutableStateFlow<String?>(null)
+    /** Set when the chosen language has no voice on this phone, so another is used instead. */
+    val languageNotice: StateFlow<String?> = _languageNotice.asStateFlow()
+
     private val _speaking = MutableStateFlow(false)
     override val speaking: StateFlow<Boolean> = _speaking.asStateFlow()
 
@@ -57,7 +64,7 @@ class SpeechOutput private constructor(context: Context) : Speaker {
 
     private fun configure() {
         tts.setAudioAttributes(attributes)
-        if (!languageSet(Locale.getDefault()) && !languageSet(Locale.US)) {
+        if (!applyLanguage()) {
             fail("The phone's text-to-speech voice is not installed. Add one in the phone's text-to-speech settings.")
             return
         }
@@ -81,6 +88,30 @@ class SpeechOutput private constructor(context: Context) : Speaker {
 
     private fun languageSet(locale: Locale): Boolean =
         tts.setLanguage(locale) !in setOf(TextToSpeech.LANG_MISSING_DATA, TextToSpeech.LANG_NOT_SUPPORTED)
+
+    /**
+     * The chosen language if the phone has a voice for it, else the phone's own, else English.
+     * False only when no voice at all is installed.
+     */
+    private fun applyLanguage(): Boolean {
+        val choice = wanted
+        if (languageSet(choice.locale)) {
+            _languageNotice.value = null
+            return true
+        }
+        _languageNotice.value =
+            "This phone has no ${choice.englishName} voice installed, so G-one speaks in another language. " +
+                "Add the ${choice.englishName} voice in the phone's text-to-speech settings."
+        return languageSet(Locale.getDefault()) || languageSet(Locale.US)
+    }
+
+    /** Speak in [language] from the next sentence on. */
+    fun useLanguage(language: AppLanguage) {
+        synchronized(lock) {
+            wanted = language
+            if (ready) applyLanguage()
+        }
+    }
 
     private fun fail(reason: String) {
         _unavailable.value = reason

@@ -4,6 +4,7 @@ import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.Tag
 import android.nfc.tech.Ndef
+import android.nfc.tech.NdefFormatable
 import com.gone.ai.health.domain.EmergencyPayload
 
 /**
@@ -42,8 +43,9 @@ class NfcTagWriter {
      *   to compact text representation so it never exceeds tag memory.
      */
     fun writeOfflineMedicalId(tag: Tag, payload: EmergencyPayload): WriteResult {
-        val ndef = Ndef.get(tag)
-            ?: return WriteResult.Failure("Tag does not support NDEF. Use an NTAG213, NTAG215, or NTAG216 tag.")
+        // A blank tag has no NDEF structure yet, so Ndef.get returns null for it; formatting
+        // writes that structure and the record together.
+        val ndef = Ndef.get(tag) ?: return formatAndWrite(tag, offlineCandidates(payload))
 
         return try {
             ndef.connect()
@@ -52,26 +54,10 @@ class NfcTagWriter {
                 return WriteResult.Failure("This tag is locked (read-only) and cannot be written.")
             }
 
-            val fullText = payload.toOfflineText()
-            val vcard = payload.toVCard()
-
-            val textRecord = NdefRecord.createTextRecord("en", fullText)
-            val vcardRecord = NdefRecord.createMime("text/vcard", vcard.toByteArray(Charsets.UTF_8))
-
-            // 1. Attempt dual record (Readable text + 1-tap vCard) for larger tags (NTAG215/216)
-            var message = NdefMessage(arrayOf(textRecord, vcardRecord))
-
-            // 2. If too large, write full text record only
-            if (message.byteArrayLength > ndef.maxSize) {
-                message = NdefMessage(arrayOf(textRecord))
-            }
-
-            // 3. If still too large (e.g. tiny NTAG213 tag), use compact text
-            if (message.byteArrayLength > ndef.maxSize) {
-                val compactText = payload.toCompactOfflineText()
-                val compactRecord = NdefRecord.createTextRecord("en", compactText)
-                message = NdefMessage(arrayOf(compactRecord))
-            }
+            // Largest first: text and a one-tap vCard, then text alone, then compact text for a
+            // small tag such as an NTAG213.
+            val candidates = offlineCandidates(payload)
+            val message = candidates.firstOrNull { it.byteArrayLength <= ndef.maxSize } ?: candidates.last()
 
             if (ndef.maxSize < message.byteArrayLength) {
                 return WriteResult.Failure(
@@ -103,13 +89,14 @@ class NfcTagWriter {
      *         human-readable reason on any error.
      */
     fun write(tag: Tag, url: String): WriteResult {
-        val ndef = Ndef.get(tag)
-            ?: return WriteResult.Failure("Tag does not support NDEF. Use an NTAG213, NTAG215, or NTAG216 tag.")
+        val message = NdefMessage(arrayOf(NdefRecord.createUri(url)))
+
+        // A tag out of the packet is usually blank: it holds no NDEF structure yet, so
+        // Ndef.get returns null for it. Formatting writes that structure and the message
+        // together. Without this, a perfectly good NTAG213 was refused as unsupported.
+        val ndef = Ndef.get(tag) ?: return formatAndWrite(tag, listOf(message))
 
         return try {
-            val urlRecord = NdefRecord.createUri(url)
-            val message   = NdefMessage(arrayOf(urlRecord))
-
             ndef.connect()
 
             if (!ndef.isWritable) {
@@ -133,6 +120,53 @@ class NfcTagWriter {
             WriteResult.Failure(e.message ?: "Unknown NFC error. Move the tag away and try again.")
         } finally {
             runCatching { ndef.close() }
+        }
+    }
+
+    /** The offline record in the forms it can take, largest first. */
+    private fun offlineCandidates(payload: EmergencyPayload): List<NdefMessage> {
+        val text = NdefRecord.createTextRecord("en", payload.toOfflineText())
+        val vcard = NdefRecord.createMime("text/vcard", payload.toVCard().toByteArray(Charsets.UTF_8))
+        val compact = NdefRecord.createTextRecord("en", payload.toCompactOfflineText())
+        return listOf(
+            NdefMessage(arrayOf(text, vcard)),
+            NdefMessage(arrayOf(text)),
+            NdefMessage(arrayOf(compact))
+        )
+    }
+
+    /**
+     * Writes to a tag that carries no NDEF structure yet, which is how most tags ship.
+     *
+     * Formatting and writing are one operation here, and the tag's capacity is not readable
+     * beforehand, so the candidates are tried largest first until one fits.
+     */
+    private fun formatAndWrite(tag: Tag, candidates: List<NdefMessage>): WriteResult {
+        val formatable = NdefFormatable.get(tag)
+            ?: return WriteResult.Failure(
+                "This tag cannot hold a record. Use an NTAG213, NTAG215 or NTAG216 tag."
+            )
+
+        return try {
+            formatable.connect()
+            var lastError: String? = null
+            for (message in candidates) {
+                // A failed format leaves the tag as it was, so the next candidate can try.
+                try {
+                    formatable.format(message)
+                    return WriteResult.Success
+                } catch (e: Exception) {
+                    lastError = e.message
+                }
+            }
+            WriteResult.Failure(
+                lastError?.let { "The tag could not be prepared: $it" }
+                    ?: "The tag could not be prepared. Hold it still against the phone and try again."
+            )
+        } catch (e: Exception) {
+            WriteResult.Failure(e.message ?: "Unknown NFC error. Move the tag away and try again.")
+        } finally {
+            runCatching { formatable.close() }
         }
     }
 }

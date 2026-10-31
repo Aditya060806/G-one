@@ -95,10 +95,11 @@ class SosCoordinatorTest {
     }
 
     @Test
-    fun `the default window is twenty seconds and is one of the choices offered`() {
-        assertEquals(20, SosCoordinator.DEFAULT_FALL_CANCEL_SECONDS)
+    fun `a fall sends at once by default, and a window can still be chosen`() {
+        assertEquals(0, SosCoordinator.DEFAULT_FALL_CANCEL_SECONDS)
         assertTrue(SosCoordinator.DEFAULT_FALL_CANCEL_SECONDS in SosCoordinator.FALL_CANCEL_CHOICES)
-        assertTrue(0 in SosCoordinator.FALL_CANCEL_CHOICES)
+        // The wearer can put a window back; 20 seconds was the earlier default.
+        assertTrue(listOf(10, 20, 30).all { it in SosCoordinator.FALL_CANCEL_CHOICES })
     }
 
     // ── Everything else ──────────────────────────────────────────────────────

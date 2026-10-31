@@ -35,6 +35,9 @@ object EmergencySync {
     private const val API_BASE = "https://g--one.vercel.app/api/emergency/"
     private const val PERIODIC_JOB = 7901
     private const val RETRY_JOB = 7902
+
+    /** How often live readings may refresh the shared record while monitoring runs. */
+    private const val LIVE_UPLOAD_INTERVAL_MILLIS = 10_000L
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val mutex = Mutex()
     private val state = MutableStateFlow(EmergencySharingState())
@@ -105,7 +108,9 @@ object EmergencySync {
         load(ctx)
         if (!state.value.enabled) return
         val now = android.os.SystemClock.elapsedRealtime()
-        if (now - lastLiveAttempt < 30_000) return
+        // Fast enough that the emergency page reads as live while monitoring runs. Each upload
+        // is one small request; the periodic job still covers the long gaps between readings.
+        if (now - lastLiveAttempt < LIVE_UPLOAD_INTERVAL_MILLIS) return
         lastLiveAttempt = now
         // Separate scope: network latency must never block sampling, anomaly detection or SOS.
         scope.launch { sync(ctx.applicationContext) }

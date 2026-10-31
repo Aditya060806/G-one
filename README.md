@@ -38,7 +38,7 @@ city weather and India's air-quality index around it. Emergency help when it mat
 | **Trained models** | Fall detector, heart rate in context, sleep or awake: INT8 TensorFlow Lite through LiteRT, tested on held-out people |
 | **Language model** | Qwen2.5-1.5B-Instruct Q4_K_M via llama.cpp on the CPU; pinned by SHA-256 |
 | **Around you** | NDMA SACHET disaster alerts for your district, city weather for the heat rules, India AQI (CPCB) |
-| **Emergency** | Automatic SMS (+ optional call) on live anomalies, a 20-second "I'm OK" window for falls, NFC/QR emergency ID |
+| **Emergency** | Automatic SMS (+ optional call) on live anomalies, falls sent at once by default, NFC/QR emergency ID |
 | **Storage** | App-private Room database (schema 5), preferences, files |
 | **Evidence** | 659 JVM tests and 32 on-device tests passing; Python spec tests; protocol self-test; bench sessions on the real strap ([VERIFICATION.md](VERIFICATION.md)) |
 | **Stage** | Working prototype. Not a medical device and not clinically validated |
@@ -272,9 +272,9 @@ cooldowns stop repeats but let a worse event through. Thresholds:
 
 | Alert | What happens |
 |---|---|
-| Possible fall (impact ≥ 5 g) | Alarm, vibration and an **"I'm OK, don't send"** countdown in the app and on the lock screen; default 20 s; sends if nobody taps |
+| Possible fall (impact ≥ 5 g) | Sent at once by default. Settings can put back a 10, 20 or 30 s **"I'm OK, don't send"** countdown with alarm and vibration |
 | Any other confirmed live anomaly | SMS after 1.5 s (alerts on one reading are combined); optional call 5 s later |
-| A fall, then another alert during its countdown | The countdown ends and both reasons go at once |
+| A fall, then another alert within 1.5 s | One message carries both reasons |
 | Never sends | Simulated or replayed readings; the `ml.hrContext` early warning; heat findings that rest on city weather |
 
 Details and remaining physical tests: [`docs/SOS_BEHAVIOR.md`](docs/SOS_BEHAVIOR.md).
@@ -502,7 +502,7 @@ of mixed tensor precision and metadata. [Method](docs/assets/README.md).
 | What the LLM may do | Reword, under number validation | Letting it judge would make every alert depend on generation |
 | Where models run | Phone, offline, INT8 | Cloud inference needs a network exactly when it may be missing |
 | How models are checked | Held-out people, a whole unseen dataset, the rule they would replace | Window-level splits leak the same person into training and test |
-| Fall SOS | 20 s cancel window for falls only | A window for everything delays help for an unconscious wearer |
+| Fall SOS | Sent at once; a cancel window is offered but off by default | A window delays help for an unconscious wearer; without one, a hard knock texts the contact |
 | Disaster alerts | Government CAP feed, matched on the phone | Sending location to a server to match alerts exposes where the wearer is |
 | Environment for heat rules | Strap sensor first; city weather capped and labelled | Treating a city's weather as the air around a person over-alerts |
 | Emergency NFC | Stable link to an updatable record | A static tag must be rewritten after every edit |

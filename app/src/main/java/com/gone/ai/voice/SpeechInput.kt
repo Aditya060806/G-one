@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import java.util.Locale
 
 /**
  * Listens for one spoken message with the phone's speech recogniser.
@@ -61,9 +60,13 @@ class SpeechInput(private val context: Context) : Listener {
             }
             override fun onEvent(eventType: Int, params: Bundle?) = Unit
         })
+        // The language chosen in G-one, not the phone's: a Hindi speaker with an English phone
+        // should still be understood. Read on every start, so a change applies to the next turn.
+        val language = LanguagePreferences.current(context).tag
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
+            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
+            .putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language)
             .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             .putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
         created.startListening(intent)

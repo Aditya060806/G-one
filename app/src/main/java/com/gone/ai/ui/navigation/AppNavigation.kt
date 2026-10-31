@@ -92,7 +92,7 @@ private val navRoutes = navItems.map { it.route }
 
 /** Routes another component may ask to open, e.g. Circle Learn's "open in app". */
 private val externalRoutes = navRoutes.toSet() +
-    setOf("library", "pdf_summary", "ocr", "screenshot", "quiz", "circle_learn", "device", "reports", "emergency_id", "model_lab")
+    setOf("library", "pdf_summary", "ocr", "screenshot", "quiz", "circle_learn", "device", "reports", "emergency_id", "model_lab", "ask_health", "clinic_mode")
 
 /**
  * Navigation transitions:
@@ -405,6 +405,8 @@ fun AppNavigation(
                         onNavigateToCircle     = { navController.navigate("circle_learn") },
                         onNavigateToLibrary    = { navController.navigate("library") },
                         onNavigateToModelLab   = { navController.navigate("model_lab") },
+                        onNavigateToAskHealth  = { navController.navigate("ask_health") },
+                        onNavigateToClinic     = { navController.navigate("clinic_mode") },
                         onNavigateToSettings   = { showSettingsSheet = true },
                         onAskAssistant         = askAssistant
                     )
@@ -500,6 +502,12 @@ fun AppNavigation(
                 }
                 detailScreen("model_lab") {
                     ModelLabScreen(isDarkTheme = isDarkTheme, onBack = { navController.popBackStack() })
+                }
+                detailScreen("ask_health") {
+                    AskHealthScreen(isDarkTheme = isDarkTheme, onBack = { navController.popBackStack() })
+                }
+                detailScreen("clinic_mode") {
+                    ClinicModeScreen(isDarkTheme = isDarkTheme, onBack = { navController.popBackStack() })
                 }
                 detailScreen("emergency_id") {
                     EmergencyIdScreen(
